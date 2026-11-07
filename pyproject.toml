@@ -1,0 +1,26 @@
+[project]
+name = "int8kv"
+version = "0.1.0"
+description = "Dynamic INT8 KV cache quantization experiments for Qwen2.5"
+requires-python = ">=3.9"
+dependencies = [
+  "torch>=2.6",
+  "transformers==4.57.6",
+  "accelerate>=1.0",
+  "numpy",
+  "matplotlib",
+  "datasets>=2.20",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["int8kv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
