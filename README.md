@@ -3,7 +3,7 @@
 在 Qwen2.5 上实现并评估动态 INT8 KV Cache 量化，最终接入 SGLang，并与 vLLM 的 INT8 实现对比。
 
 ## 当前进度
-- 阶段 0-3 的代码和实验脚本已完成，改为在租用的 Linux GPU 服务器上运行（Windows 脚本仍保留）。
+- 阶段 0-3 已完成，结果见 [阶段 0-3 分析报告](docs/stage0-3-report.md)：Qwen2.5-1.5B-Instruct 上 INT8 per_token_head 把 KV 显存降到 50.7%，长上下文检索 79/100（基线 80/100）。
 - 阶段 4-5（SGLang 接入、Kernel）尚未开始。
 
 本仓库目前**没有正式实验结果**，`results/` 中的数据由实验脚本生成后提交。

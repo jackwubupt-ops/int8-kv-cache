@@ -1,0 +1,52 @@
+nohup: ignoring input
+=== stage3_model.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+baseline done on 112 prompts
+noise floor {'logits_kl': 0.0, 'top1_agreement': 1.0, 'exact_generation_rate': 1.0, 'mean_first_divergence': None, 'kv_memory_ratio_vs_baseline': 1.0, 'needle_accuracy': 0.8, 'needle_correct': 80, 'needle_total': 100, 'kl_short': {'mean': 0.0, 'median': 0.0, 'p90': 0.0, 'max': 0.0, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.0, 'median': 0.0, 'p90': 0.0, 'max': 0.0, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 100}}
+per_token_head:dequant {'logits_kl': 0.0037647006230590663, 'top1_agreement': 0.9938018178301198, 'exact_generation_rate': 0.9017857142857143, 'mean_first_divergence': 21.0, 'kv_memory_ratio_vs_baseline': 0.50654296875, 'needle_accuracy': 0.79, 'needle_correct': 79, 'needle_total': 100, 'kl_short': {'mean': 0.0026788802060764283, 'median': 0.0027394082862883806, 'p90': 0.004144139122217894, 'max': 0.004437921103090048, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.003894999073096983, 'median': 8.44861388031859e-05, 'p90': 0.009872404858469963, 'max': 0.08031921833753586, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 100}}
+per_token_head:integer {'logits_kl': 0.006005913396877663, 'top1_agreement': 0.9954958547438894, 'exact_generation_rate': 0.9107142857142857, 'mean_first_divergence': 28.8, 'kv_memory_ratio_vs_baseline': 0.5073631807030244, 'needle_accuracy': 0.79, 'needle_correct': 79, 'needle_total': 100, 'kl_short': {'mean': 0.0028476930262210467, 'median': 0.0032803176436573267, 'p90': 0.004225031938403845, 'max': 0.0047569964081048965, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.006384899841356457, 'median': 8.151211659424007e-05, 'p90': 0.011209199205040932, 'max': 0.23919975757598877, 'frac_above_threshold': 0.01, 'threshold': 0.1, 'n': 100}}
+per_head:dequant {'logits_kl': 0.0063506139150120156, 'top1_agreement': 0.9954958547438894, 'exact_generation_rate': 0.9107142857142857, 'mean_first_divergence': 26.1, 'kv_memory_ratio_vs_baseline': 0.4992329868372842, 'needle_accuracy': 0.79, 'needle_correct': 79, 'needle_total': 100, 'kl_short': {'mean': 0.0031221802782965824, 'median': 0.0035302257165312767, 'p90': 0.00422925129532814, 'max': 0.006556918378919363, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.006738025951417867, 'median': 8.520696428604424e-05, 'p90': 0.011199520900845528, 'max': 0.29746872186660767, 'frac_above_threshold': 0.01, 'threshold': 0.1, 'n': 100}}
+per_tensor:dequant {'logits_kl': 0.0129608146147636, 'top1_agreement': 0.9921077809163502, 'exact_generation_rate': 0.8839285714285714, 'mean_first_divergence': 20.53846153846154, 'kv_memory_ratio_vs_baseline': 0.49899015557655274, 'needle_accuracy': 0.78, 'needle_correct': 78, 'needle_total': 100, 'kl_short': {'mean': 0.00443472509990291, 'median': 0.004972542868927121, 'p90': 0.007545374799519777, 'max': 0.008405867964029312, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.013983945356546883, 'median': 8.72291529958602e-05, 'p90': 0.018876655027270317, 'max': 0.7153693437576294, 'frac_above_threshold': 0.04, 'threshold': 0.1, 'n': 100}}
+Done. Results are in results/Qwen2.5-1.5B-Instruct
+=== stage3_model.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+baseline done on 112 prompts
+noise floor {'logits_kl': 0.0, 'top1_agreement': 1.0, 'exact_generation_rate': 1.0, 'mean_first_divergence': None, 'kv_memory_ratio_vs_baseline': 1.0, 'needle_accuracy': 0.8, 'needle_correct': 80, 'needle_total': 100, 'kl_short': {'mean': 0.0, 'median': 0.0, 'p90': 0.0, 'max': 0.0, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.0, 'median': 0.0, 'p90': 0.0, 'max': 0.0, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 100}}
+per_token_head:dequant {'logits_kl': 0.3633155135573653, 'top1_agreement': 0.8972815739523087, 'exact_generation_rate': 0.5089285714285714, 'mean_first_divergence': 4.927272727272728, 'kv_memory_ratio_vs_baseline': 0.5078573100220923, 'needle_accuracy': 0.51, 'needle_correct': 51, 'needle_total': 100, 'kl_short': {'mean': 0.0054347562448432045, 'median': 0.004791916813701391, 'p90': 0.009646807797253132, 'max': 0.010362605564296246, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.40626120443486796, 'median': 0.09192165359854698, 'p90': 1.1549147367477417, 'max': 3.6467108726501465, 'frac_above_threshold': 0.5, 'threshold': 0.1, 'n': 100}}
+per_tensor:dequant {'logits_kl': 0.24883694094398226, 'top1_agreement': 0.9446348883211613, 'exact_generation_rate': 0.6428571428571429, 'mean_first_divergence': 5.225, 'kv_memory_ratio_vs_baseline': 0.49894784282135257, 'needle_accuracy': 0.65, 'needle_correct': 65, 'needle_total': 100, 'kl_short': {'mean': 0.008754158528366437, 'median': 0.007443955400958657, 'p90': 0.014114673249423504, 'max': 0.016421619802713394, 'frac_above_threshold': 0.0, 'threshold': 0.1, 'n': 12}, 'kl_needle': {'mean': 0.27764687483385614, 'median': 0.014709311537444592, 'p90': 1.0994168519973755, 'max': 2.487114191055298, 'frac_above_threshold': 0.28, 'threshold': 0.1, 'n': 100}}
+Done. Results are in results/Qwen2.5-1.5B-Instruct
+=== stage3_gsm8k.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+baseline: 20/200
+baseline: 40/200
+baseline: 60/200
+baseline: 80/200
+baseline: 100/200
+baseline: 120/200
+baseline: 140/200
+baseline: 160/200
+baseline: 180/200
+baseline: 200/200
+per_token_head:dequant: 20/200
+per_token_head:dequant: 40/200
+per_token_head:dequant: 60/200
+per_token_head:dequant: 80/200
+per_token_head:dequant: 100/200
+per_token_head:dequant: 120/200
+per_token_head:dequant: 140/200
+per_token_head:dequant: 160/200
+per_token_head:dequant: 180/200
+per_token_head:dequant: 200/200
+per_token_head:dequant {'accuracy': 0.69, 'answers_changed_vs_baseline': 46, 'both_correct': 131, 'only_baseline': 16, 'only_quantized': 7, 'mcnemar_p': 0.0931396484375}
+per_token_head:integer: 20/200
+per_token_head:integer: 40/200
+per_token_head:integer: 60/200
+per_token_head:integer: 80/200
+per_token_head:integer: 100/200
+per_token_head:integer: 120/200
+per_token_head:integer: 140/200
+per_token_head:integer: 160/200
+per_token_head:integer: 180/200
+per_token_head:integer: 200/200
+per_token_head:integer {'accuracy': 0.705, 'answers_changed_vs_baseline': 43, 'both_correct': 133, 'only_baseline': 14, 'only_quantized': 8, 'mcnemar_p': 0.28627872467041016}
+Done. Results are in results/Qwen2.5-1.5B-Instruct

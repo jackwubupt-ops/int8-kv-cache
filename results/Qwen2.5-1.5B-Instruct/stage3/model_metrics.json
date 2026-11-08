@@ -8,9 +8,10 @@
     "transformers": "4.57.6",
     "python": "3.12.3",
     "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
-    "git_commit": "c4b1d06",
-    "time_utc": "2026-11-08T04:20:17+00:00"
+    "git_commit": "e9e6a3f",
+    "time_utc": "2026-11-08T07:53:21+00:00"
   },
+  "prefill": "float",
   "results": {
     "baseline_repeat_noise_floor": {
       "logits_kl": 0.0,
@@ -18,39 +19,4629 @@
       "exact_generation_rate": 1.0,
       "mean_first_divergence": null,
       "kv_memory_ratio_vs_baseline": 1.0,
-      "needle_accuracy": 0.75
+      "needle_accuracy": 0.8,
+      "needle_correct": 80,
+      "needle_total": 100,
+      "kl_short": {
+        "mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 12
+      },
+      "kl_needle": {
+        "mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 100
+      },
+      "per_prompt": [
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 1.0,
+          "needle_correct": true
+        }
+      ]
     },
     "per_token_head:dequant": {
-      "logits_kl": 0.21213094987660952,
-      "top1_agreement": 0.9306640652939677,
-      "exact_generation_rate": 0.5,
-      "mean_first_divergence": 14.1875,
-      "kv_memory_ratio_vs_baseline": 0.507893246899319,
-      "needle_accuracy": 0.5
+      "logits_kl": 0.0037647006230590663,
+      "top1_agreement": 0.9938018178301198,
+      "exact_generation_rate": 0.9017857142857143,
+      "mean_first_divergence": 21.0,
+      "kv_memory_ratio_vs_baseline": 0.50654296875,
+      "needle_accuracy": 0.79,
+      "needle_correct": 79,
+      "needle_total": 100,
+      "kl_short": {
+        "mean": 0.0026788802060764283,
+        "median": 0.0027394082862883806,
+        "p90": 0.004144139122217894,
+        "max": 0.004437921103090048,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 12
+      },
+      "kl_needle": {
+        "mean": 0.003894999073096983,
+        "median": 8.44861388031859e-05,
+        "p90": 0.009872404858469963,
+        "max": 0.08031921833753586,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 100
+      },
+      "per_prompt": [
+        {
+          "kind": "short",
+          "kl": 0.0019369767978787422,
+          "top1": 0.984375,
+          "first_divergence": 16,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0038022042717784643,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0015716186026111245,
+          "top1": 0.984375,
+          "first_divergence": 39,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003884466364979744,
+          "top1": 0.90625,
+          "first_divergence": 26,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.004144139122217894,
+          "top1": 0.984375,
+          "first_divergence": 36,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.002587745664641261,
+          "top1": 0.984375,
+          "first_divergence": 15,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0012925566406920552,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0014997360995039344,
+          "top1": 0.984375,
+          "first_divergence": 37,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0035559157840907574,
+          "top1": 0.984375,
+          "first_divergence": 26,
+          "memory_ratio": 0.365625,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0028910709079355,
+          "top1": 0.96875,
+          "first_divergence": 8,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0005422111134976149,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.004437921103090048,
+          "top1": 0.953125,
+          "first_divergence": 27,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "kl": 2.1302697859937325e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001196054436150007,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.2689083582226885e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00031401077285408974,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00031150621362030506,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03244919702410698,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.004415558185428381,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 4.667886514653219e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.842094767809613e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6309420971083455e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.617539813509211e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.205771918146638e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011209161020815372,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002780461509246379,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0073305219411849976,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.319016498920973e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.003901892574504018,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003548434469848871,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00011416822962928563,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.195707515464164e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0030395998619496822,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.4623575882287696e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.0303669973363867e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.199757313472219e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.341280706896214e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0028995524626225233,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00232873298227787,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00010967154958052561,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00013505597598850727,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.917838744702749e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0026788064278662205,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.160580258234404e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008662152686156332,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.08031921833753586,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 6.889184760439093e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007058290299028158,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002220222813775763,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.4904843485273886e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0011556654935702682,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2379769941617269e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.63109982876631e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.3149829101166688e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0004985025734640658,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.557855133200064e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.9081520551699214e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00067529157968238,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.1059027858427726e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.032579321414232254,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.9447745216893964e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.2043819373939186e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007776296115480363,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6447882444481365e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.2872783524217084e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.159498010063544e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.3137201424106024e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03309904411435127,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 8.05106756160967e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.248235659862985e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.1765504495997448e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00010454999573994428,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7536662198835984e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.009872404858469963,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.1191286830580793e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7275808659178438e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.307938979764003e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.094948765967274e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.054539721459150314,
+          "top1": 0.7142857313156128,
+          "first_divergence": 1,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 4.5279277401277795e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.846160199027508e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.716271961224265e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.163664925727062e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.020443931221961975,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0017259052256122231,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.016552217304706573,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.657915153278736e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.02224971354007721,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00020213017705827951,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007741753943264484,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.903478945081588e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.3481526366376784e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.005902420729398727,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.002474173903465271,
+          "top1": 0.8571428656578064,
+          "first_divergence": 0,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.236112236976624e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0025937953032553196,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001663480798015371,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.5448842279729433e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00021104032930452377,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0022921643685549498,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 6.422803267014388e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.004741333890706301,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007936877082102001,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.001323346165008843,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.8152512792730704e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011557457968592644,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.0092862794408575e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002613196265883744,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.020650067104725e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00027836623485200107,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.907266389229335e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.637259841430932e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        }
+      ]
     },
     "per_token_head:integer": {
-      "logits_kl": 0.1836132690627892,
-      "top1_agreement": 0.9351981049403548,
-      "exact_generation_rate": 0.53125,
-      "mean_first_divergence": 9.933333333333334,
-      "kv_memory_ratio_vs_baseline": 0.50352783203125,
-      "needle_accuracy": 0.5
+      "logits_kl": 0.006005913396877663,
+      "top1_agreement": 0.9954958547438894,
+      "exact_generation_rate": 0.9107142857142857,
+      "mean_first_divergence": 28.8,
+      "kv_memory_ratio_vs_baseline": 0.5073631807030244,
+      "needle_accuracy": 0.79,
+      "needle_correct": 79,
+      "needle_total": 100,
+      "kl_short": {
+        "mean": 0.0028476930262210467,
+        "median": 0.0032803176436573267,
+        "p90": 0.004225031938403845,
+        "max": 0.0047569964081048965,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 12
+      },
+      "kl_needle": {
+        "mean": 0.006384899841356457,
+        "median": 8.151211659424007e-05,
+        "p90": 0.011209199205040932,
+        "max": 0.23919975757598877,
+        "frac_above_threshold": 0.01,
+        "threshold": 0.1,
+        "n": 100
+      },
+      "per_prompt": [
+        {
+          "kind": "short",
+          "kl": 0.0020677384454756975,
+          "top1": 0.984375,
+          "first_divergence": 63,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003750489093363285,
+          "top1": 0.96875,
+          "first_divergence": 12,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0011820497456938028,
+          "top1": 0.984375,
+          "first_divergence": 39,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003755101701244712,
+          "top1": 0.9375,
+          "first_divergence": 26,
+          "memory_ratio": 0.45748873873873874,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0047569964081048965,
+          "top1": 0.96875,
+          "first_divergence": 14,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0030080426950007677,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0018497634446248412,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0018005322199314833,
+          "top1": 0.984375,
+          "first_divergence": 37,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0036817570216953754,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0035525925923138857,
+          "top1": 0.984375,
+          "first_divergence": 58,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0005422210087999701,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.004225031938403845,
+          "top1": 0.96875,
+          "first_divergence": 38,
+          "memory_ratio": 0.5078125,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "kl": 1.8309163351659663e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00011902871483471245,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.1775402931089047e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0011226042406633496,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003846052859444171,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.048058561980724335,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0019974408205598593,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 4.667425855586771e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.1144223865121603e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.4728560927323997e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.620114047313109e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.9770648123085266e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011209199205040932,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002815673651639372,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007330510765314102,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.290719390264712e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.005561830010265112,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003528560628183186,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.0739774451358244e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.0646529669174924e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0030396264046430588,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.436494287394453e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.4997831335203955e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.139428710914217e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.294693659787299e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007548063527792692,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0023287616204470396,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00010967244452331215,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001269936328753829,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.067434434138704e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0026798280887305737,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.164839603821747e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008673578267917037,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.07490053027868271,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6343259403583943e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.009887611493468285,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002220596361439675,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.523757075323374e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0011652910616248846,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.9901604900951497e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.288655178352201e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.204801830885117e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.000471864448627457,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.454569276887923e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7402075172867626e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.000678406679071486,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.911835149978288e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03258034959435463,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.9300521671539173e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.259339791839011e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007776067941449583,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.8097165593644604e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.347413778305054e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.304401980130933e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.278072315675672e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.23919975757598877,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 8.941643318394199e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.297119635841227e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.1763791917474009e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00010455724986968562,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.688683005340863e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007539303041994572,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7284091882174835e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.791335757341585e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.052376880281372e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.309027175011579e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03788401931524277,
+          "top1": 0.8571428656578064,
+          "first_divergence": 1,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 6.717679207213223e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.682309271534905e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.417671208211686e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.076907498529181e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.020426174625754356,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.001725934213027358,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.055812668055295944,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 7.047685812722193e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.021118195727467537,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00020209878857713193,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007764160400256515,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.6283267945691478e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.3393278095463756e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.014912045560777187,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.002463710028678179,
+          "top1": 0.8571428656578064,
+          "first_divergence": 0,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.266129200113937e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0025938127655535936,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00017292951815761626,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.5012459445861168e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00022574090689886361,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0020176514517515898,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2461397318475065e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0017942681442946196,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007931720465421677,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00155598483979702,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.94724333495833e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011554240249097347,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.6323677338477864e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002614402328617871,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.4495558338676346e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00028443196788430214,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.8499980544438586e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.488823383828276e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5078125,
+          "needle_correct": true
+        }
+      ]
     },
     "per_head:dequant": {
-      "logits_kl": 0.13412433593475726,
-      "top1_agreement": 0.948590962216258,
-      "exact_generation_rate": 0.53125,
-      "mean_first_divergence": 11.8,
-      "kv_memory_ratio_vs_baseline": 0.5009244743533945,
-      "needle_accuracy": 0.55
+      "logits_kl": 0.0063506139150120156,
+      "top1_agreement": 0.9954958547438894,
+      "exact_generation_rate": 0.9107142857142857,
+      "mean_first_divergence": 26.1,
+      "kv_memory_ratio_vs_baseline": 0.4992329868372842,
+      "needle_accuracy": 0.79,
+      "needle_correct": 79,
+      "needle_total": 100,
+      "kl_short": {
+        "mean": 0.0031221802782965824,
+        "median": 0.0035302257165312767,
+        "p90": 0.00422925129532814,
+        "max": 0.006556918378919363,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 12
+      },
+      "kl_needle": {
+        "mean": 0.006738025951417867,
+        "median": 8.520696428604424e-05,
+        "p90": 0.011199520900845528,
+        "max": 0.29746872186660767,
+        "frac_above_threshold": 0.01,
+        "threshold": 0.1,
+        "n": 100
+      },
+      "per_prompt": [
+        {
+          "kind": "short",
+          "kl": 0.002691667526960373,
+          "top1": 0.953125,
+          "first_divergence": 16,
+          "memory_ratio": 0.504950495049505,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003662870265543461,
+          "top1": 0.984375,
+          "first_divergence": 18,
+          "memory_ratio": 0.5048076923076923,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.001698724227026105,
+          "top1": 0.984375,
+          "first_divergence": 39,
+          "memory_ratio": 0.5048543689320388,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.004024514462798834,
+          "top1": 0.9375,
+          "first_divergence": 26,
+          "memory_ratio": 0.5045045045045045,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.00422925129532814,
+          "top1": 0.96875,
+          "first_divergence": 36,
+          "memory_ratio": 0.504950495049505,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0037105283699929714,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.504950495049505,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0019178533693775535,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5018028846153846,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0009455032413825393,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5043478260869565,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0033975811675190926,
+          "top1": 0.984375,
+          "first_divergence": 26,
+          "memory_ratio": 0.3628125,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003911533858627081,
+          "top1": 0.984375,
+          "first_divergence": 58,
+          "memory_ratio": 0.504950495049505,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0007192171760834754,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5046728971962616,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.006556918378919363,
+          "top1": 0.984375,
+          "first_divergence": 38,
+          "memory_ratio": 0.5048543689320388,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "kl": 2.1365298380260356e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162808871688,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.000124378566397354,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164128151261,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.1527993087365758e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163931354916,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0013359517324715853,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163784067087,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002938095130957663,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00625058775767684,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163490284006,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007623677141964436,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163686022149,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.568059805227676e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016407890789,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7313034277322004e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163295013437,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.3865863113314845e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162857355569,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.82740899012424e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163980509745,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.02340493160591e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163588094526,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011199520900845528,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163833133613,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002763242518994957,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016373502994,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007329464424401522,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163588094526,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.467793461226393e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164374812143,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.008253593929111958,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162615224502,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003580920456442982,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00021919731807429343,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163490284006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.985227522207424e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164276058876,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0030370689928531647,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162615224502,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.4365688659599982e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.06247420667205e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162760416667,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.098045246792026e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164226726727,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.024828634399455e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163980509745,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.02820718102157116,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0023291795514523983,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00011050588364014402,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164029694061,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.588393443962559e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163343787336,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.0859462892985903e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163197552969,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0026839247439056635,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164029694061,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.1884348067687824e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163931354916,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008628424839116633,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163002980625,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.09266272932291031,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163246268656,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.343265787720156e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163246268656,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.017107581719756126,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164029694061,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00022099612397141755,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163197552969,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2444744470485603e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164374812143,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0011348581174388528,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.50001626635931,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 6.662204668828053e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163246268656,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.398454964553821e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163882229548,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.139205091429176e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163148866349,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0004584704583976418,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162857355569,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.63094867579639e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163490284006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.0256193405666636e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016339259038,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0006652105948887765,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164226726727,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.725199467728089e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.032579462975263596,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016407890789,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.5697669116198085e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162954410012,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.227581692044623e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007771767559461296,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6933283404796384e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163784067087,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.597887163981795e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163295013437,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.1510822736890987e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163100208769,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.2283915313892066e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016373502994,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.29746872186660767,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164325420673,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 8.35027385619469e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163441422594,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.301764420233667e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162954410012,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.563630904565798e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162760416667,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00010696720710257068,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162954410012,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6905416487134062e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164473684211,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00992194376885891,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016373502994,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.554954724269919e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163784067087,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.633302074173116e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163441422594,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.2978939543681918e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.0918053703790065e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163441422594,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.014602879993617535,
+          "top1": 0.8571428656578064,
+          "first_divergence": 4,
+          "memory_ratio": 0.5000163490284006,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.3010135262447875e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163931354916,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.691119001014158e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163343787336,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2001718459941912e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162954410012,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.867617851938121e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163784067087,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0203604344278574,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163784067087,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.001729506766423583,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163490284006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0172724612057209,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.6059539019770455e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163148866349,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007623317185789347,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164029694061,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00021667803230229765,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164029694061,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007807746878825128,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.004293662495911121,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016373502994,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.3435807886708062e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016407890789,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.04188762232661247,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163002980625,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0024661642964929342,
+          "top1": 0.8571428656578064,
+          "first_divergence": 0,
+          "memory_ratio": 0.5000163100208769,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 9.268702706322074e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000162954410012,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.002595176687464118,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164374812143,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001886783866211772,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163833133613,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.4960785594885238e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00022009412350598723,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000164128151261,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008484497666358948,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163637043686,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2455549267542665e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163980509745,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.009733013808727264,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163295013437,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007979199290275574,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163441422594,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0013068548869341612,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163882229548,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.22813897987362e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500016407890789,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011552916839718819,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000161941071958,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.415849396835256e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163539174641,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002612884563859552,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163882229548,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.307832568883896e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163441422594,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002774784225039184,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163295013437,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.9006301701883785e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163343787336,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.28630061783042e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000163197552969,
+          "needle_correct": true
+        }
+      ]
     },
     "per_tensor:dequant": {
-      "logits_kl": 0.16978568133725958,
-      "top1_agreement": 0.9580078143626451,
-      "exact_generation_rate": 0.59375,
-      "mean_first_divergence": 12.76923076923077,
-      "kv_memory_ratio_vs_baseline": 0.4962923153016972,
-      "needle_accuracy": 0.6
+      "logits_kl": 0.0129608146147636,
+      "top1_agreement": 0.9921077809163502,
+      "exact_generation_rate": 0.8839285714285714,
+      "mean_first_divergence": 20.53846153846154,
+      "kv_memory_ratio_vs_baseline": 0.49899015557655274,
+      "needle_accuracy": 0.78,
+      "needle_correct": 78,
+      "needle_total": 100,
+      "kl_short": {
+        "mean": 0.00443472509990291,
+        "median": 0.004972542868927121,
+        "p90": 0.007545374799519777,
+        "max": 0.008405867964029312,
+        "frac_above_threshold": 0.0,
+        "threshold": 0.1,
+        "n": 12
+      },
+      "kl_needle": {
+        "mean": 0.013983945356546883,
+        "median": 8.72291529958602e-05,
+        "p90": 0.018876655027270317,
+        "max": 0.7153693437576294,
+        "frac_above_threshold": 0.04,
+        "threshold": 0.1,
+        "n": 100
+      },
+      "per_prompt": [
+        {
+          "kind": "short",
+          "kl": 0.00268780579790473,
+          "top1": 0.96875,
+          "first_divergence": 28,
+          "memory_ratio": 0.5024752475247525,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.005571290384978056,
+          "top1": 0.9375,
+          "first_divergence": 12,
+          "memory_ratio": 0.5024038461538461,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.003135720733553171,
+          "top1": 0.984375,
+          "first_divergence": 39,
+          "memory_ratio": 0.5024271844660194,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.006699401885271072,
+          "top1": 0.921875,
+          "first_divergence": 26,
+          "memory_ratio": 0.5022522522522522,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.004409159068018198,
+          "top1": 0.96875,
+          "first_divergence": 36,
+          "memory_ratio": 0.5024752475247525,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.007545374799519777,
+          "top1": 0.984375,
+          "first_divergence": 15,
+          "memory_ratio": 0.5024752475247525,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0005786733236163855,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5009014423076923,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.000911566021386534,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5021739130434782,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0058985305950045586,
+          "top1": 0.96875,
+          "first_divergence": 26,
+          "memory_ratio": 0.36140625,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.005535926669836044,
+          "top1": 0.984375,
+          "first_divergence": 47,
+          "memory_ratio": 0.5024752475247525,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.0018373839557170868,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5023364485981309,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "kl": 0.008405867964029312,
+          "top1": 0.96875,
+          "first_divergence": 27,
+          "memory_ratio": 0.5024271844660194,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "kl": 3.687177013489418e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081404435844,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00013685085286851972,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008206407563,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.7699740005336935e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081965677458,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.026077264919877052,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081892033543,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00040367431938648224,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0074298446998000145,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081745142003,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0011419133516028523,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081843011075,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 6.213678261701716e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082039453946,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.185283048878773e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081647506719,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2338707165326923e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081428677784,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 7.621319673489779e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081990254872,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.86746318731457e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081794047263,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011202612891793251,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081916566806,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002762656076811254,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008186751497,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.007351577747613192,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081794047263,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.315840543422382e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082187406072,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.10034369677305222,
+          "top1": 0.8571428656578064,
+          "first_divergence": 2,
+          "memory_ratio": 0.49985829244721974,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00035471771843731403,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003894507244694978,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081745142003,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.0796276152832434e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082138029438,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.003040602197870612,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081307612251,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.441975630063098e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.972443548467709e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081380208333,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 4.102180173504166e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082113363363,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.2148518180765677e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081990254872,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0036615377757698298,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.002329419134184718,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00011440659000072628,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008201484703,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.21887661004439e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081671893668,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.4107793908333406e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081598776485,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0026803272776305676,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008201484703,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.221026003709994e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081965677458,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008652479154989123,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081501490313,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.15495622158050537,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081623134328,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 2.624324679345591e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081623134328,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.01707957312464714,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008201484703,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00022529682610183954,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081598776485,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.334506674145814e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082187406072,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.001154004712589085,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008133179655,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.959406917099841e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081623134328,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.363043449804536e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081941114773,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.0427455537137575e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081574433174,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0006014653481543064,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081428677784,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.191044616978616e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081745142003,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.1354084108461393e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008169629519,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007073270971886814,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082113363363,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6513164382558898e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03258644416928291,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082039453946,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.177885370561853e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081477205006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.385022500879131e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007824962376616895,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.598840390215628e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081892033543,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 5.0352395192021504e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081647506719,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.287347863079049e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081550104384,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.248519922432024e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008186751497,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.025880541652441025,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082162710336,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 8.119260019157082e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081720711297,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.0078409786729026e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081477205006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.9915582015528344e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081380208333,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001136116188718006,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081477205006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 1.6848292943905108e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082236842105,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.022212842479348183,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008186751497,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.7894826669362374e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081892033543,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.7762658848805586e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081720711297,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 8.080531188170426e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.0366491298773326e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081720711297,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.03859981149435043,
+          "top1": 0.8571428656578064,
+          "first_divergence": 4,
+          "memory_ratio": 0.5000081745142003,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 7.538609497714788e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081965677458,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 9.226953989127651e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081671893668,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.085842086467892e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081477205006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.879781797877513e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081892033543,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.020395781844854355,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081892033543,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.001728741335682571,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081745142003,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.005787794478237629,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 1.0853525964193977e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081574433174,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.018876655027270317,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008201484703,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0003150564443785697,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008201484703,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.000774103740695864,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.7153693437576294,
+          "top1": 0.8571428656578064,
+          "first_divergence": 5,
+          "memory_ratio": 0.500008186751497,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 2.546766154409852e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082039453946,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.14992810785770416,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081501490313,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.002466008299961686,
+          "top1": 0.8571428656578064,
+          "first_divergence": 0,
+          "memory_ratio": 0.5000081550104384,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0001101554007618688,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081477205006,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0025951790157705545,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082187406072,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00023943661653902382,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081916566806,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.5428236767766066e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002200098242610693,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008206407563,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0008525648154318333,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081818521843,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 7.247945745803008e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081990254872,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.00025015705614350736,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081647506719,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0007937676855362952,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081720711297,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0015067962231114507,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081941114773,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "kl": 5.730136763304472e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000082039453946,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.011553684249520302,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000080970535978,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.355077185711707e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.500008176958732,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002824939729180187,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081941114773,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 3.4506940664869035e-06,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081720711297,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 0.0002819375949911773,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081647506719,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 2.8445992938941345e-05,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081671893668,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "kl": 6.659738005510007e-07,
+          "top1": 1.0,
+          "first_divergence": null,
+          "memory_ratio": 0.5000081598776485,
+          "needle_correct": true
+        }
+      ]
     }
   }
 }
