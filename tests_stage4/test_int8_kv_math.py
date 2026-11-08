@@ -64,3 +64,50 @@ def test_bf16_round_up_never_rounds_down():
 
 def test_qmax_constant():
     assert M.INT8_KV_QMAX == 127
+
+
+def test_cell_size_formula():
+    # Qwen2.5-7B: 28 layers, 4 KV heads, head_dim 128.
+    assert M.int8_kv_cell_size(head_num=4, head_dim=128, v_head_dim=128, num_layers=28) == 28 * 4 * (128 + 128 + 4)
+
+
+def test_cell_size_ratio_vs_bf16():
+    int8 = M.int8_kv_cell_size(head_num=2, head_dim=128, v_head_dim=128, num_layers=28)
+    bf16 = 2 * (128 + 128) * 28 * 2
+    assert abs(int8 / bf16 - 260 / 512) < 1e-12
+
+
+def test_store_quantized_writes_only_loc():
+    x = _wide_range_kv(n=3)
+    q_buf = torch.zeros(10, 4, 128, dtype=torch.int8)
+    scale_buf = torch.zeros(10, 4, dtype=torch.bfloat16)
+    loc = torch.tensor([7, 2, 9])
+    M.store_quantized(q_buf=q_buf, scale_buf=scale_buf, loc=loc, x=x)
+    ref_q, ref_scale = M.quantize_per_token_head(x)
+    assert torch.equal(q_buf[loc], ref_q) and torch.equal(scale_buf[loc], ref_scale)
+    untouched = torch.tensor([0, 1, 3, 4, 5, 6, 8])
+    assert torch.count_nonzero(q_buf[untouched]) == 0 and torch.count_nonzero(scale_buf[untouched]) == 0
+
+
+SUPPORTED = dict(attention_backend="triton", page_size=1, tp_size=1, use_mla=False,
+                 speculative_algorithm=None, enable_hierarchical_cache=False, is_hybrid_swa=False)
+
+
+def test_supported_config_passes():
+    M.check_int8_kv_supported(**SUPPORTED)
+
+
+@pytest.mark.parametrize("override,feature", [
+    ({"attention_backend": "flashinfer"}, "attention backend"),
+    ({"attention_backend": None}, "attention backend"),
+    ({"page_size": 16}, "page_size"),
+    ({"tp_size": 2}, "tensor parallel"),
+    ({"use_mla": True}, "MLA"),
+    ({"speculative_algorithm": "EAGLE"}, "speculative"),
+    ({"enable_hierarchical_cache": True}, "hierarchical"),
+    ({"is_hybrid_swa": True}, "sliding window"),
+])
+def test_unsupported_config_rejected(override, feature):
+    with pytest.raises(NotImplementedError, match=feature) as err:
+        M.check_int8_kv_supported(**{**SUPPORTED, **override})
+    assert "int8_per_token_head" in str(err.value)

@@ -1,0 +1,332 @@
+From 1ce4a3889acbcc6ec7ae50f389ddd8e0a95a745d Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Sun, 8 Nov 2026 13:50:43 +0000
+Subject: [PATCH 2/2] Add int8_per_token_head KV cache (plain dequant-on-read
+ pool)
+
+---
+ .../sglang/srt/layers/quantization/int8_kv.py |  50 ++++++++
+ python/sglang/srt/mem_cache/memory_pool.py    | 107 ++++++++++++++++++
+ .../sglang/srt/model_executor/model_runner.py |   2 +
+ .../model_runner_kv_cache_mixin.py            |  39 +++++++
+ .../srt/model_executor/pool_configurator.py   |   8 ++
+ python/sglang/srt/server_args.py              |   4 +-
+ 6 files changed, 208 insertions(+), 2 deletions(-)
+
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+index 2f3bdb3c..91dca0e6 100644
+--- a/python/sglang/srt/layers/quantization/int8_kv.py
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -21,6 +21,8 @@ This module only depends on torch so it can be tested without a GPU; the
+ Triton store kernel must reproduce it exactly.
+ """
+ 
++from typing import Optional
++
+ import torch
+ 
+ INT8_KV_QMAX = 127
+@@ -53,3 +55,51 @@ def dequantize_per_token_head(
+     """int8 [N, H, D] and scale [N, H] -> [N, H, D] in dtype."""
+     out = q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)
+     return out.to(dtype)
++
++
++def store_quantized(
++    *, q_buf: torch.Tensor, scale_buf: torch.Tensor, loc: torch.Tensor, x: torch.Tensor
++) -> None:
++    """Quantize x [N, H, D] and write it into rows loc of q_buf [S, H, D] / scale_buf [S, H]."""
++    q, scale = quantize_per_token_head(x)
++    q_buf[loc] = q
++    scale_buf[loc] = scale
++
++
++def int8_kv_cell_size(
++    *, head_num: int, head_dim: int, v_head_dim: int, num_layers: int
++) -> int:
++    """KV bytes per token: int8 values plus one bf16 scale per head, for both K and V."""
++    return num_layers * head_num * (head_dim + v_head_dim + 2 * 2)
++
++
++def check_int8_kv_supported(
++    *,
++    attention_backend: Optional[str],
++    page_size: int,
++    tp_size: int,
++    use_mla: bool,
++    speculative_algorithm: Optional[str],
++    enable_hierarchical_cache: bool,
++    is_hybrid_swa: bool,
++) -> None:
++    """Fail fast on configurations the INT8 KV pool and kernels do not handle."""
++    problems = []
++    if attention_backend != "triton":
++        problems.append(f"attention backend {attention_backend!r} (pass --attention-backend triton)")
++    if page_size != 1:
++        problems.append(f"page_size={page_size}")
++    if tp_size != 1:
++        problems.append(f"tensor parallel size {tp_size}")
++    if use_mla:
++        problems.append("MLA models")
++    if speculative_algorithm is not None:
++        problems.append(f"speculative decoding ({speculative_algorithm})")
++    if enable_hierarchical_cache:
++        problems.append("hierarchical cache")
++    if is_hybrid_swa:
++        problems.append("hybrid sliding window attention")
++    if problems:
++        raise NotImplementedError(
++            "--kv-cache-dtype int8_per_token_head does not support: " + "; ".join(problems)
++        )
+diff --git a/python/sglang/srt/mem_cache/memory_pool.py b/python/sglang/srt/mem_cache/memory_pool.py
+index 9bf36c31..23a4c114 100644
+--- a/python/sglang/srt/mem_cache/memory_pool.py
++++ b/python/sglang/srt/mem_cache/memory_pool.py
+@@ -37,6 +37,10 @@ import triton
+ import triton.language as tl
+ 
+ from sglang.jit_kernel.kvcache import can_use_store_cache, store_cache
++from sglang.srt.layers.quantization.int8_kv import (
++    dequantize_per_token_head,
++    store_quantized,
++)
+ from sglang.srt.configs.mamba_utils import BaseLinearStateParams
+ from sglang.srt.constants import GPU_MEMORY_TYPE_KV_CACHE
+ from sglang.srt.environ import envs
+@@ -1386,6 +1390,109 @@ class MHATokenToKVPoolFP4(MHATokenToKVPool):
+             self.v_scale_buffer[layer_id - self.start_layer][loc] = cache_v_fp4_sf
+ 
+ 
++class MHATokenToKVPoolINT8(MHATokenToKVPool):
++    """MHA pool with int8 K/V and one bf16 scale per (token, head).
++
++    Reads dequantize the whole layer to compute_dtype, so any attention backend
++    sees a plain K/V buffer.
++    """
++
++    def __init__(self, *args, compute_dtype: torch.dtype, **kwargs):
++        if kwargs.get("enable_kv_cache_copy"):
++            raise NotImplementedError("int8_per_token_head KV cache does not support KV copy")
++        self.compute_dtype = compute_dtype
++        super().__init__(*args, **kwargs)
++
++    def _create_buffers(self):
++        with self.memory_saver_adapter.region(GPU_MEMORY_TYPE_KV_CACHE):
++            with (
++                torch.cuda.use_mem_pool(self.custom_mem_pool)
++                if self.enable_custom_mem_pool
++                else nullcontext()
++            ):
++                # Slot 0 of the padded size receives dummy writes from padded tokens.
++                m = self.size + self.page_size
++                self.k_buffer = [
++                    torch.zeros((m, self.head_num, self.head_dim), dtype=torch.int8, device=self.device)
++                    for _ in range(self.layer_num)
++                ]
++                self.v_buffer = [
++                    torch.zeros((m, self.head_num, self.v_head_dim), dtype=torch.int8, device=self.device)
++                    for _ in range(self.layer_num)
++                ]
++                self.k_scale_buffer = [
++                    torch.zeros((m, self.head_num), dtype=torch.bfloat16, device=self.device)
++                    for _ in range(self.layer_num)
++                ]
++                self.v_scale_buffer = [
++                    torch.zeros((m, self.head_num), dtype=torch.bfloat16, device=self.device)
++                    for _ in range(self.layer_num)
++                ]
++
++    def _clear_buffers(self):
++        del self.k_buffer
++        del self.v_buffer
++        del self.k_scale_buffer
++        del self.v_scale_buffer
++
++    def get_kv_size_bytes(self):
++        k_size_bytes = sum(
++            get_tensor_size_bytes(t) for t in self.k_buffer + self.k_scale_buffer
++        )
++        v_size_bytes = sum(
++            get_tensor_size_bytes(t) for t in self.v_buffer + self.v_scale_buffer
++        )
++        return k_size_bytes, v_size_bytes
++
++    def get_kv_scale_buffer(self, layer_id: int) -> Tuple[torch.Tensor, torch.Tensor]:
++        """bf16 scales [size + page_size, head_num] for K and V of one layer."""
++        i = layer_id - self.start_layer
++        return self.k_scale_buffer[i], self.v_scale_buffer[i]
++
++    def _get_key_buffer(self, layer_id: int):
++        i = layer_id - self.start_layer
++        return dequantize_per_token_head(
++            self.k_buffer[i], self.k_scale_buffer[i], dtype=self.compute_dtype
++        )
++
++    def _get_value_buffer(self, layer_id: int):
++        i = layer_id - self.start_layer
++        return dequantize_per_token_head(
++            self.v_buffer[i], self.v_scale_buffer[i], dtype=self.compute_dtype
++        )
++
++    def set_kv_buffer(
++        self,
++        layer: RadixAttention,
++        loc: torch.Tensor,
++        cache_k: torch.Tensor,
++        cache_v: torch.Tensor,
++        k_scale: Optional[float] = None,
++        v_scale: Optional[float] = None,
++        layer_id_override: Optional[int] = None,
++    ):
++        if k_scale is not None or v_scale is not None:
++            raise ValueError(
++                "int8_per_token_head KV cache computes its own scales; "
++                "checkpoint k_scale/v_scale are not supported"
++            )
++        layer_id = layer_id_override if layer_id_override is not None else layer.layer_id
++        i = layer_id - self.start_layer
++        store_quantized(q_buf=self.k_buffer[i], scale_buf=self.k_scale_buffer[i], loc=loc, x=cache_k)
++        store_quantized(q_buf=self.v_buffer[i], scale_buf=self.v_scale_buffer[i], loc=loc, x=cache_v)
++
++    def get_contiguous_buf_infos(self):
++        raise NotImplementedError("int8_per_token_head KV cache does not support disaggregation")
++
++    def get_cpu_copy(self, indices, mamba_indices=None):
++        raise NotImplementedError("int8_per_token_head KV cache does not support CPU offload")
++
++    def load_cpu_copy(self, kv_cache_cpu, indices, mamba_indices=None):
++        raise NotImplementedError("int8_per_token_head KV cache does not support CPU offload")
++
++    def move_kv_cache(self, tgt_loc: torch.Tensor, src_loc: torch.Tensor):
++        raise NotImplementedError("int8_per_token_head KV cache does not support KV moves")
++
+ class HybridLinearKVPool(KVCache):
+     """KV cache with separate pools for full and linear attention layers."""
+ 
+diff --git a/python/sglang/srt/model_executor/model_runner.py b/python/sglang/srt/model_executor/model_runner.py
+index ff937dd9..c5dd6858 100644
+--- a/python/sglang/srt/model_executor/model_runner.py
++++ b/python/sglang/srt/model_executor/model_runner.py
+@@ -2369,6 +2369,8 @@ class ModelRunner(ModelRunnerKVCacheMixin):
+                 self.kv_cache_dtype = torch.float8_e4m3fn
+         elif self.server_args.kv_cache_dtype in ("bf16", "bfloat16"):
+             self.kv_cache_dtype = torch.bfloat16
++        elif self.server_args.kv_cache_dtype == "int8_per_token_head":
++            self.kv_cache_dtype = torch.int8
+         elif self.server_args.kv_cache_dtype == "fp4_e2m1":
+             if hasattr(torch, "float4_e2m1fn_x2"):
+                 self.kv_cache_dtype = torch.float4_e2m1fn_x2
+diff --git a/python/sglang/srt/model_executor/model_runner_kv_cache_mixin.py b/python/sglang/srt/model_executor/model_runner_kv_cache_mixin.py
+index 1098b10a..d31d6066 100644
+--- a/python/sglang/srt/model_executor/model_runner_kv_cache_mixin.py
++++ b/python/sglang/srt/model_executor/model_runner_kv_cache_mixin.py
+@@ -13,6 +13,7 @@ from sglang.srt.configs.model_config import (
+ from sglang.srt.distributed.parallel_state import get_world_group
+ from sglang.srt.environ import envs
+ from sglang.srt.layers.dp_attention import get_attention_tp_size
++from sglang.srt.layers.quantization.int8_kv import check_int8_kv_supported
+ from sglang.srt.mem_cache.allocator import (
+     PagedTokenToKVPoolAllocator,
+     TokenToKVPoolAllocator,
+@@ -28,6 +29,7 @@ from sglang.srt.mem_cache.memory_pool import (
+     HybridReqToTokenPool,
+     MHATokenToKVPool,
+     MHATokenToKVPoolFP4,
++    MHATokenToKVPoolINT8,
+     MLATokenToKVPool,
+     MLATokenToKVPoolFP4,
+     NoOpMHATokenToKVPool,
+@@ -235,8 +237,27 @@ class ModelRunnerKVCacheMixin:
+                 "attention, no HiSparse, and --kv-cache-dtype != fp4_e2m1."
+             )
+ 
++    def _check_int8_kv_supported(self: ModelRunner):
++        args = self.server_args
++        backends = {
++            args.attention_backend,
++            args.prefill_attention_backend or args.attention_backend,
++            args.decode_attention_backend or args.attention_backend,
++        }
++        check_int8_kv_supported(
++            attention_backend=backends.pop() if len(backends) == 1 else "mixed",
++            page_size=self.page_size,
++            tp_size=get_attention_tp_size(),
++            use_mla=self.use_mla_backend,
++            speculative_algorithm=args.speculative_algorithm,
++            enable_hierarchical_cache=args.enable_hierarchical_cache,
++            is_hybrid_swa=self.is_hybrid_swa or self.mambaish_config is not None,
++        )
++
+     def _init_pools(self: ModelRunner):
+         """Initialize the memory pools."""
++        if self.kv_cache_dtype == torch.int8:
++            self._check_int8_kv_supported()
+         max_num_reqs = self.max_running_requests
+ 
+         # Initialize req_to_token_pool
+@@ -612,6 +633,24 @@ class ModelRunnerKVCacheMixin:
+                     start_layer=self.start_layer,
+                     **extra_args,
+                 )
++            elif self.kv_cache_dtype == torch.int8:
++                self.token_to_kv_pool = MHATokenToKVPoolINT8(
++                    self.max_total_num_tokens,
++                    page_size=self.page_size,
++                    dtype=self.kv_cache_dtype,
++                    head_num=self.model_config.get_num_kv_heads(
++                        get_attention_tp_size()
++                    ),
++                    head_dim=self.model_config.head_dim,
++                    v_head_dim=self.model_config.v_head_dim,
++                    layer_num=self.num_effective_layers,
++                    device=self.device,
++                    enable_memory_saver=self.server_args.enable_memory_saver,
++                    start_layer=self.start_layer,
++                    end_layer=self.end_layer,
++                    enable_alt_stream=not self.server_args.enable_pdmux,
++                    compute_dtype=self.dtype,
++                )
+             else:
+                 if is_float4_e2m1fn_x2(self.kv_cache_dtype):
+                     self.token_to_kv_pool = MHATokenToKVPoolFP4(
+diff --git a/python/sglang/srt/model_executor/pool_configurator.py b/python/sglang/srt/model_executor/pool_configurator.py
+index 5212f2c0..098141dd 100644
+--- a/python/sglang/srt/model_executor/pool_configurator.py
++++ b/python/sglang/srt/model_executor/pool_configurator.py
+@@ -28,6 +28,7 @@ from sglang.srt.environ import envs
+ from sglang.srt.layers.dp_attention import get_attention_tp_size
+ from sglang.srt.mem_cache.deepseek_v4_memory_pool import get_compress_state_ring_size
+ from sglang.srt.mem_cache.memory_pool import NSATokenToKVPool
++from sglang.srt.layers.quantization.int8_kv import int8_kv_cell_size
+ from sglang.srt.utils.common import is_float4_e2m1fn_x2
+ 
+ 
+@@ -168,6 +169,13 @@ class DefaultPoolConfigurator(MemoryPoolConfigurator):
+                 * kv_size
+             )
+ 
++            if kv_cache_dtype == torch.int8:
++                cell_size = int8_kv_cell_size(
++                    head_num=model_config.get_num_kv_heads(tp_size),
++                    head_dim=model_config.head_dim,
++                    v_head_dim=model_config.v_head_dim,
++                    num_layers=num_layers,
++                )
+             if is_float4_e2m1fn_x2(kv_cache_dtype):
+                 # kv_scale_buffer
+                 scale_block_size = 16
+diff --git a/python/sglang/srt/server_args.py b/python/sglang/srt/server_args.py
+index 173bdbbf..74bb0de8 100644
+--- a/python/sglang/srt/server_args.py
++++ b/python/sglang/srt/server_args.py
+@@ -4787,8 +4787,8 @@ class ServerArgs:
+             "--kv-cache-dtype",
+             type=str,
+             default=ServerArgs.kv_cache_dtype,
+-            choices=["auto", "fp8_e5m2", "fp8_e4m3", "bf16", "bfloat16", "fp4_e2m1"],
+-            help='Data type for kv cache storage. "auto" will use model data type. "bf16" or "bfloat16" for BF16 KV cache. "fp8_e5m2" and "fp8_e4m3" are supported for CUDA 11.8+. "fp4_e2m1" (only mxfp4) is supported for CUDA 12.8+ and PyTorch 2.8.0+',
++            choices=["auto", "fp8_e5m2", "fp8_e4m3", "bf16", "bfloat16", "fp4_e2m1", "int8_per_token_head"],
++            help='Data type for kv cache storage. "auto" will use model data type. "bf16" or "bfloat16" for BF16 KV cache. "fp8_e5m2" and "fp8_e4m3" are supported for CUDA 11.8+. "fp4_e2m1" (only mxfp4) is supported for CUDA 12.8+ and PyTorch 2.8.0+. "int8_per_token_head" stores int8 K/V with a dynamic bf16 scale per token and head (MHA models, triton backend only).',
+         )
+         parser.add_argument(
+             "--enable-fp32-lm-head",
