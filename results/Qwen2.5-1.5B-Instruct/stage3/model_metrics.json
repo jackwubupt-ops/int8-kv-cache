@@ -1,0 +1,56 @@
+{
+  "environment": {
+    "model": "/root/models/Qwen2.5-1.5B-Instruct",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.11.0+cu128",
+    "transformers": "4.57.6",
+    "python": "3.12.3",
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+    "git_commit": "c4b1d06",
+    "time_utc": "2026-11-08T04:20:17+00:00"
+  },
+  "results": {
+    "baseline_repeat_noise_floor": {
+      "logits_kl": 0.0,
+      "top1_agreement": 1.0,
+      "exact_generation_rate": 1.0,
+      "mean_first_divergence": null,
+      "kv_memory_ratio_vs_baseline": 1.0,
+      "needle_accuracy": 0.75
+    },
+    "per_token_head:dequant": {
+      "logits_kl": 0.21213094987660952,
+      "top1_agreement": 0.9306640652939677,
+      "exact_generation_rate": 0.5,
+      "mean_first_divergence": 14.1875,
+      "kv_memory_ratio_vs_baseline": 0.507893246899319,
+      "needle_accuracy": 0.5
+    },
+    "per_token_head:integer": {
+      "logits_kl": 0.1836132690627892,
+      "top1_agreement": 0.9351981049403548,
+      "exact_generation_rate": 0.53125,
+      "mean_first_divergence": 9.933333333333334,
+      "kv_memory_ratio_vs_baseline": 0.50352783203125,
+      "needle_accuracy": 0.5
+    },
+    "per_head:dequant": {
+      "logits_kl": 0.13412433593475726,
+      "top1_agreement": 0.948590962216258,
+      "exact_generation_rate": 0.53125,
+      "mean_first_divergence": 11.8,
+      "kv_memory_ratio_vs_baseline": 0.5009244743533945,
+      "needle_accuracy": 0.55
+    },
+    "per_tensor:dequant": {
+      "logits_kl": 0.16978568133725958,
+      "top1_agreement": 0.9580078143626451,
+      "exact_generation_rate": 0.59375,
+      "mean_first_divergence": 12.76923076923077,
+      "kv_memory_ratio_vs_baseline": 0.4962923153016972,
+      "needle_accuracy": 0.6
+    }
+  }
+}

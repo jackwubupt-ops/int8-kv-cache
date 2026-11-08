@@ -1,0 +1,74 @@
+nohup: ignoring input
+=== stage1_kv_distribution.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+prompt 1/15: 38 tokens
+prompt 2/15: 41 tokens
+prompt 3/15: 40 tokens
+prompt 4/15: 48 tokens
+prompt 5/15: 38 tokens
+prompt 6/15: 38 tokens
+prompt 7/15: 41 tokens
+prompt 8/15: 52 tokens
+prompt 9/15: 37 tokens
+prompt 10/15: 38 tokens
+prompt 11/15: 44 tokens
+prompt 12/15: 40 tokens
+prompt 13/15: 3353 tokens
+prompt 14/15: 3326 tokens
+prompt 15/15: 3330 tokens
+recommended: per_head (K), per_token_head (V)
+=== stage2_operator.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+per_tensor dequant {'prefill': 0.05275, 'decode': 0.04934}
+per_head dequant {'prefill': 0.04504, 'decode': 0.04261}
+per_token dequant {'prefill': 0.03718, 'decode': 0.0375}
+per_token_head dequant {'prefill': 0.02969, 'decode': 0.0284}
+per_tensor integer {'prefill': 0.05604, 'decode': 0.05346}
+per_head integer {'prefill': 0.04848, 'decode': 0.04685}
+per_token integer {'prefill': 0.04266, 'decode': 0.04345}
+per_token_head integer {'prefill': 0.0357, 'decode': 0.0355}
+=== stage3_model.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+baseline done on 32 prompts
+noise floor {'logits_kl': 0.0, 'top1_agreement': 1.0, 'exact_generation_rate': 1.0, 'mean_first_divergence': None, 'kv_memory_ratio_vs_baseline': 1.0, 'needle_accuracy': 0.75}
+per_token_head:dequant {'logits_kl': 0.21213094987660952, 'top1_agreement': 0.9306640652939677, 'exact_generation_rate': 0.5, 'mean_first_divergence': 14.1875, 'kv_memory_ratio_vs_baseline': 0.507893246899319, 'needle_accuracy': 0.5}
+per_token_head:integer {'logits_kl': 0.1836132690627892, 'top1_agreement': 0.9351981049403548, 'exact_generation_rate': 0.53125, 'mean_first_divergence': 9.933333333333334, 'kv_memory_ratio_vs_baseline': 0.50352783203125, 'needle_accuracy': 0.5}
+per_head:dequant {'logits_kl': 0.13412433593475726, 'top1_agreement': 0.948590962216258, 'exact_generation_rate': 0.53125, 'mean_first_divergence': 11.8, 'kv_memory_ratio_vs_baseline': 0.5009244743533945, 'needle_accuracy': 0.55}
+per_tensor:dequant {'logits_kl': 0.16978568133725958, 'top1_agreement': 0.9580078143626451, 'exact_generation_rate': 0.59375, 'mean_first_divergence': 12.76923076923077, 'kv_memory_ratio_vs_baseline': 0.4962923153016972, 'needle_accuracy': 0.6}
+=== stage3_gsm8k.py ===
+`torch_dtype` is deprecated! Use `dtype` instead!
+Generating train split:   0%|          | 0/7473 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 7473/7473 [00:00<00:00, 483898.38 examples/s]
+Generating test split:   0%|          | 0/1319 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 1319/1319 [00:00<00:00, 283184.22 examples/s]
+baseline: 20/200
+baseline: 40/200
+baseline: 60/200
+baseline: 80/200
+baseline: 100/200
+baseline: 120/200
+baseline: 140/200
+baseline: 160/200
+baseline: 180/200
+baseline: 200/200
+per_token_head:dequant: 20/200
+per_token_head:dequant: 40/200
+per_token_head:dequant: 60/200
+per_token_head:dequant: 80/200
+per_token_head:dequant: 100/200
+per_token_head:dequant: 120/200
+per_token_head:dequant: 140/200
+per_token_head:dequant: 160/200
+per_token_head:dequant: 180/200
+per_token_head:dequant: 200/200
+per_token_head:dequant {'accuracy': 0.695, 'answers_changed_vs_baseline': 48}
+per_token_head:integer: 20/200
+per_token_head:integer: 40/200
+per_token_head:integer: 60/200
+per_token_head:integer: 80/200
+per_token_head:integer: 100/200
+per_token_head:integer: 120/200
+per_token_head:integer: 140/200
+per_token_head:integer: 160/200
+per_token_head:integer: 180/200
+per_token_head:integer: 200/200
+per_token_head:integer {'accuracy': 0.715, 'answers_changed_vs_baseline': 48}
+Done. Results are in results/Qwen2.5-1.5B-Instruct

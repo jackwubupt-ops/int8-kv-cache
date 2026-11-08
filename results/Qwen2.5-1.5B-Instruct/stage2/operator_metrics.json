@@ -1,0 +1,193 @@
+{
+  "environment": {
+    "model": "/root/models/Qwen2.5-1.5B-Instruct",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.11.0+cu128",
+    "transformers": "4.57.6",
+    "python": "3.12.3",
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+    "git_commit": "c4b1d06",
+    "time_utc": "2026-11-08T04:19:06+00:00"
+  },
+  "reference_output_rel_l2": 0.1,
+  "results": {
+    "per_tensor:dequant": {
+      "prefill": {
+        "k_rel_l2": 0.018074437467457384,
+        "v_rel_l2": 0.016864045009929305,
+        "logit_abs_err": 0.13684542201535435,
+        "attn_kl": 0.016033016990131356,
+        "output_rel_l2": 0.05274563666661175,
+        "output_cosine": 0.9954209409806193,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.01716943484175967,
+        "v_rel_l2": 0.015356368700546833,
+        "logit_abs_err": 0.12629923376482025,
+        "attn_kl": 0.02264974574650986,
+        "output_rel_l2": 0.04934164311097924,
+        "output_cosine": 0.995590574606987,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_head:dequant": {
+      "prefill": {
+        "k_rel_l2": 0.01597931014126813,
+        "v_rel_l2": 0.015114746322589261,
+        "logit_abs_err": 0.11992981906372066,
+        "attn_kl": 0.013983822838261923,
+        "output_rel_l2": 0.04504010509889649,
+        "output_cosine": 0.996474279736986,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.015073234959951757,
+        "v_rel_l2": 0.013723471696201679,
+        "logit_abs_err": 0.11074606300861065,
+        "attn_kl": 0.01980021067350484,
+        "output_rel_l2": 0.04260887494681464,
+        "output_cosine": 0.9966051813458935,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_token:dequant": {
+      "prefill": {
+        "k_rel_l2": 0.013972117351748201,
+        "v_rel_l2": 0.010714401548006097,
+        "logit_abs_err": 0.12307943563376154,
+        "attn_kl": 0.014004059328838093,
+        "output_rel_l2": 0.0371753945899177,
+        "output_cosine": 0.9974689626572083,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.014085208135275891,
+        "v_rel_l2": 0.010657988225353793,
+        "logit_abs_err": 0.11733168809414132,
+        "attn_kl": 0.01423625165403985,
+        "output_rel_l2": 0.03750310572684698,
+        "output_cosine": 0.9974360344044509,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_token_head:dequant": {
+      "prefill": {
+        "k_rel_l2": 0.012022255477970657,
+        "v_rel_l2": 0.009133831932855656,
+        "logit_abs_err": 0.110360252533146,
+        "attn_kl": 0.01224745539223347,
+        "output_rel_l2": 0.029691306646077,
+        "output_cosine": 0.9984766351325172,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.01210146701192744,
+        "v_rel_l2": 0.009108400711349012,
+        "logit_abs_err": 0.10339595751429442,
+        "attn_kl": 0.011234132768753926,
+        "output_rel_l2": 0.028397190128955464,
+        "output_cosine": 0.9987959624711602,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_tensor:integer": {
+      "prefill": {
+        "k_rel_l2": 0.018056451499804248,
+        "v_rel_l2": 0.01690494622179896,
+        "logit_abs_err": 0.17318941181411548,
+        "attn_kl": 0.01623804195429441,
+        "output_rel_l2": 0.05603836493908751,
+        "output_cosine": 0.9952894938843591,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.017157902442531417,
+        "v_rel_l2": 0.015394324347566692,
+        "logit_abs_err": 0.1621347076680173,
+        "attn_kl": 0.02462254499427342,
+        "output_rel_l2": 0.05346456380132059,
+        "output_cosine": 0.9953978776576973,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_head:integer": {
+      "prefill": {
+        "k_rel_l2": 0.015987836670282543,
+        "v_rel_l2": 0.015108913425546216,
+        "logit_abs_err": 0.15977701763337365,
+        "attn_kl": 0.01418840065689066,
+        "output_rel_l2": 0.04848056804502801,
+        "output_cosine": 0.9963387041067591,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.015079029176420244,
+        "v_rel_l2": 0.01372382512566955,
+        "logit_abs_err": 0.1499698220411249,
+        "attn_kl": 0.020353999310243256,
+        "output_rel_l2": 0.04685009767152743,
+        "output_cosine": 0.9964405695708203,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_token:integer": {
+      "prefill": {
+        "k_rel_l2": 0.013965413492286995,
+        "v_rel_l2": 0.010721828902558404,
+        "logit_abs_err": 0.16060116788258358,
+        "attn_kl": 0.014280219330783215,
+        "output_rel_l2": 0.04265784213262401,
+        "output_cosine": 0.9972978459329022,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.01407598845720973,
+        "v_rel_l2": 0.010666375603943293,
+        "logit_abs_err": 0.15399356882006118,
+        "attn_kl": 0.014825977622178601,
+        "output_rel_l2": 0.043445954597527384,
+        "output_cosine": 0.9972432816755914,
+        "samples": 5376,
+        "within_reference": true
+      }
+    },
+    "per_token_head:integer": {
+      "prefill": {
+        "k_rel_l2": 0.012022692215990047,
+        "v_rel_l2": 0.009145863774726738,
+        "logit_abs_err": 0.15019370498591844,
+        "attn_kl": 0.012486122625608803,
+        "output_rel_l2": 0.035701569763715475,
+        "output_cosine": 0.9983265257003356,
+        "samples": 196,
+        "within_reference": true
+      },
+      "decode": {
+        "k_rel_l2": 0.012103752147855371,
+        "v_rel_l2": 0.00911502057117884,
+        "logit_abs_err": 0.14316959037040805,
+        "attn_kl": 0.01118357624346123,
+        "output_rel_l2": 0.03550131919768146,
+        "output_cosine": 0.998580254481307,
+        "samples": 5376,
+        "within_reference": true
+      }
+    }
+  }
+}
