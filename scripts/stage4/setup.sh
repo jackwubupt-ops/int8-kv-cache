@@ -30,6 +30,16 @@ if [[ ! -x $PY ]]; then
         --find-links https://sgl-project.github.io/whl/cu129/sglang-kernel/
 fi
 
+echo "=== pinned dependencies (checked on every run) ==="
+# pip can replace the cu128 torch with the PyPI build (CUDA 13), which driver 570 cannot run.
+if [[ $("$PY" -c "import torch; print(torch.__version__)" 2>/dev/null) != "$TORCH_VERSION+cu128" ]]; then
+    "$PY" -m pip install "torch==$TORCH_VERSION+cu128" "torchaudio==$TORCH_VERSION+cu128" \
+        "torchvision==0.26.0+cu128" --index-url https://download.pytorch.org/whl/cu128
+fi
+# sglang leaves `kernels` unpinned; transformers 5.6.0 only works with kernels 0.12.x.
+"$PY" -m pip install "kernels>=0.12,<0.13"
+"$PY" -c "import torch, kernels; print('torch', torch.__version__, 'cuda ok:', torch.cuda.is_available(), '| kernels', kernels.__version__)"
+
 echo "=== patched source ==="
 with_proxy bash sglang_patch/apply.sh third_party
 # The source tree needs Rust to build; overlay the patched .py files onto the installed wheel instead.
