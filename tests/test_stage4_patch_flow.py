@@ -119,3 +119,26 @@ def test_apply_switches_existing_checkout_to_new_base(tmp_path):
     for name in ("sglang", "sglang-pristine"):
         assert _git(tmp_path / "tp" / name, "rev-parse", "HEAD") == sha10
         assert (tmp_path / "tp" / name / "a.txt").read_text() == "v10\n"
+
+
+def test_apply_works_without_git_identity(tmp_path):
+    upstream, sha = _fake_upstream(tmp_path)
+    patch_dir = tmp_path / "patches"
+    patch_dir.mkdir()
+    (patch_dir / "BASE_VERSION").write_text(f"version=v9\ncommit={sha}\n")
+    assert _run(APPLY, tmp_path, upstream, patch_dir, str(tmp_path / "tp")).returncode == 0
+    work = tmp_path / "tp" / "sglang"
+    (work / "a.txt").write_text("patched\n")
+    _git(work, "commit", "-qam", "change")
+    assert _run(EXPORT, tmp_path, upstream, patch_dir, str(tmp_path / "tp")).returncode == 0
+
+    home = tmp_path / "home"
+    home.mkdir()
+    bare_env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    bare_env.update(HOME=str(home), GIT_CONFIG_NOSYSTEM="1", EMAIL="",
+                    GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="user.useConfigOnly", GIT_CONFIG_VALUE_0="true",
+                    SGLANG_REPO_URL=f"file://{upstream}", SGLANG_PATCH_DIR=str(patch_dir))
+    result = subprocess.run(["bash", str(APPLY), str(tmp_path / "server")], env=bare_env,
+                            capture_output=True, text=True, cwd=tmp_path)
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "server" / "sglang" / "a.txt").read_text() == "patched\n"

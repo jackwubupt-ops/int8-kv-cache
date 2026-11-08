@@ -35,6 +35,8 @@ checkout "$TARGET/sglang"
 shopt -s nullglob
 patches=("$PATCH_DIR"/0*.patch)
 if (( ${#patches[@]} )); then
-    git -C "$TARGET/sglang" am -q --3way "${patches[@]}"
+    # git am records a committer; servers often have no git identity configured.
+    git -C "$TARGET/sglang" -c user.name=sglang-patch-apply -c user.email=sglang-patch-apply@localhost \
+        am -q --3way "${patches[@]}"
 fi
 echo "SGLang $VERSION ($COMMIT) with ${#patches[@]} patch(es) at $TARGET/sglang"
