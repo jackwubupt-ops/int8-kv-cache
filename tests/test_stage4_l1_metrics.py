@@ -12,7 +12,7 @@ _spec.loader.exec_module(L1)
 def test_compare_identical_is_perfect():
     ref = [[(-0.1, 5), (-2.0, 9)], [(-0.3, 1)]]
     out = L1.compare_token_logprobs(ref, ref)
-    assert out == {"top1_agreement": 1.0, "mean_abs_logprob_diff": 0.0, "n_tokens": 3}
+    assert out == {"top1_agreement": 1.0, "top1_per_prompt_mean": 1.0, "mean_abs_logprob_diff": 0.0, "n_tokens": 3}
 
 
 def test_compare_counts_mismatch():
@@ -28,37 +28,55 @@ def test_compare_rejects_length_mismatch():
         L1.compare_token_logprobs([[(-0.1, 5)]], [[(-0.1, 5), (-0.2, 6)]])
 
 
-def test_parse_meta_info_pairs_chosen_logprob_with_top1():
-    meta = {
-        "input_token_logprobs": [(-0.5, 11, None), (-1.5, 12, None)],
-        "input_top_logprobs": [[(-0.4, 99, None)], [(-1.5, 12, None)]],
-    }
-    assert L1.token_logprobs_from_meta(meta) == [(-0.5, 99), (-1.5, 12)]
+def test_compare_reports_per_prompt_mean_like_stage3():
+    ref = [[(-0.1, 1), (-0.1, 2)], [(-0.1, 3), (-0.1, 4), (-0.1, 5), (-0.1, 6)]]
+    other = [[(-0.1, 1), (-0.1, 9)], [(-0.1, 3), (-0.1, 4), (-0.1, 5), (-0.1, 6)]]
+    out = L1.compare_token_logprobs(ref, other)
+    assert out["top1_agreement"] == pytest.approx(5 / 6)
+    assert out["top1_per_prompt_mean"] == pytest.approx((0.5 + 1.0) / 2)
 
 
-def test_verdict_marks_pass_and_fail():
-    assert L1.verdict({"top1_agreement": 0.995}, min_top1=0.99) == "PASS"
-    assert L1.verdict({"top1_agreement": 0.98}, min_top1=0.99) == "FAIL"
+def test_step_score_pairs_reference_logprob_with_top1():
+    meta = {"output_top_logprobs": [[(-0.2, 42, None)]], "output_token_ids_logprobs": [[(-0.9, 7, None)]]}
+    assert L1.step_score(meta, ref_token=7) == (-0.9, 42)
 
 
-def test_parse_meta_info_drops_sglang_leading_none():
-    # SGLang reports None for the first position at logprob_start_len (no logits predict it).
-    meta = {
-        "input_token_logprobs": [(None, 10, None), (-0.5, 11, None), (-1.5, 12, None)],
-        "input_top_logprobs": [None, [(-0.4, 99, None)], [(-1.5, 12, None)]],
-    }
-    assert L1.token_logprobs_from_meta(meta) == [(-0.5, 99), (-1.5, 12)]
+def test_step_score_rejects_wrong_reference_token():
+    meta = {"output_top_logprobs": [[(-0.2, 42, None)]], "output_token_ids_logprobs": [[(-0.9, 8, None)]]}
+    with pytest.raises(ValueError, match="reference token"):
+        L1.step_score(meta, ref_token=7)
 
 
-def test_teacher_forced_scores_every_continuation_token():
-    class FakeEngine:
-        def generate(self, *, input_ids, logprob_start_len, **_):
-            n = len(input_ids) - logprob_start_len
-            return {"meta_info": {
-                "input_token_logprobs": [(None, input_ids[logprob_start_len], None)]
-                + [(-0.1, t, None) for t in input_ids[logprob_start_len + 1:]],
-                "input_top_logprobs": [None] + [[(-0.1, t, None)] for t in input_ids[logprob_start_len + 1:]],
-            }}
+class _StepEngine:
+    """Records requests; top-1 is the reference token and its logprob is minus the input length."""
 
-    out = L1.teacher_forced(FakeEngine(), [("short", [1, 2, 3])], [[7, 8]])
-    assert out == [[(-0.1, 7), (-0.1, 8)]]
+    def __init__(self):
+        self.calls = []
+
+    def generate(self, *, input_ids, sampling_params, return_logprob, logprob_start_len, top_logprobs_num,
+                 token_ids_logprob):
+        self.calls.append((input_ids, logprob_start_len, token_ids_logprob))
+        return [{"meta_info": {"output_top_logprobs": [[(-1.0, tid[0], None)]],
+                               "output_token_ids_logprobs": [[(-float(len(ids)), tid[0], None)]]}}
+                for ids, tid in zip(input_ids, token_ids_logprob)]
+
+
+def test_forced_decode_feeds_one_token_per_step_over_a_cached_prefix():
+    engine = _StepEngine()
+    out = L1.forced_decode_scores(engine, [("short", [1, 2]), ("short", [5])], [[7, 8], [9]])
+    assert out == [[(-2.0, 7), (-3.0, 8)], [(-1.0, 9)]]
+    first, second = engine.calls
+    # logprob_start_len = len - 1 lets SGLang reuse every earlier token from the KV cache.
+    assert first == ([[1, 2], [5]], [1, 0], [[7], [9]])
+    assert second == ([[1, 2, 7]], [2], [[8]])
+
+
+def test_generation_agreement_counts_exact_matches_and_first_divergence():
+    out = L1.generation_agreement([[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 9, 6]])
+    assert out == {"exact_rate": 0.5, "mean_first_divergence": 1.0}
+
+
+def test_int8_verdict_needs_a_clean_noise_floor():
+    assert L1.verdict(0.995, min_top1=0.99, noise_floor=1.0) == "PASS"
+    assert L1.verdict(0.98, min_top1=0.99, noise_floor=1.0) == "FAIL"
+    assert L1.verdict(0.995, min_top1=0.99, noise_floor=0.99) == "INVALID"
