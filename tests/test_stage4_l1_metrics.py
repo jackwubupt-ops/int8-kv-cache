@@ -39,3 +39,26 @@ def test_parse_meta_info_pairs_chosen_logprob_with_top1():
 def test_verdict_marks_pass_and_fail():
     assert L1.verdict({"top1_agreement": 0.995}, min_top1=0.99) == "PASS"
     assert L1.verdict({"top1_agreement": 0.98}, min_top1=0.99) == "FAIL"
+
+
+def test_parse_meta_info_drops_sglang_leading_none():
+    # SGLang reports None for the first position at logprob_start_len (no logits predict it).
+    meta = {
+        "input_token_logprobs": [(None, 10, None), (-0.5, 11, None), (-1.5, 12, None)],
+        "input_top_logprobs": [None, [(-0.4, 99, None)], [(-1.5, 12, None)]],
+    }
+    assert L1.token_logprobs_from_meta(meta) == [(-0.5, 99), (-1.5, 12)]
+
+
+def test_teacher_forced_scores_every_continuation_token():
+    class FakeEngine:
+        def generate(self, *, input_ids, logprob_start_len, **_):
+            n = len(input_ids) - logprob_start_len
+            return {"meta_info": {
+                "input_token_logprobs": [(None, input_ids[logprob_start_len], None)]
+                + [(-0.1, t, None) for t in input_ids[logprob_start_len + 1:]],
+                "input_top_logprobs": [None] + [[(-0.1, t, None)] for t in input_ids[logprob_start_len + 1:]],
+            }}
+
+    out = L1.teacher_forced(FakeEngine(), [("short", [1, 2, 3])], [[7, 8]])
+    assert out == [[(-0.1, 7), (-0.1, 8)]]

@@ -47,6 +47,7 @@ with_proxy bash sglang_patch/apply.sh third_party
 # The source tree needs Rust to build; overlay the patched .py files onto the installed wheel instead.
 "$PY" sglang_patch/overlay.py apply --checkout third_party
 "$PY" -m pip install -e ".[dev]" --no-deps
+"$PY" -m pip install "pytest>=8"
 
 echo "=== models ==="
 for model in Qwen2.5-1.5B-Instruct Qwen2.5-7B-Instruct; do

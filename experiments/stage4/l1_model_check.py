@@ -32,7 +32,9 @@ def compare_token_logprobs(ref: Sequence[TokenLogprobs], other: Sequence[TokenLo
 
 
 def token_logprobs_from_meta(meta: dict) -> TokenLogprobs:
-    return [(chosen[0], top[0][1]) for chosen, top in zip(meta["input_token_logprobs"], meta["input_top_logprobs"])]
+    # SGLang reports None at the first position (logprob_start_len): nothing in the request predicts it.
+    return [(chosen[0], top[0][1]) for chosen, top in zip(meta["input_token_logprobs"], meta["input_top_logprobs"])
+            if chosen[0] is not None]
 
 
 def verdict(summary: Dict[str, float], min_top1: float) -> str:
@@ -76,7 +78,9 @@ def teacher_forced(engine, prompts, continuations) -> List[TokenLogprobs]:
         out = engine.generate(
             input_ids=ids + cont,
             sampling_params={"max_new_tokens": 1, "temperature": 0},
-            return_logprob=True, logprob_start_len=len(ids), top_logprobs_num=1,
+            # Start one token early: that position comes back as None and is dropped,
+            # leaving one entry per continuation token.
+            return_logprob=True, logprob_start_len=len(ids) - 1, top_logprobs_num=1,
         )
         results.append(token_logprobs_from_meta(out["meta_info"]))
     return results
