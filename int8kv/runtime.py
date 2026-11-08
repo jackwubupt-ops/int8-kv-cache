@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import platform
+import re
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,7 +27,19 @@ def pick_device(requested: str = "auto") -> str:
     return "cuda" if torch.cuda.is_available() else "cpu"
 
 
+_BASE_QWEN = re.compile(r"^Qwen/Qwen[\d.]*-[\d.]+B$", re.IGNORECASE)
+
+
+def check_model_name(name: str) -> None:
+    """Experiments wrap prompts in the chat template, which base models answer with garbage."""
+    if _BASE_QWEN.match(name):
+        raise ValueError(
+            f"{name} is a base model; the experiments use chat prompts, so use {name}-Instruct instead."
+        )
+
+
 def load_model(name: str, device: str, dtype: str = "bf16"):
+    check_model_name(name)
     if dtype not in _DTYPES:
         raise ValueError(f"unknown dtype {dtype!r}, expected one of {sorted(_DTYPES)}")
     tokenizer = AutoTokenizer.from_pretrained(name)

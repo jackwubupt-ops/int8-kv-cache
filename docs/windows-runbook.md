@@ -20,21 +20,25 @@ powershell -ExecutionPolicy Bypass -File scripts\setup_windows.ps1
 $env:HF_ENDPOINT = "https://<镜像地址>"
 ```
 
+## 必须使用 Instruct 模型
+所有实验都把输入包装成对话模板。基座模型（如 `Qwen/Qwen2.5-1.5B`）没有学过这种格式，会输出乱码，
+导致 GSM8K 和长上下文结果全部失真，所以脚本会直接拒绝基座模型名。
+
 ## 3. 先用小模型冒烟
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\run_stages.ps1 -Model Qwen/Qwen2.5-0.5B -Stage 1
+powershell -ExecutionPolicy Bypass -File scripts\run_stages.ps1 -Model Qwen/Qwen2.5-0.5B-Instruct -Stage 1
 ```
 
 ## 4. 跑完整实验
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\run_stages.ps1 -Model Qwen/Qwen2.5-1.5B
+powershell -ExecutionPolicy Bypass -File scripts\run_stages.ps1 -Model Qwen/Qwen2.5-1.5B-Instruct
 ```
 也可以用 `-Stage 1`、`2`、`3`、`gsm8k` 分开跑。`stage3_model.py` 和 GSM8K 每完成一组配置就会保存一次。
 
 ## 5. 提交结果
 ```powershell
 git add results
-git commit -m "results: Qwen2.5-1.5B stages 1-3"
+git commit -m "results: Qwen2.5-1.5B-Instruct stages 1-3"
 git push
 ```
 结果推送后告诉我，我会基于数据写分析报告，并确定阶段 4 的量化粒度。
@@ -49,5 +53,6 @@ git push
 | `stage3/gsm8k.json` | GSM8K 准确率及答案变化数 |
 
 ## 注意
+- 已经用 `.venv`（基于 `C:\Python311` 的 `--system-site-packages`）的话，`git pull` 后无需重装。
 - 笔记本结果**只用于精度结论**，不要作为延迟或吞吐数字。性能数据在阶段 4 的服务器上测。
 - 显存不足时，先关闭其他占用 GPU 的程序，再减小 `--needle-facts`。

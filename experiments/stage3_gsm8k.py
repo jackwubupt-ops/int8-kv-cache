@@ -12,7 +12,7 @@ from int8kv.prompts import extract_number
 from int8kv.qwen2_patch import patch_qwen2
 from int8kv.runtime import encode_chat, environment_info, greedy_generate, load_model, parse_configs, pick_device, save_json
 
-INSTRUCTION = "Solve the problem step by step. End with a final line in the form: #### <number>\n\n"
+INSTRUCTION = "\n\nPlease reason step by step, and put your final answer within \\boxed{}."
 
 
 def load_samples(data_file, count):
@@ -28,11 +28,11 @@ def load_samples(data_file, count):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B")
+    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     parser.add_argument("--device", default="auto")
     parser.add_argument("--dtype", default="bf16")
     parser.add_argument("--samples", type=int, default=200)
-    parser.add_argument("--max-new-tokens", type=int, default=256)
+    parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--data-file", default=None, help="Optional JSONL with question and answer fields")
     parser.add_argument("--configs", default="per_token_head:dequant,per_token_head:integer")
     parser.add_argument("--out", type=Path, default=Path("results/stage3"))
@@ -47,7 +47,7 @@ def main(argv=None):
     def run(make_cache, label):
         predictions = []
         for index, sample in enumerate(samples):
-            ids = encode_chat(tokenizer, INSTRUCTION + sample["question"], device)
+            ids = encode_chat(tokenizer, sample["question"] + INSTRUCTION, device)
             tokens = greedy_generate(model, ids, args.max_new_tokens, make_cache())
             predictions.append(extract_number(tokenizer.decode(tokens, skip_special_tokens=True)))
             if (index + 1) % 20 == 0:

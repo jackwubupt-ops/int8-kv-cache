@@ -1,6 +1,6 @@
 # Runs stages 1-3 and writes results under results\<ModelName>. Run from the repository root.
 param(
-    [string]$Model = "Qwen/Qwen2.5-1.5B",
+    [string]$Model = "Qwen/Qwen2.5-1.5B-Instruct",
     [ValidateSet("all", "1", "2", "3", "gsm8k")][string]$Stage = "all",
     [int]$GsmSamples = 200
 )

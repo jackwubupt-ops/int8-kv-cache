@@ -43,11 +43,17 @@ def needle_correct(text: str, answer: str) -> bool:
 
 
 def extract_number(text: str) -> Optional[str]:
-    """Answer after the last ####, otherwise the last number in the text."""
-    tail = text.rsplit("####", 1)[-1] if "####" in text else text
+    """Answer in the last \\boxed{}, else after the last ####, else the last number in the text."""
+    boxed = re.findall(r"\\boxed\{([^{}]*)\}", text)
+    if boxed:
+        tail, first = boxed[-1], True
+    elif "####" in text:
+        tail, first = text.rsplit("####", 1)[-1], True
+    else:
+        tail, first = text, False
     matches = re.findall(r"-?\d[\d,]*(?:\.\d+)?", tail)
     if not matches:
         return None
-    value = matches[0] if "####" in text else matches[-1]
+    value = matches[0] if first else matches[-1]
     value = value.replace(",", "")
     return value[:-2] if value.endswith(".0") else value.rstrip(".")

@@ -4,7 +4,7 @@ import torch
 
 from int8kv.analysis import GranularityStats, absmax_histogram, crest_factor, recommend_granularity, write_chunks
 from int8kv.prompts import extract_number, make_needle_prompt, needle_correct
-from int8kv.runtime import parse_configs, pick_device
+from int8kv.runtime import check_model_name, parse_configs, pick_device
 
 
 def test_needle_prompt_is_deterministic_and_contains_answer():
@@ -21,6 +21,8 @@ def test_needle_correct_requires_answer_text():
 @pytest.mark.parametrize("text,expected", [
     ("so #### 1,234", "1234"), ("answer is 42.", "42"), ("first 3 then 5", "5"),
     ("#### -7", "-7"), ("#### 18.0", "18"), ("no digits", None),
+    ("so 2 + 1 = 3, answer \\(\\boxed{3}\\).", "3"), ("\\boxed{70,000} not 5", "70000"),
+    ("\\boxed{\\$18}", "18"), ("try \\boxed{1} then \\boxed{2}", "2"),
 ])
 def test_extract_number(text, expected):
     assert extract_number(text) == expected
@@ -75,3 +77,14 @@ def test_cuda_request_without_gpu_fails_with_setup_hint(monkeypatch):
     with pytest.raises(RuntimeError, match="setup_windows"):
         pick_device("cuda")
     assert pick_device("auto") == "cpu"
+
+
+@pytest.mark.parametrize("name", ["Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-7B", "Qwen/Qwen2.5-0.5B"])
+def test_base_qwen_models_are_rejected_for_chat_prompts(name):
+    with pytest.raises(ValueError, match="Instruct"):
+        check_model_name(name)
+
+
+@pytest.mark.parametrize("name", ["Qwen/Qwen2.5-1.5B-Instruct", "/tmp/tiny-model"])
+def test_instruct_and_local_models_are_accepted(name):
+    check_model_name(name)

@@ -61,7 +61,7 @@ def plot_granularity(tables, path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B")
+    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     parser.add_argument("--device", default="auto")
     parser.add_argument("--dtype", default="bf16")
     parser.add_argument("--max-new-tokens", type=int, default=64)
