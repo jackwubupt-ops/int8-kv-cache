@@ -8,17 +8,30 @@ cd "$REPO_ROOT"
 echo "=== GPU / driver ==="
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader
 VERSION=$(sed -n 's/^version=//p' sglang_patch/BASE_VERSION)
+TORCH_VERSION=2.11.0
+KERNEL_VERSION=0.4.2.post2
+
+# GitHub needs AutoDL's academic proxy; pip mirrors are faster without it.
+with_proxy() { ( if [[ -f /etc/network_turbo ]]; then source /etc/network_turbo >/dev/null; fi; "$@" ) }
 
 if [[ ! -x $PY ]]; then
     echo "=== venv + sglang ${VERSION#v} ==="
-    python3 -m venv "$STAGE4_VENV"
+    # Driver 570 tops out at CUDA 12.8: reuse the image's cu128 torch when it is the pinned version.
+    if python3 -c "import torch, sys; sys.exit(0 if torch.__version__.startswith('$TORCH_VERSION') and torch.cuda.is_available() else 1)" 2>/dev/null; then
+        python3 -m venv --system-site-packages "$STAGE4_VENV"
+    else
+        python3 -m venv "$STAGE4_VENV"
+        "$PY" -m pip install "torch==$TORCH_VERSION" --index-url https://download.pytorch.org/whl/cu128
+    fi
     "$PY" -m pip install --upgrade pip
-    "$PY" -m pip install "sglang==${VERSION#v}"
-    "$PY" -m pip install modelscope
+    "$PY" -m pip install "sglang==${VERSION#v}" modelscope
+    # PyPI ships the CUDA 13 build of sglang-kernel; driver 570 needs the cu129 build.
+    with_proxy "$PY" -m pip install --force-reinstall --no-deps "sglang-kernel==$KERNEL_VERSION+cu129" \
+        --find-links https://sgl-project.github.io/whl/cu129/sglang-kernel/
 fi
 
 echo "=== patched source ==="
-bash sglang_patch/apply.sh third_party
+with_proxy bash sglang_patch/apply.sh third_party
 "$PY" -m pip install -e third_party/sglang/python --no-deps
 "$PY" -m pip install -e ".[dev]" --no-deps
 
@@ -30,5 +43,6 @@ for model in Qwen2.5-1.5B-Instruct Qwen2.5-7B-Instruct; do
 done
 
 require_env
-"$PY" -c "import sglang, torch; print('sglang', sglang.__file__); print('torch', torch.__version__, torch.cuda.get_device_name(0))"
+echo "=== smoke test (triton backend, bf16 and fp8 KV) ==="
+"$PY" experiments/stage4/smoke.py --model "$MODELS/Qwen2.5-1.5B-Instruct"
 echo "Setup complete."

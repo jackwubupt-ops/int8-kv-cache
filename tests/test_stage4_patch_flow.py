@@ -99,3 +99,23 @@ def test_require_env_rejects_other_sglang(tmp_path):
 def test_require_env_rejects_missing_venv(tmp_path):
     result = _require_env(tmp_path / "nope")
     assert result.returncode == 1 and "setup.sh" in result.stderr
+
+
+def test_apply_switches_existing_checkout_to_new_base(tmp_path):
+    upstream, sha9 = _fake_upstream(tmp_path)
+    patch_dir = tmp_path / "patches"
+    patch_dir.mkdir()
+    (patch_dir / "BASE_VERSION").write_text(f"version=v9\ncommit={sha9}\n")
+    assert _run(APPLY, tmp_path, upstream, patch_dir, str(tmp_path / "tp")).returncode == 0
+
+    (upstream / "a.txt").write_text("v10\n")
+    _git(upstream, "commit", "-qam", "v10")
+    _git(upstream, "tag", "v10")
+    sha10 = _git(upstream, "rev-parse", "HEAD")
+    (patch_dir / "BASE_VERSION").write_text(f"version=v10\ncommit={sha10}\n")
+
+    result = _run(APPLY, tmp_path, upstream, patch_dir, str(tmp_path / "tp"))
+    assert result.returncode == 0, result.stderr
+    for name in ("sglang", "sglang-pristine"):
+        assert _git(tmp_path / "tp" / name, "rev-parse", "HEAD") == sha10
+        assert (tmp_path / "tp" / name / "a.txt").read_text() == "v10\n"

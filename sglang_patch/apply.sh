@@ -15,6 +15,9 @@ checkout() {  # checkout <dir>: fresh clone, or reset an existing one to the bas
     local dir=$1
     if [[ -d $dir/.git ]]; then
         git -C "$dir" am --abort >/dev/null 2>&1 || true
+        if ! git -C "$dir" cat-file -e "$COMMIT^{commit}" 2>/dev/null; then
+            git -C "$dir" fetch -q --depth 1 origin "refs/tags/$VERSION:refs/tags/$VERSION"
+        fi
         git -C "$dir" checkout -q --detach "$COMMIT"
         git -C "$dir" reset -q --hard "$COMMIT"
         git -C "$dir" clean -qfd
