@@ -1,0 +1,56 @@
+{
+  "environment": {
+    "model": "Qwen/Qwen2.5-1.5B",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "torch": "2.14.1+cu126",
+    "transformers": "4.57.6",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "83e33fd",
+    "time_utc": "2026-11-07T13:53:51+00:00"
+  },
+  "results": {
+    "baseline_repeat_noise_floor": {
+      "logits_kl": 0.0,
+      "top1_agreement": 1.0,
+      "exact_generation_rate": 1.0,
+      "mean_first_divergence": null,
+      "kv_memory_ratio_vs_baseline": 1.0,
+      "needle_accuracy": 0.8
+    },
+    "per_token_head:dequant": {
+      "logits_kl": 0.06036916590528563,
+      "top1_agreement": 0.97021484375,
+      "exact_generation_rate": 0.15625,
+      "mean_first_divergence": 10.74074074074074,
+      "kv_memory_ratio_vs_baseline": 0.5078125,
+      "needle_accuracy": 0.5
+    },
+    "per_token_head:integer": {
+      "logits_kl": 0.06123657012358308,
+      "top1_agreement": 0.97119140625,
+      "exact_generation_rate": 0.1875,
+      "mean_first_divergence": 12.346153846153847,
+      "kv_memory_ratio_vs_baseline": 0.5078125,
+      "needle_accuracy": 0.65
+    },
+    "per_head:dequant": {
+      "logits_kl": 0.057965002226410434,
+      "top1_agreement": 0.96484375,
+      "exact_generation_rate": 0.125,
+      "mean_first_divergence": 5.75,
+      "kv_memory_ratio_vs_baseline": 0.5020856997312844,
+      "needle_accuracy": 0.25
+    },
+    "per_tensor:dequant": {
+      "logits_kl": 0.07098926516482607,
+      "top1_agreement": 0.95751953125,
+      "exact_generation_rate": 0.03125,
+      "mean_first_divergence": 9.258064516129032,
+      "kv_memory_ratio_vs_baseline": 0.49989806160076306,
+      "needle_accuracy": 0.35
+    }
+  }
+}

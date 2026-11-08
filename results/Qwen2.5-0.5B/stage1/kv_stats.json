@@ -1,0 +1,256 @@
+{
+  "environment": {
+    "model": "Qwen/Qwen2.5-0.5B",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "torch": "2.14.1+cu126",
+    "transformers": "4.57.6",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "83e33fd",
+    "time_utc": "2026-11-07T13:18:09+00:00"
+  },
+  "K": {
+    "granularity": {
+      "per_tensor": {
+        "rel_l2": 0.014540998204131156,
+        "scale_bytes_per_token_head": 0.0722361809045226
+      },
+      "per_head": {
+        "rel_l2": 0.011302384070019302,
+        "scale_bytes_per_token_head": 0.1444723618090452
+      },
+      "per_token": {
+        "rel_l2": 0.014091633537648285,
+        "scale_bytes_per_token_head": 1.0
+      },
+      "per_token_head": {
+        "rel_l2": 0.010800507558309086,
+        "scale_bytes_per_token_head": 2.0
+      }
+    },
+    "recommended_granularity": "per_head",
+    "crest_factor_p50": 3.9354043006896973,
+    "crest_factor_p99": 6.05720329284668,
+    "per_layer": {
+      "0": {
+        "absmax_p50": 127.5,
+        "absmax_max": 130.0
+      },
+      "1": {
+        "absmax_p50": 82.625,
+        "absmax_max": 150.0
+      },
+      "2": {
+        "absmax_p50": 47.25,
+        "absmax_max": 63.25
+      },
+      "3": {
+        "absmax_p50": 15.875,
+        "absmax_max": 26.5
+      },
+      "4": {
+        "absmax_p50": 15.3125,
+        "absmax_max": 19.875
+      },
+      "5": {
+        "absmax_p50": 10.3125,
+        "absmax_max": 18.75
+      },
+      "6": {
+        "absmax_p50": 5.96875,
+        "absmax_max": 11.0
+      },
+      "7": {
+        "absmax_p50": 9.75,
+        "absmax_max": 13.5625
+      },
+      "8": {
+        "absmax_p50": 109.40625,
+        "absmax_max": 222.0
+      },
+      "9": {
+        "absmax_p50": 12.0625,
+        "absmax_max": 23.125
+      },
+      "10": {
+        "absmax_p50": 10.9375,
+        "absmax_max": 16.625
+      },
+      "11": {
+        "absmax_p50": 8.625,
+        "absmax_max": 23.75
+      },
+      "12": {
+        "absmax_p50": 7.28125,
+        "absmax_max": 13.625
+      },
+      "13": {
+        "absmax_p50": 7.5625,
+        "absmax_max": 12.0625
+      },
+      "14": {
+        "absmax_p50": 9.4375,
+        "absmax_max": 17.25
+      },
+      "15": {
+        "absmax_p50": 8.5625,
+        "absmax_max": 13.9375
+      },
+      "16": {
+        "absmax_p50": 10.0625,
+        "absmax_max": 18.75
+      },
+      "17": {
+        "absmax_p50": 8.9375,
+        "absmax_max": 14.1875
+      },
+      "18": {
+        "absmax_p50": 8.5625,
+        "absmax_max": 13.25
+      },
+      "19": {
+        "absmax_p50": 11.25,
+        "absmax_max": 17.25
+      },
+      "20": {
+        "absmax_p50": 11.375,
+        "absmax_max": 21.375
+      },
+      "21": {
+        "absmax_p50": 9.125,
+        "absmax_max": 16.375
+      },
+      "22": {
+        "absmax_p50": 6.4375,
+        "absmax_max": 11.0625
+      },
+      "23": {
+        "absmax_p50": 7.53125,
+        "absmax_max": 14.125
+      }
+    }
+  },
+  "V": {
+    "granularity": {
+      "per_tensor": {
+        "rel_l2": 0.01713065703299224,
+        "scale_bytes_per_token_head": 0.0722361809045226
+      },
+      "per_head": {
+        "rel_l2": 0.015187039394508411,
+        "scale_bytes_per_token_head": 0.1444723618090452
+      },
+      "per_token": {
+        "rel_l2": 0.009895107652057217,
+        "scale_bytes_per_token_head": 1.0
+      },
+      "per_token_head": {
+        "rel_l2": 0.007936171462941597,
+        "scale_bytes_per_token_head": 2.0
+      }
+    },
+    "recommended_granularity": "per_token_head",
+    "crest_factor_p50": 3.078444480895996,
+    "crest_factor_p99": 6.632536888122559,
+    "per_layer": {
+      "0": {
+        "absmax_p50": 0.1083984375,
+        "absmax_max": 0.29296875
+      },
+      "1": {
+        "absmax_p50": 1.3828125,
+        "absmax_max": 3.109375
+      },
+      "2": {
+        "absmax_p50": 1.0859375,
+        "absmax_max": 2.515625
+      },
+      "3": {
+        "absmax_p50": 2.234375,
+        "absmax_max": 3.921875
+      },
+      "4": {
+        "absmax_p50": 1.328125,
+        "absmax_max": 3.453125
+      },
+      "5": {
+        "absmax_p50": 1.40625,
+        "absmax_max": 3.890625
+      },
+      "6": {
+        "absmax_p50": 1.5234375,
+        "absmax_max": 3.578125
+      },
+      "7": {
+        "absmax_p50": 1.7421875,
+        "absmax_max": 4.46875
+      },
+      "8": {
+        "absmax_p50": 1.4453125,
+        "absmax_max": 3.90625
+      },
+      "9": {
+        "absmax_p50": 2.390625,
+        "absmax_max": 7.25
+      },
+      "10": {
+        "absmax_p50": 1.875,
+        "absmax_max": 4.5625
+      },
+      "11": {
+        "absmax_p50": 3.09375,
+        "absmax_max": 9.5
+      },
+      "12": {
+        "absmax_p50": 1.8515625,
+        "absmax_max": 4.65625
+      },
+      "13": {
+        "absmax_p50": 2.09375,
+        "absmax_max": 5.09375
+      },
+      "14": {
+        "absmax_p50": 1.671875,
+        "absmax_max": 4.25
+      },
+      "15": {
+        "absmax_p50": 2.4375,
+        "absmax_max": 5.125
+      },
+      "16": {
+        "absmax_p50": 2.515625,
+        "absmax_max": 6.78125
+      },
+      "17": {
+        "absmax_p50": 3.234375,
+        "absmax_max": 6.46875
+      },
+      "18": {
+        "absmax_p50": 2.4765625,
+        "absmax_max": 7.40625
+      },
+      "19": {
+        "absmax_p50": 2.234375,
+        "absmax_max": 5.34375
+      },
+      "20": {
+        "absmax_p50": 4.6875,
+        "absmax_max": 10.9375
+      },
+      "21": {
+        "absmax_p50": 6.53125,
+        "absmax_max": 13.25
+      },
+      "22": {
+        "absmax_p50": 4.03125,
+        "absmax_max": 15.6875
+      },
+      "23": {
+        "absmax_p50": 3.671875,
+        "absmax_max": 12.0
+      }
+    }
+  }
+}

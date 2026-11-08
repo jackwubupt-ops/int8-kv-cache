@@ -1,0 +1,288 @@
+{
+  "environment": {
+    "model": "Qwen/Qwen2.5-1.5B",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "torch": "2.14.1+cu126",
+    "transformers": "4.57.6",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "git_commit": "83e33fd",
+    "time_utc": "2026-11-07T13:44:51+00:00"
+  },
+  "K": {
+    "granularity": {
+      "per_tensor": {
+        "rel_l2": 0.011023345820269334,
+        "scale_bytes_per_token_head": 0.0849632710859368
+      },
+      "per_head": {
+        "rel_l2": 0.009882037584735218,
+        "scale_bytes_per_token_head": 0.1699265421718736
+      },
+      "per_token": {
+        "rel_l2": 0.010696812710047602,
+        "scale_bytes_per_token_head": 1.0
+      },
+      "per_token_head": {
+        "rel_l2": 0.009566347763619558,
+        "scale_bytes_per_token_head": 2.0
+      }
+    },
+    "recommended_granularity": "per_head",
+    "crest_factor_p50": 5.209679126739502,
+    "crest_factor_p99": 8.28065013885498,
+    "per_layer": {
+      "0": {
+        "absmax_p50": 286.0,
+        "absmax_max": 322.0
+      },
+      "1": {
+        "absmax_p50": 59.25,
+        "absmax_max": 103.0
+      },
+      "2": {
+        "absmax_p50": 17.375,
+        "absmax_max": 24.625
+      },
+      "3": {
+        "absmax_p50": 15.1875,
+        "absmax_max": 19.625
+      },
+      "4": {
+        "absmax_p50": 12.0,
+        "absmax_max": 17.0
+      },
+      "5": {
+        "absmax_p50": 9.75,
+        "absmax_max": 12.4375
+      },
+      "6": {
+        "absmax_p50": 8.25,
+        "absmax_max": 12.1875
+      },
+      "7": {
+        "absmax_p50": 22.78125,
+        "absmax_max": 37.5
+      },
+      "8": {
+        "absmax_p50": 8.375,
+        "absmax_max": 16.0
+      },
+      "9": {
+        "absmax_p50": 12.1875,
+        "absmax_max": 16.5
+      },
+      "10": {
+        "absmax_p50": 12.0,
+        "absmax_max": 18.375
+      },
+      "11": {
+        "absmax_p50": 11.9375,
+        "absmax_max": 16.625
+      },
+      "12": {
+        "absmax_p50": 9.3125,
+        "absmax_max": 13.875
+      },
+      "13": {
+        "absmax_p50": 8.8125,
+        "absmax_max": 11.6875
+      },
+      "14": {
+        "absmax_p50": 10.1875,
+        "absmax_max": 18.5
+      },
+      "15": {
+        "absmax_p50": 29.625,
+        "absmax_max": 54.5
+      },
+      "16": {
+        "absmax_p50": 7.6875,
+        "absmax_max": 14.375
+      },
+      "17": {
+        "absmax_p50": 9.0,
+        "absmax_max": 14.125
+      },
+      "18": {
+        "absmax_p50": 12.0,
+        "absmax_max": 17.25
+      },
+      "19": {
+        "absmax_p50": 10.75,
+        "absmax_max": 16.75
+      },
+      "20": {
+        "absmax_p50": 8.9375,
+        "absmax_max": 15.25
+      },
+      "21": {
+        "absmax_p50": 8.125,
+        "absmax_max": 16.0
+      },
+      "22": {
+        "absmax_p50": 10.75,
+        "absmax_max": 18.125
+      },
+      "23": {
+        "absmax_p50": 8.9375,
+        "absmax_max": 16.875
+      },
+      "24": {
+        "absmax_p50": 8.6875,
+        "absmax_max": 15.5
+      },
+      "25": {
+        "absmax_p50": 9.1875,
+        "absmax_max": 18.125
+      },
+      "26": {
+        "absmax_p50": 8.375,
+        "absmax_max": 13.8125
+      },
+      "27": {
+        "absmax_p50": 9.125,
+        "absmax_max": 16.625
+      }
+    }
+  },
+  "V": {
+    "granularity": {
+      "per_tensor": {
+        "rel_l2": 0.01696191961050736,
+        "scale_bytes_per_token_head": 0.0849632710859368
+      },
+      "per_head": {
+        "rel_l2": 0.015084116776072371,
+        "scale_bytes_per_token_head": 0.1699265421718736
+      },
+      "per_token": {
+        "rel_l2": 0.00939016328593243,
+        "scale_bytes_per_token_head": 1.0
+      },
+      "per_token_head": {
+        "rel_l2": 0.008057392196602616,
+        "scale_bytes_per_token_head": 2.0
+      }
+    },
+    "recommended_granularity": "per_token_head",
+    "crest_factor_p50": 3.669126272201538,
+    "crest_factor_p99": 7.862383842468262,
+    "per_layer": {
+      "0": {
+        "absmax_p50": 2.171875,
+        "absmax_max": 4.40625
+      },
+      "1": {
+        "absmax_p50": 2.1875,
+        "absmax_max": 3.09375
+      },
+      "2": {
+        "absmax_p50": 1.859375,
+        "absmax_max": 5.5625
+      },
+      "3": {
+        "absmax_p50": 1.90625,
+        "absmax_max": 5.0
+      },
+      "4": {
+        "absmax_p50": 2.125,
+        "absmax_max": 5.65625
+      },
+      "5": {
+        "absmax_p50": 3.265625,
+        "absmax_max": 6.5625
+      },
+      "6": {
+        "absmax_p50": 2.671875,
+        "absmax_max": 6.65625
+      },
+      "7": {
+        "absmax_p50": 2.171875,
+        "absmax_max": 4.75
+      },
+      "8": {
+        "absmax_p50": 2.53125,
+        "absmax_max": 8.5
+      },
+      "9": {
+        "absmax_p50": 2.671875,
+        "absmax_max": 5.71875
+      },
+      "10": {
+        "absmax_p50": 2.34375,
+        "absmax_max": 6.65625
+      },
+      "11": {
+        "absmax_p50": 2.296875,
+        "absmax_max": 5.34375
+      },
+      "12": {
+        "absmax_p50": 3.21875,
+        "absmax_max": 6.15625
+      },
+      "13": {
+        "absmax_p50": 2.734375,
+        "absmax_max": 6.5
+      },
+      "14": {
+        "absmax_p50": 3.6875,
+        "absmax_max": 7.96875
+      },
+      "15": {
+        "absmax_p50": 2.296875,
+        "absmax_max": 6.0
+      },
+      "16": {
+        "absmax_p50": 3.0625,
+        "absmax_max": 6.34375
+      },
+      "17": {
+        "absmax_p50": 2.78125,
+        "absmax_max": 7.3125
+      },
+      "18": {
+        "absmax_p50": 3.109375,
+        "absmax_max": 8.625
+      },
+      "19": {
+        "absmax_p50": 3.015625,
+        "absmax_max": 7.59375
+      },
+      "20": {
+        "absmax_p50": 2.609375,
+        "absmax_max": 6.375
+      },
+      "21": {
+        "absmax_p50": 3.15625,
+        "absmax_max": 6.8125
+      },
+      "22": {
+        "absmax_p50": 3.5625,
+        "absmax_max": 9.1875
+      },
+      "23": {
+        "absmax_p50": 5.640625,
+        "absmax_max": 10.4375
+      },
+      "24": {
+        "absmax_p50": 5.03125,
+        "absmax_max": 16.25
+      },
+      "25": {
+        "absmax_p50": 7.6875,
+        "absmax_max": 15.3125
+      },
+      "26": {
+        "absmax_p50": 7.59375,
+        "absmax_max": 20.375
+      },
+      "27": {
+        "absmax_p50": 8.25,
+        "absmax_max": 23.0
+      }
+    }
+  }
+}
