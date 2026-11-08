@@ -8,7 +8,7 @@ from typing import Optional
 import torch
 from transformers.models.qwen2.modeling_qwen2 import Qwen2Attention, apply_rotary_pos_emb
 
-from .attention import attention_int8
+from .attention import attention_float, attention_int8
 from .cache import QuantizedKVCache
 from .metrics import operator_metrics
 from .quant import compute_scale, dequantize, quantize
@@ -85,10 +85,13 @@ def _make_forward(original, recorder: Optional[OperatorRecorder]):
         cos, sin = position_embeddings
         q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
-        phase = "decode" if cache.get_seq_length(self.layer_idx) > 0 else "prefill"
+        past_len = cache.get_seq_length(self.layer_idx)
+        phase = "decode" if past_len > 0 else "prefill"
+        groups = self.num_key_value_groups
+        if cache.float_prefill and q.shape[-2] > 1:
+            return self.o_proj(_float_chunk_attention(cache, self.layer_idx, past_len, q, k, v, attention_mask, groups, input_shape)), None
         cache.update(k, v, self.layer_idx)
         k_int, s_k, v_int, s_v = cache.get_kv(self.layer_idx)
-        groups = self.num_key_value_groups
         k_int, s_k = _repeat_heads(k_int, groups), _repeat_heads(s_k, groups)
         v_int, s_v = _repeat_heads(v_int, groups), _repeat_heads(s_v, groups)
         mask = _causal_mask_if_needed(attention_mask, q, k_int.shape[-2])
@@ -100,6 +103,20 @@ def _make_forward(original, recorder: Optional[OperatorRecorder]):
         return self.o_proj(output), None
 
     return forward
+
+
+def _float_chunk_attention(cache, layer_idx, past_len, q, k, v, attention_mask, groups, input_shape):
+    """Attention for a multi-token chunk: earlier tokens come from INT8, the chunk itself stays float."""
+    if past_len > 0:
+        k_int, s_k, v_int, s_v = cache.get_kv(layer_idx)
+        k_all = torch.cat([dequantize(k_int, s_k, k.dtype), k], -2)
+        v_all = torch.cat([dequantize(v_int, s_v, v.dtype), v], -2)
+    else:
+        k_all, v_all = k, v
+    cache.update(k, v, layer_idx)
+    mask = _causal_mask_if_needed(attention_mask, q, k_all.shape[-2])
+    output = attention_float(q, _repeat_heads(k_all, groups), _repeat_heads(v_all, groups), mask)
+    return output.transpose(1, 2).reshape(*input_shape, -1).contiguous()
 
 
 def _record(recorder, cache, layer_idx, phase, q, k_int, s_k, v_int, s_v, mask, groups) -> None:

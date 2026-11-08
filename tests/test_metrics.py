@@ -45,3 +45,19 @@ def test_operator_metrics_ignores_masked_keys_in_kl():
     m = operator_metrics(q, k, v, k, v, mask)
     assert math.isfinite(m["attn_kl"]) and m["attn_kl"] < 1e-6
     assert math.isfinite(m["logit_abs_err"])
+
+
+def test_mcnemar_exact_two_sided():
+    from int8kv.metrics import mcnemar_exact
+
+    assert mcnemar_exact(0, 0) == 1.0
+    assert abs(mcnemar_exact(10, 0) - 2 * 0.5**10) < 1e-12
+    assert mcnemar_exact(3, 7) == mcnemar_exact(7, 3)
+    assert abs(mcnemar_exact(3, 7) - 0.34375) < 1e-9
+
+
+def test_distribution_summary_reports_tail():
+    from int8kv.metrics import distribution_summary
+
+    s = distribution_summary([0.0, 0.0, 0.0, 1.0], threshold=0.1)
+    assert s == {"mean": 0.25, "median": 0.0, "p90": 1.0, "max": 1.0, "frac_above_threshold": 0.25, "threshold": 0.1, "n": 4}

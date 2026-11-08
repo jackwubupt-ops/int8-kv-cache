@@ -67,3 +67,33 @@ def operator_metrics(
         "output_rel_l2": _rel_l2(out_hat, out),
         "output_cosine": torch.cosine_similarity(out_hat, out, dim=-1).mean().item(),
     }
+
+
+def mcnemar_exact(only_a: int, only_b: int) -> float:
+    """Two-sided exact McNemar p-value from the two discordant counts of a paired comparison."""
+    n = only_a + only_b
+    if n == 0:
+        return 1.0
+    k = min(only_a, only_b)
+    tail = sum(math.comb(n, i) for i in range(k + 1)) / 2**n
+    return min(1.0, 2 * tail)
+
+
+def distribution_summary(values: Sequence[float], threshold: float) -> dict:
+    """Mean, median, nearest-rank p90, max and the share of values above threshold."""
+    xs = sorted(float(v) for v in values)
+    n = len(xs)
+    if n == 0:
+        return {"mean": None, "median": None, "p90": None, "max": None,
+                "frac_above_threshold": None, "threshold": threshold, "n": 0}
+    mid = n // 2
+    median = xs[mid] if n % 2 else (xs[mid - 1] + xs[mid]) / 2
+    return {
+        "mean": sum(xs) / n,
+        "median": median,
+        "p90": xs[max(0, math.ceil(0.9 * n) - 1)],
+        "max": xs[-1],
+        "frac_above_threshold": sum(x > threshold for x in xs) / n,
+        "threshold": threshold,
+        "n": n,
+    }

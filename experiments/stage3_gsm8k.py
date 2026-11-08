@@ -8,6 +8,7 @@ from pathlib import Path
 from transformers import DynamicCache
 
 from int8kv.cache import QuantizedKVCache
+from int8kv.metrics import mcnemar_exact
 from int8kv.prompts import extract_number
 from int8kv.qwen2_patch import patch_qwen2
 from int8kv.runtime import encode_chat, environment_info, greedy_generate, load_model, parse_configs, pick_device, save_json
@@ -35,6 +36,7 @@ def main(argv=None):
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--data-file", default=None, help="Optional JSONL with question and answer fields")
     parser.add_argument("--configs", default="per_token_head:dequant,per_token_head:integer")
+    parser.add_argument("--prefill", choices=["float", "int8"], default="float")
     parser.add_argument("--out", type=Path, default=Path("results/stage3"))
     args = parser.parse_args(argv)
 
@@ -56,19 +58,35 @@ def main(argv=None):
 
     env = environment_info(device, args.model, args.dtype)
     base = run(DynamicCache, "baseline")
-    results = {"baseline": {"accuracy": sum(p == g for p, g in zip(base, golds)) / len(golds)}}
+    base_ok = [p == g for p, g in zip(base, golds)]
+    results = {"baseline": {"accuracy": sum(base_ok) / len(golds)}}
+    predictions = {"baseline": base}
+
+    def output():
+        return {"environment": env, "prefill": args.prefill, "samples": len(golds), "results": results,
+                "golds": golds, "predictions": predictions}
+
     for granularity, mode in parse_configs(args.configs):
         key = f"{granularity}:{mode}"
-        preds = run(lambda: QuantizedKVCache(granularity=granularity, mode=mode), key)
+        preds = run(
+            lambda: QuantizedKVCache(granularity=granularity, mode=mode, float_prefill=args.prefill == "float"), key
+        )
+        ok = [p == g for p, g in zip(preds, golds)]
+        only_base = sum(b and not q for b, q in zip(base_ok, ok))
+        only_quant = sum(q and not b for b, q in zip(base_ok, ok))
         results[key] = {
-            "accuracy": sum(p == g for p, g in zip(preds, golds)) / len(golds),
+            "accuracy": sum(ok) / len(golds),
             "answers_changed_vs_baseline": sum(p != b for p, b in zip(preds, base)),
+            "both_correct": sum(b and q for b, q in zip(base_ok, ok)),
+            "only_baseline": only_base,
+            "only_quantized": only_quant,
+            "mcnemar_p": mcnemar_exact(only_base, only_quant),
         }
+        predictions[key] = preds
         print(key, results[key], flush=True)
-        save_json(args.out / "gsm8k.json", {"environment": env, "samples": len(golds), "results": results})
-    output = {"environment": env, "samples": len(golds), "results": results}
-    save_json(args.out / "gsm8k.json", output)
-    return output
+        save_json(args.out / "gsm8k.json", output())
+    save_json(args.out / "gsm8k.json", output())
+    return output()
 
 
 if __name__ == "__main__":

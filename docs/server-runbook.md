@@ -26,7 +26,13 @@ bash scripts/setup_linux.sh
 tmux new -s exp
 bash scripts/run_stages.sh                                  # 默认 Qwen2.5-1.5B-Instruct，全部阶段
 ```
-分开跑：`bash scripts/run_stages.sh Qwen/Qwen2.5-1.5B-Instruct 1`（阶段可选 `all`、`1`、`2`、`3`、`gsm8k`，第三个参数是 GSM8K 样本数）。
+分开跑：`bash scripts/run_stages.sh Qwen/Qwen2.5-1.5B-Instruct 1`（阶段可选 `all`、`1`、`2`、`3`、`3int8`、`gsm8k`，第三个参数是 GSM8K 样本数）。
+
+- `3`：prefill 用原始精度 K/V 计算 attention、再写入 INT8 缓存，decode 读 INT8，和 vLLM/SGLang 的做法一致。needle 默认 100 题。
+- `3int8`：对照组，prefill 也读 INT8 缓存（旧做法），结果在 `stage3_int8prefill/`。
+- `gsm8k`：保存每题答案，并给出与基线的配对检验（McNemar p 值）。
+
+本地模型路径也可以直接作为第一个参数，例如 `bash scripts/run_stages.sh ~/models/Qwen2.5-1.5B-Instruct 3`。
 
 ## 4. 提交结果
 ```bash

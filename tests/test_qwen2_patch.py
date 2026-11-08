@@ -141,3 +141,44 @@ def test_recorder_without_float_copy_fails_clearly():
 def test_patch_rejects_non_qwen2_model():
     with pytest.raises(ValueError, match="Qwen2"):
         patch_qwen2(torch.nn.Linear(2, 2))
+
+
+def _one_layer_model(seed):
+    torch.manual_seed(seed)
+    config = Qwen2Config(
+        hidden_size=64, num_attention_heads=4, num_key_value_heads=2, num_hidden_layers=1,
+        intermediate_size=128, vocab_size=100, max_position_embeddings=128, attn_implementation="sdpa",
+    )
+    m = Qwen2ForCausalLM(config).eval()
+    for module in m.modules():  # widen K/V so INT8 error is clearly visible
+        if hasattr(module, "k_proj"):
+            module.k_proj.weight.data *= 8
+            module.v_proj.weight.data *= 8
+    return m
+
+
+def test_float_prefill_matches_unquantized_model_and_still_stores_int8():
+    m = _one_layer_model(4)
+    with torch.no_grad():
+        base = m(IDS).logits
+        patch_qwen2(m)
+        cache = QuantizedKVCache(float_prefill=True)
+        out = m(IDS, past_key_values=cache, use_cache=True).logits
+        quant = m(IDS, past_key_values=QuantizedKVCache(), use_cache=True).logits
+    assert torch.allclose(out, base, atol=1e-4)
+    assert not torch.allclose(quant, base, atol=1e-4)
+    assert cache.get_kv(0)[0].dtype == torch.int8
+
+
+def test_float_prefill_decode_reads_the_int8_cache():
+    m = _one_layer_model(5)
+    patch_qwen2(m)
+    step = torch.tensor([[42]])
+    with torch.no_grad():
+        a, b = QuantizedKVCache(float_prefill=True), QuantizedKVCache()
+        m(IDS, past_key_values=a, use_cache=True)
+        m(IDS, past_key_values=b, use_cache=True)
+        da = m(step, past_key_values=a, use_cache=True).logits
+        db = m(step, past_key_values=b, use_cache=True).logits
+    # One layer: both caches hold the same INT8 prefill K/V, so decode must agree exactly.
+    assert torch.equal(da, db)

@@ -69,6 +69,17 @@ def test_stage3_noise_floor_is_zero_and_memory_is_lower(tiny_model, tmp_path):
     floor = data["baseline_repeat_noise_floor"]
     assert floor["logits_kl"] == 0 and floor["exact_generation_rate"] == 1
     assert data["per_token_head:integer"]["kv_memory_ratio_vs_baseline"] < 1
+    q = data["per_token_head:integer"]
+    assert q["kl_needle"]["n"] == 1 and q["kl_short"]["n"] == 1 and len(q["per_prompt"]) == 2
+    assert q["needle_total"] == 1
+
+
+def test_stage3_records_prefill_mode(tiny_model, tmp_path):
+    out = load_script("stage3_model").main(
+        ["--model", tiny_model, "--out", str(tmp_path), "--max-new-tokens", "2", "--max-prompts", "1",
+         "--needles", "0", "--configs", "per_token_head:dequant", "--prefill", "int8", *COMMON]
+    )
+    assert out["prefill"] == "int8"
 
 
 def test_gsm8k_runs_from_local_file(tiny_model, tmp_path):
@@ -80,3 +91,6 @@ def test_gsm8k_runs_from_local_file(tiny_model, tmp_path):
     )
     data = json.loads((tmp_path / "gsm8k.json").read_text(encoding="utf-8"))
     assert data["samples"] == 1 and "baseline" in data["results"]
+    quant = data["results"]["per_token_head:dequant"]
+    assert {"both_correct", "only_baseline", "only_quantized", "mcnemar_p"} <= set(quant)
+    assert len(data["predictions"]["baseline"]) == 1 and len(data["golds"]) == 1

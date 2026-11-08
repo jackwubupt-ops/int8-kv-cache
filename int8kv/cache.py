@@ -18,12 +18,16 @@ class QuantizedKVCache(DynamicCache):
         mode: str = "dequant",
         scale_dtype: torch.dtype = torch.bfloat16,
         keep_float: bool = False,
+        float_prefill: bool = False,
     ):
         super().__init__()
         self.granularity = granularity
         self.mode = mode
         self.scale_dtype = scale_dtype
         self.keep_float = keep_float
+        # Like vLLM/SGLang: attention for a multi-token chunk uses the chunk's own float K/V,
+        # and only later steps read them back from INT8.
+        self.float_prefill = float_prefill
         self._k_scales: List[torch.Tensor] = []
         self._v_scales: List[torch.Tensor] = []
         self._floats: Dict[int, Tuple[torch.Tensor, torch.Tensor]] = {}
