@@ -37,7 +37,9 @@ if [[ $("$PY" -c "import torch; print(torch.__version__)" 2>/dev/null) != "$TORC
         "torchvision==0.26.0+cu128" --index-url https://download.pytorch.org/whl/cu128
 fi
 # sglang leaves `kernels` unpinned; transformers 5.6.0 only works with kernels 0.12.x.
-"$PY" -m pip install "kernels>=0.12,<0.13"
+"$PY" -m pip install "kernels>=0.12,<0.13" ninja
+command -v nvcc >/dev/null || { echo "nvcc not found under $CUDA_HOME/bin; SGLang needs the CUDA toolkit to JIT-compile kernels" >&2; exit 1; }
+nvcc --version | tail -n 2
 "$PY" -c "import torch, kernels; print('torch', torch.__version__, 'cuda ok:', torch.cuda.is_available(), '| kernels', kernels.__version__)"
 
 echo "=== patched source ==="

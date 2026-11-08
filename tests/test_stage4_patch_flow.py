@@ -71,17 +71,20 @@ def test_apply_rejects_wrong_commit(tmp_path):
 COMMON = ROOT / "scripts" / "stage4" / "common.sh"
 
 
-def _fake_venv(tmp_path, exit_code, stderr=""):
+def _fake_venv(tmp_path, exit_code, stderr="", tools=("ninja", "nvcc")):
     bin_dir = tmp_path / "venv" / "bin"
     bin_dir.mkdir(parents=True)
     py = bin_dir / "python"
     py.write_text(f"#!/bin/sh\necho \"$@\" > '{tmp_path}/args'\necho '{stderr}' >&2\nexit {exit_code}\n")
     py.chmod(0o755)
+    for tool in tools:
+        (bin_dir / tool).write_text("#!/bin/sh\n")
+        (bin_dir / tool).chmod(0o755)
     return tmp_path / "venv"
 
 
 def _require_env(venv):
-    env = {**os.environ, "STAGE4_VENV": str(venv)}
+    env = {**os.environ, "STAGE4_VENV": str(venv), "CUDA_HOME": str(venv / "no-cuda"), "PATH": "/usr/bin:/bin"}
     return subprocess.run(["bash", "-c", f"source '{COMMON}' && require_env"], env=env, capture_output=True, text=True)
 
 
@@ -93,6 +96,11 @@ def test_require_env_accepts_verified_overlay(tmp_path):
 def test_require_env_rejects_overlay_mismatch(tmp_path):
     result = _require_env(_fake_venv(tmp_path, 1, "overlay mismatch: srt/a.py"))
     assert result.returncode == 1 and "setup.sh" in result.stderr and "srt/a.py" in result.stderr
+
+
+def test_require_env_rejects_missing_jit_tool(tmp_path):
+    result = _require_env(_fake_venv(tmp_path, 0, tools=("ninja",)))
+    assert result.returncode == 1 and "nvcc" in result.stderr and "setup.sh" in result.stderr
 
 
 def test_require_env_rejects_missing_venv(tmp_path):
