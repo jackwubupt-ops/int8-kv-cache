@@ -71,11 +71,11 @@ def test_apply_rejects_wrong_commit(tmp_path):
 COMMON = ROOT / "scripts" / "stage4" / "common.sh"
 
 
-def _fake_venv(tmp_path, sglang_file):
+def _fake_venv(tmp_path, exit_code, stderr=""):
     bin_dir = tmp_path / "venv" / "bin"
     bin_dir.mkdir(parents=True)
     py = bin_dir / "python"
-    py.write_text(f"#!/bin/sh\necho '{sglang_file}'\n")
+    py.write_text(f"#!/bin/sh\necho \"$@\" > '{tmp_path}/args'\necho '{stderr}' >&2\nexit {exit_code}\n")
     py.chmod(0o755)
     return tmp_path / "venv"
 
@@ -85,15 +85,14 @@ def _require_env(venv):
     return subprocess.run(["bash", "-c", f"source '{COMMON}' && require_env"], env=env, capture_output=True, text=True)
 
 
-def test_require_env_accepts_patched_checkout(tmp_path):
-    venv = _fake_venv(tmp_path, f"{ROOT}/third_party/sglang/python/sglang/__init__.py")
-    assert _require_env(venv).returncode == 0
+def test_require_env_accepts_verified_overlay(tmp_path):
+    assert _require_env(_fake_venv(tmp_path, 0)).returncode == 0
+    assert "overlay.py verify" in (tmp_path / "args").read_text()
 
 
-def test_require_env_rejects_other_sglang(tmp_path):
-    venv = _fake_venv(tmp_path, "/usr/lib/python3/site-packages/sglang/__init__.py")
-    result = _require_env(venv)
-    assert result.returncode == 1 and "third_party/sglang" in result.stderr
+def test_require_env_rejects_overlay_mismatch(tmp_path):
+    result = _require_env(_fake_venv(tmp_path, 1, "overlay mismatch: srt/a.py"))
+    assert result.returncode == 1 and "setup.sh" in result.stderr and "srt/a.py" in result.stderr
 
 
 def test_require_env_rejects_missing_venv(tmp_path):

@@ -32,7 +32,8 @@ fi
 
 echo "=== patched source ==="
 with_proxy bash sglang_patch/apply.sh third_party
-"$PY" -m pip install -e third_party/sglang/python --no-deps
+# The source tree needs Rust to build; overlay the patched .py files onto the installed wheel instead.
+"$PY" sglang_patch/overlay.py apply --checkout third_party
 "$PY" -m pip install -e ".[dev]" --no-deps
 
 echo "=== models ==="
