@@ -1,0 +1,71 @@
+From 670d3cd2ec72d8422c830a9ac0ff08a08b4b47af Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Sun, 8 Nov 2026 13:34:39 +0000
+Subject: [PATCH] Add per-token-head INT8 KV quantization math
+
+---
+ .../sglang/srt/layers/quantization/int8_kv.py | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 python/sglang/srt/layers/quantization/int8_kv.py
+
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+new file mode 100644
+index 0000000..2f3bdb3
+--- /dev/null
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -0,0 +1,55 @@
++# Copyright 2025 SGLang Team
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#     http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++# ==============================================================================
++"""Dynamic per-token-head INT8 KV cache quantization (reference math).
++
++KV rows are laid out as [tokens, heads, head_dim]. Each (token, head) row gets
++its own scale = absmax / 127, stored as bfloat16 and rounded *up* so that the
++row's absmax never quantizes past 127. An all-zero row uses scale 1.
++
++This module only depends on torch so it can be tested without a GPU; the
++Triton store kernel must reproduce it exactly.
++"""
++
++import torch
++
++INT8_KV_QMAX = 127
++
++
++def bf16_round_up(x: torch.Tensor) -> torch.Tensor:
++    """Cast positive FP32 values to bfloat16, taking the next value up whenever
++    round-to-nearest would land below the input."""
++    cast = x.to(torch.bfloat16)
++    too_small = cast.to(torch.float32) < x
++    bumped = (cast.view(torch.int16) + 1).view(torch.bfloat16)
++    return torch.where(too_small, bumped, cast)
++
++
++def quantize_per_token_head(x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
++    """x: [N, H, D] -> (int8 [N, H, D], bfloat16 scale [N, H])."""
++    xf = x.to(torch.float32)
++    absmax = xf.abs().amax(dim=-1)
++    scale = torch.where(
++        absmax > 0, absmax / INT8_KV_QMAX, torch.ones_like(absmax)
++    )
++    scale = bf16_round_up(scale)
++    q = (xf / scale.to(torch.float32).unsqueeze(-1)).round()
++    return q.clamp(-INT8_KV_QMAX, INT8_KV_QMAX).to(torch.int8), scale
++
++
++def dequantize_per_token_head(
++    q: torch.Tensor, scale: torch.Tensor, dtype: torch.dtype = torch.bfloat16
++) -> torch.Tensor:
++    """int8 [N, H, D] and scale [N, H] -> [N, H, D] in dtype."""
++    out = q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)
++    return out.to(dtype)
