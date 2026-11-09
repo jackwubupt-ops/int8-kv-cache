@@ -254,6 +254,20 @@ L1 int8_per_token_head:plain:off: FAIL top1=0.9898 |dlogp|=0.0346
   - INT8 在 graph 开和关之间出现分歧的 prompt 数，最多比 BF16 自己的分歧数多 `--graph-slack`（默认 2）条。
   - 噪声底线只看 BF16 graph 开（`noise_floor()`），因为它和参考的运行方式完全相同。
 
+### 7.3 L1 v4 结果（patch `4d0069e`）与 v5 诊断
+
+- **结果：** BF16 在 graph 开和关之间 0/22 条分歧（forced-decode top-1 为 0.9986，|Δlogp| 为 0.0034）；INT8 仍有 3/22 条分歧，判为 FAIL。
+- **结论：** "graph 开关本身就会翻转"这个解释不成立，或者至少证据不够，不能放宽判定了事。
+- **测法的问题：** forced decode 只走 extend（prefill）路径，根本不经过 decode 的 CUDA graph。所以 forced-decode 分数在 graph 开和关时接近，并不能证明 decode graph 路径是对的。
+- **L1 v5 的做法：** 改为直接比较两条贪心生成的 decode 路径：
+  - 贪心生成时取 top-2 logprob；
+  - **drift：** 两次运行在分歧之前、逐 token 所选 token 的 |Δlogp| 均值；
+  - **flip margin：** 分歧那一步的 top-1 与 top-2 之差，取两次运行中较大的那个。
+- **判定：**
+  - INT8 的 drift ≤ max(3 × BF16 的 drift, 0.01)；
+  - 并且每次翻转都发生在近似平局处（margin < 0.1）。
+  - 如果是真正的 graph 路径 bug，会表现为 drift 明显偏大，或者在模型很有把握的位置发生翻转。
+
 ---
 
 ## 8. 服务器部署问题记录

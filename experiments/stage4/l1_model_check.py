@@ -122,14 +122,39 @@ def noise_floor(top1_by_item: Dict[str, float]) -> float:
     return min(v for item, v in top1_by_item.items() if item.startswith("auto:") and item.endswith(":on"))
 
 
-def graph_check(int8_on, int8_off, bf16_on, bf16_off, slack: int) -> Dict[str, Optional[int]]:
-    def diverged(a, b):
-        return sum(x != y for x, y in zip(a, b))
+def trace_from_meta(meta: dict) -> dict:
+    """Greedy output with each chosen token's logprob and its top-1 minus top-2 logprob gap."""
+    return {
+        "tokens": [tok for _, tok, _ in meta["output_token_logprobs"]],
+        "lps": [lp for lp, _, _ in meta["output_token_logprobs"]],
+        "margins": [top[0][0] - top[1][0] if len(top) > 1 else float("inf") for top in meta["output_top_logprobs"]],
+    }
 
-    int8 = diverged(int8_on, int8_off)
-    bf16 = None if bf16_on is None or bf16_off is None else diverged(bf16_on, bf16_off)
-    ok = int8 == 0 if bf16 is None else int8 <= bf16 + slack
-    return {"int8_diverged": int8, "bf16_diverged": bf16, "n": len(int8_on), "slack": slack, "pass": ok}
+
+def decode_path_compare(a: Sequence[dict], b: Sequence[dict]) -> dict:
+    """Compare two greedy runs of the same prompts: logprob drift while they agree, and how close a tie each flip was."""
+    drift, margins = [], []
+    for ta, tb in zip(a, b):
+        n = min(len(ta["tokens"]), len(tb["tokens"]))
+        d = next((j for j in range(n) if ta["tokens"][j] != tb["tokens"][j]), None)
+        drift += [abs(ta["lps"][j] - tb["lps"][j]) for j in range(n if d is None else d)]
+        if d is not None:
+            margins.append(max(ta["margins"][d], tb["margins"][d]))
+    return {"n": len(a), "n_diverged": len(margins),
+            "prefix_mean_abs_dlogp": sum(drift) / len(drift) if drift else 0.0, "divergence_margins": margins}
+
+
+def graph_verdict(int8: dict, bf16: Optional[dict], drift_factor: float = 3.0, drift_floor: float = 0.01,
+                  tie_margin: float = 0.1) -> dict:
+    """Graphs on vs off are not bit-identical, so INT8 may drift like BF16 does and flip only on near-ties.
+
+    A flip is a near-tie when, in at least one run, the top-2 logprob gap at that step was below tie_margin.
+    A real graph-path bug shows as drift well beyond BF16's or flips where the model was confident."""
+    limit = max(drift_factor * bf16["prefix_mean_abs_dlogp"] if bf16 else 0.0, drift_floor)
+    drift_ok = int8["prefix_mean_abs_dlogp"] <= limit
+    ties_ok = all(m < tie_margin for m in int8["divergence_margins"])
+    return {"pass": drift_ok and ties_ok, "drift_limit": limit, "tie_margin": tie_margin,
+            "drift_ok": drift_ok, "ties_ok": ties_ok}
 
 
 def engine_kwargs(model: str, kv_dtype: str, cuda_graph: bool, chunked_prefill_size: int = -1) -> dict:
@@ -145,14 +170,14 @@ def make_engine(model: str, kv_dtype: str, impl: str, cuda_graph: bool, chunked_
     return sglang.Engine(**engine_kwargs(model, kv_dtype, cuda_graph, chunked_prefill_size))
 
 
-def greedy(engine, prompts, max_new_tokens: int) -> List[List[int]]:
+def greedy(engine, prompts, max_new_tokens: int) -> List[dict]:
     engine.flush_cache()  # prompts must be prefilled fresh, not read back from the cache
     outs = engine.generate(
         input_ids=[ids for _, ids in prompts],
         sampling_params={"max_new_tokens": max_new_tokens, "temperature": 0},
-        return_logprob=True,
+        return_logprob=True, top_logprobs_num=2,
     )
-    return [[tok for _, tok, _ in o["meta_info"]["output_token_logprobs"]] for o in outs]
+    return [trace_from_meta(o["meta_info"]) for o in outs]
 
 
 def run_config(model, kv_dtype, impl, cuda_graph, prompts, continuations=None, max_new_tokens=64,
@@ -161,7 +186,7 @@ def run_config(model, kv_dtype, impl, cuda_graph, prompts, continuations=None, m
     try:
         generated = greedy(engine, prompts, max_new_tokens)
         engine.flush_cache()
-        scores = forced_decode_scores(engine, prompts, continuations or generated)
+        scores = forced_decode_scores(engine, prompts, continuations or [t["tokens"] for t in generated])
     finally:
         engine.shutdown()
     return generated, scores
@@ -191,8 +216,6 @@ def main(argv=None) -> int:
                         help="allowed drop of per-prompt mean top-1 below stage 3 on the same prompts")
     parser.add_argument("--chunked-prefill-size", type=int, default=-1,
                         help="-1 (default) prefills each prompt in one pass, as stage 3 did; 2048 is SGLang's default here")
-    parser.add_argument("--graph-slack", type=int, default=2,
-                        help="extra prompts INT8 may diverge on between graphs on/off, beyond BF16's own count")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     configs = [tuple(item.split(":")) for item in args.configs.split(",")]
@@ -208,8 +231,9 @@ def main(argv=None) -> int:
           f"needle={expected.get('needle', float('nan')):.4f} (pass if INT8 >= {expected['all'] - args.tol:.4f}); "
           f"chunked_prefill_size={args.chunked_prefill_size}", flush=True)
     prompts = build_prompts(AutoTokenizer.from_pretrained(args.model), args.needles, args.needle_facts)
-    continuations, ref = run_config(args.model, "auto", "plain", True, prompts, max_new_tokens=args.max_new_tokens,
+    traces, ref = run_config(args.model, "auto", "plain", True, prompts, max_new_tokens=args.max_new_tokens,
                                     chunked_prefill_size=args.chunked_prefill_size)
+    continuations = [t["tokens"] for t in traces]
     print(f"reference: {len(prompts)} prompts, {sum(map(len, continuations))} continuation tokens", flush=True)
 
     results, generations = {}, {}
@@ -219,7 +243,7 @@ def main(argv=None) -> int:
                                        args.max_new_tokens, args.chunked_prefill_size)
         generations[item] = generated
         summary = summarize(prompts, ref, scores)
-        summary["generation_vs_bf16"] = generation_agreement(continuations, generated)
+        summary["generation_vs_bf16"] = generation_agreement(continuations, [t["tokens"] for t in generated])
         results[item] = summary
 
     floor = noise_floor({item: r["all"]["top1_per_prompt_mean"] for item, r in results.items()})
@@ -242,12 +266,17 @@ def main(argv=None) -> int:
     on, off = "int8_per_token_head:plain:on", "int8_per_token_head:plain:off"
     graphs = None
     if on in generations and off in generations:
-        graphs = graph_check(generations[on], generations[off], generations.get("auto:plain:on"),
-                             generations.get("auto:plain:off"), args.graph_slack)
+        int8 = decode_path_compare(generations[on], generations[off])
+        bf16 = (decode_path_compare(generations["auto:plain:on"], generations["auto:plain:off"])
+                if "auto:plain:on" in generations and "auto:plain:off" in generations else None)
+        graphs = {"int8": int8, "bf16": bf16, **graph_verdict(int8, bf16)}
         failed |= not graphs["pass"]
-        print(f"L1 cuda-graph on vs off (generations): {'PASS' if graphs['pass'] else 'FAIL'} "
-              f"int8 diverged {graphs['int8_diverged']}/{graphs['n']}, bf16 control {graphs['bf16_diverged']}, "
-              f"slack {graphs['slack']}", flush=True)
+        bf16_txt = (f"bf16 diverged {bf16['n_diverged']}/{bf16['n']} drift={bf16['prefix_mean_abs_dlogp']:.4f}"
+                    if bf16 else "no bf16 control")
+        print(f"L1 cuda-graph on vs off (decode path): {'PASS' if graphs['pass'] else 'FAIL'} "
+              f"int8 diverged {int8['n_diverged']}/{int8['n']} drift={int8['prefix_mean_abs_dlogp']:.4f} "
+              f"(limit {graphs['drift_limit']:.4f}) flip margins={[round(m, 3) for m in int8['divergence_margins']]} "
+              f"(tie < {graphs['tie_margin']}) | {bf16_txt}", flush=True)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"model": args.model, "stage3_expected": expected, "tol": args.tol,

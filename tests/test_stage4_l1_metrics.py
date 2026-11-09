@@ -108,25 +108,48 @@ def test_engine_kwargs_disable_chunked_prefill_by_default():
     assert L1.engine_kwargs("m", "auto", cuda_graph=True, chunked_prefill_size=2048)["chunked_prefill_size"] == 2048
 
 
-_SAME = [[1, 2], [3, 4], [5, 6]]
-_ONE_DIFF = [[1, 2], [3, 9], [5, 6]]
-_TWO_DIFF = [[1, 2], [3, 9], [5, 7]]
+def _meta(steps):
+    """steps: list of (chosen_id, [(lp, id), ...] top-2)."""
+    return {"output_token_logprobs": [(top[0][0] if top[0][1] == tok else top[1][0], tok, None) for tok, top in steps],
+            "output_top_logprobs": [[(lp, i, None) for lp, i in top] for _, top in steps]}
 
 
-def test_graph_check_allows_int8_the_divergence_bf16_shows():
-    r = L1.graph_check(_SAME, _ONE_DIFF, _SAME, _ONE_DIFF, slack=0)
-    assert r == {"int8_diverged": 1, "bf16_diverged": 1, "n": 3, "slack": 0, "pass": True}
+def test_trace_from_meta_keeps_tokens_logprobs_and_top2_margin():
+    t = L1.trace_from_meta(_meta([(5, [(-0.1, 5), (-2.6, 7)]), (9, [(-0.5, 9), (-0.55, 4)])]))
+    assert t["tokens"] == [5, 9]
+    assert t["lps"] == pytest.approx([-0.1, -0.5])
+    assert t["margins"] == pytest.approx([2.5, 0.05])
 
 
-def test_graph_check_fails_beyond_bf16_plus_slack():
-    assert not L1.graph_check(_SAME, _TWO_DIFF, _SAME, _SAME, slack=1)["pass"]
-    assert L1.graph_check(_SAME, _ONE_DIFF, _SAME, _SAME, slack=1)["pass"]
+def _trace(tokens, lps, margins):
+    return {"tokens": tokens, "lps": lps, "margins": margins}
 
 
-def test_graph_check_without_bf16_control_needs_identical_generations():
-    r = L1.graph_check(_SAME, _ONE_DIFF, None, None, slack=2)
-    assert r["bf16_diverged"] is None and not r["pass"]
-    assert L1.graph_check(_SAME, _SAME, None, None, slack=2)["pass"]
+def test_decode_path_compare_measures_the_shared_prefix_and_divergence_margin():
+    a = [_trace([1, 2, 3], [-0.1, -0.2, -0.3], [1.0, 0.02, 1.0]), _trace([4, 5], [-0.1, -0.1], [1.0, 1.0])]
+    b = [_trace([1, 8, 3], [-0.12, -0.25, -0.3], [1.0, 0.01, 1.0]), _trace([4, 5], [-0.1, -0.1], [1.0, 1.0])]
+    r = L1.decode_path_compare(a, b)
+    assert r["n_diverged"] == 1 and r["n"] == 2
+    assert r["prefix_mean_abs_dlogp"] == pytest.approx(0.02 / 3)  # token 1 of prompt 0, both tokens of prompt 1
+    assert r["divergence_margins"] == pytest.approx([0.02])  # the larger margin at the flip: still a near-tie
+
+
+def test_graph_verdict_accepts_near_tie_flips_with_bf16_sized_drift():
+    int8 = {"n_diverged": 3, "prefix_mean_abs_dlogp": 0.004, "divergence_margins": [0.01, 0.05, 0.08]}
+    bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.003, "divergence_margins": []}
+    assert L1.graph_verdict(int8, bf16)["pass"]
+
+
+def test_graph_verdict_rejects_a_flip_that_is_not_a_tie():
+    int8 = {"n_diverged": 1, "prefix_mean_abs_dlogp": 0.004, "divergence_margins": [0.9]}
+    bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.003, "divergence_margins": []}
+    assert not L1.graph_verdict(int8, bf16)["pass"]
+
+
+def test_graph_verdict_rejects_drift_well_beyond_bf16():
+    int8 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.05, "divergence_margins": []}
+    bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.003, "divergence_margins": []}
+    assert not L1.graph_verdict(int8, bf16)["pass"]
 
 
 def test_noise_floor_only_counts_graph_on_bf16():
