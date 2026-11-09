@@ -1,0 +1,167 @@
+From 9cf6f5ea126fc1580d7433cec60d0bf0029b8e95 Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Mon, 9 Nov 2026 14:05:45 +0000
+Subject: [PATCH 3/3] Add fused INT8 per-token-head quantize-and-store Triton
+ kernel
+
+SGLANG_INT8_KV_IMPL=fused (default) routes MHATokenToKVPoolINT8.set_kv_buffer
+through the kernel; plain keeps the PyTorch reference.
+---
+ .../attention/triton_ops/int8_kv_store.py     | 90 +++++++++++++++++++
+ .../sglang/srt/layers/quantization/int8_kv.py | 10 +++
+ python/sglang/srt/mem_cache/memory_pool.py    | 10 ++-
+ 3 files changed, 108 insertions(+), 2 deletions(-)
+ create mode 100644 python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py
+
+diff --git a/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py b/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py
+new file mode 100644
+index 00000000..8c91b573
+--- /dev/null
++++ b/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py
+@@ -0,0 +1,90 @@
++# Copyright 2025 SGLang Team
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#     http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++# ==============================================================================
++"""Fused per-token-head INT8 quantize-and-store for the KV cache.
++
++One program handles one (token, head) row and reproduces
++sglang.srt.layers.quantization.int8_kv.quantize_per_token_head exactly:
++scale = absmax / 127 (1 for an all-zero row), stored as bfloat16 rounded up,
++q = clamp(round_half_even(x / scale), -127, 127). Divisions use div_rn so they
++match PyTorch's IEEE FP32 division instead of Triton's approximate default.
++"""
++
++import torch
++import triton
++import triton.language as tl
++from triton.language.extra import libdevice
++
++
++@triton.jit
++def _int8_quantize_and_store_kernel(
++    cache_ptr,
++    loc_ptr,
++    q_ptr,
++    scale_ptr,
++    stride_cn,
++    stride_ch,
++    stride_qn,
++    stride_qh,
++    stride_sn,
++    stride_sh,
++    D: tl.constexpr,
++    BLOCK_D: tl.constexpr,
++):
++    token = tl.program_id(0)
++    head = tl.program_id(1)
++    offs = tl.arange(0, BLOCK_D)
++    mask = offs < D
++
++    x = tl.load(cache_ptr + token * stride_cn + head * stride_ch + offs, mask=mask, other=0.0).to(tl.float32)
++    absmax = tl.max(tl.abs(x), axis=0)
++    scale = tl.where(absmax > 0, tl.math.div_rn(absmax, 127.0), 1.0)
++
++    # bfloat16 round-up: take the next bf16 value whenever round-to-nearest lands below.
++    scale_bf16 = scale.to(tl.bfloat16)
++    bumped = (scale_bf16.to(tl.int16, bitcast=True) + 1).to(tl.bfloat16, bitcast=True)
++    scale_bf16 = tl.where(scale_bf16.to(tl.float32) < scale, bumped, scale_bf16)
++
++    q = libdevice.rint(tl.math.div_rn(x, scale_bf16.to(tl.float32)))
++    q = tl.minimum(tl.maximum(q, -127.0), 127.0).to(tl.int8)
++
++    slot = tl.load(loc_ptr + token).to(tl.int64)
++    tl.store(q_ptr + slot * stride_qn + head * stride_qh + offs, q, mask=mask)
++    tl.store(scale_ptr + slot * stride_sn + head * stride_sh, scale_bf16)
++
++
++def int8_quantize_and_store(
++    cache: torch.Tensor, loc: torch.Tensor, q_buf: torch.Tensor, scale_buf: torch.Tensor
++) -> None:
++    """Quantize cache [N, H, D] (bf16/fp16) into rows loc [N] of q_buf [S, H, D] int8 and scale_buf [S, H] bf16."""
++    n, h, d = cache.shape
++    if n == 0:
++        return
++    if cache.stride(-1) != 1 or q_buf.stride(-1) != 1:
++        raise ValueError("int8_quantize_and_store needs a unit stride along head_dim")
++    if q_buf.dtype != torch.int8 or scale_buf.dtype != torch.bfloat16:
++        raise ValueError(f"expected int8 values and bfloat16 scales, got {q_buf.dtype} and {scale_buf.dtype}")
++    _int8_quantize_and_store_kernel[(n, h)](
++        cache,
++        loc,
++        q_buf,
++        scale_buf,
++        cache.stride(0),
++        cache.stride(1),
++        q_buf.stride(0),
++        q_buf.stride(1),
++        scale_buf.stride(0),
++        scale_buf.stride(1),
++        D=d,
++        BLOCK_D=triton.next_power_of_2(d),
++    )
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+index 91dca0e6..18902c91 100644
+--- a/python/sglang/srt/layers/quantization/int8_kv.py
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -21,11 +21,21 @@ This module only depends on torch so it can be tested without a GPU; the
+ Triton store kernel must reproduce it exactly.
+ """
+ 
++import os
+ from typing import Optional
+ 
+ import torch
+ 
+ INT8_KV_QMAX = 127
++INT8_KV_IMPLS = ("fused", "plain")
++
++
++def int8_kv_impl() -> str:
++    """SGLANG_INT8_KV_IMPL: "fused" (default) uses the Triton kernels, "plain" this module's PyTorch code."""
++    impl = os.environ.get("SGLANG_INT8_KV_IMPL", "fused")
++    if impl not in INT8_KV_IMPLS:
++        raise ValueError(f"SGLANG_INT8_KV_IMPL must be one of {INT8_KV_IMPLS}, got {impl!r}")
++    return impl
+ 
+ 
+ def bf16_round_up(x: torch.Tensor) -> torch.Tensor:
+diff --git a/python/sglang/srt/mem_cache/memory_pool.py b/python/sglang/srt/mem_cache/memory_pool.py
+index 23a4c114..1a69a757 100644
+--- a/python/sglang/srt/mem_cache/memory_pool.py
++++ b/python/sglang/srt/mem_cache/memory_pool.py
+@@ -37,8 +37,10 @@ import triton
+ import triton.language as tl
+ 
+ from sglang.jit_kernel.kvcache import can_use_store_cache, store_cache
++from sglang.srt.layers.attention.triton_ops.int8_kv_store import int8_quantize_and_store
+ from sglang.srt.layers.quantization.int8_kv import (
+     dequantize_per_token_head,
++    int8_kv_impl,
+     store_quantized,
+ )
+ from sglang.srt.configs.mamba_utils import BaseLinearStateParams
+@@ -1478,8 +1480,12 @@ class MHATokenToKVPoolINT8(MHATokenToKVPool):
+             )
+         layer_id = layer_id_override if layer_id_override is not None else layer.layer_id
+         i = layer_id - self.start_layer
+-        store_quantized(q_buf=self.k_buffer[i], scale_buf=self.k_scale_buffer[i], loc=loc, x=cache_k)
+-        store_quantized(q_buf=self.v_buffer[i], scale_buf=self.v_scale_buffer[i], loc=loc, x=cache_v)
++        if int8_kv_impl() == "fused":
++            int8_quantize_and_store(cache_k, loc, self.k_buffer[i], self.k_scale_buffer[i])
++            int8_quantize_and_store(cache_v, loc, self.v_buffer[i], self.v_scale_buffer[i])
++        else:
++            store_quantized(q_buf=self.k_buffer[i], scale_buf=self.k_scale_buffer[i], loc=loc, x=cache_k)
++            store_quantized(q_buf=self.v_buffer[i], scale_buf=self.v_scale_buffer[i], loc=loc, x=cache_v)
+ 
+     def get_contiguous_buf_infos(self):
+         raise NotImplementedError("int8_per_token_head KV cache does not support disaggregation")

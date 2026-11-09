@@ -11,7 +11,7 @@ exec 9>/tmp/int8kv_stage4_test.lock
 flock -n 9 || { echo "Another stage 4 test.sh is already running; wait for it (check with: ps aux | grep test.sh)." >&2; exit 1; }
 "$PY" -c "import pytest" 2>/dev/null || "$PY" -m pip install -q "pytest>=8"
 
-CONFIGS="${1:-auto:plain:on,auto:plain:off,fp8_e4m3:plain:on,int8_per_token_head:plain:on,int8_per_token_head:plain:off}"
+CONFIGS="${1:-auto:plain:on,auto:plain:off,fp8_e4m3:plain:on,int8_per_token_head:plain:on,int8_per_token_head:plain:off,int8_per_token_head:fused:on}"
 STAMP=$(date +%Y%m%d_%H%M%S)
 OUT=results/stage4/test_$STAMP
 mkdir -p "$OUT"
