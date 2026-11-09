@@ -21,7 +21,11 @@ def _modules():
 
 
 def _case(batch, ctx, group, kv_heads, seed=0):
-    """Random decode batch over a shuffled KV pool. Sequence i has max(1, ctx - 3i) tokens."""
+    """Random decode batch over a shuffled KV pool. Sequence i has max(1, ctx - 3i) tokens.
+
+    KV heads span 1x-100x in magnitude so their scales differ; q is scaled by 0.05 so attention logits stay
+    in a realistic range (std <= ~5). With q ~ N(0, 1) the 100x head gives logit std ~110, a near one-hot
+    softmax where bf16 rounding alone moves the output by ~2%."""
     g = torch.Generator(device="cuda").manual_seed(seed)
     lens = [max(1, ctx - 3 * i) for i in range(batch)]
     slots = sum(lens) + 64
@@ -29,7 +33,7 @@ def _case(batch, ctx, group, kv_heads, seed=0):
     k = torch.randn(slots, kv_heads, D, device="cuda", generator=g)
     k = (k * torch.logspace(0, 2, kv_heads, device="cuda").view(1, -1, 1)).to(torch.bfloat16)
     v = torch.randn(slots, kv_heads, D, device="cuda", generator=g).to(torch.bfloat16)
-    q = torch.randn(batch, hq, D, device="cuda", generator=g).to(torch.bfloat16)
+    q = (torch.randn(batch, hq, D, device="cuda", generator=g) * 0.05).to(torch.bfloat16)
     perm = torch.randperm(slots, device="cuda", generator=g)
     kv_indices = perm[: sum(lens)].to(torch.int64)
     kv_indptr = torch.zeros(batch + 1, dtype=torch.int32, device="cuda")
@@ -55,6 +59,11 @@ def _quantize(store, x):
     return q, s
 
 
+def _exact_dequant(q, s):
+    """int8 * scale in FP32: what the fused kernel computes, without the bf16 rounding of the plain pool."""
+    return q.float() * s.float().unsqueeze(-1)
+
+
 def _rel_l2(a, b):
     return ((a.float() - b.float()).norm() / b.float().norm()).item()
 
@@ -68,7 +77,7 @@ def test_fused_decode_matches_reference(batch, ctx, group, kv_heads):
     kq, ks = _quantize(store, c["k"])
     vq, vs = _quantize(store, c["v"])
     out = _run(patched, c, kq, vq, k_scale_buffer=ks, v_scale_buffer=vs)
-    kd, vd = dequant(kq, ks), dequant(vq, vs)
+    kd, vd = _exact_dequant(kq, ks), _exact_dequant(vq, vs)
     starts = c["kv_indptr"].tolist()
     for b in range(batch):
         idx = c["kv_indices"][starts[b] : starts[b + 1]]
@@ -95,11 +104,14 @@ def test_flag_off_bitwise_equals_pristine(kv_dtype):
     k_scale = v_scale = 1.0
     k_buf, v_buf = c["k"], c["v"]
     if kv_dtype != torch.bfloat16:
-        k_scale, v_scale = 0.5, 0.25
+        # e4m3fn tops out at 448 and turns larger values into NaN, which torch.equal never matches.
+        k_scale = c["k"].float().abs().max().item() / 200
+        v_scale = c["v"].float().abs().max().item() / 200
         k_buf = (c["k"].float() / k_scale).to(kv_dtype)
         v_buf = (c["v"].float() / v_scale).to(kv_dtype)
     a = _run(patched, c, k_buf, v_buf, k_scale, v_scale)
     b = _run(pristine, c, k_buf, v_buf, k_scale, v_scale)
+    assert torch.isfinite(a.float()).all()
     assert torch.equal(a, b)
 
 
