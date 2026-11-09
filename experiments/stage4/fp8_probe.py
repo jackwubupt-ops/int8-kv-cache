@@ -78,7 +78,8 @@ def main(argv=None) -> int:
     from int8kv.prompts import make_needle_prompt
 
     tok = AutoTokenizer.from_pretrained(args.model)
-    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16, device_map="cuda")
+    # No device_map: the stage 4 venv has no accelerate, so load on CPU and move the whole model.
+    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16).cuda().eval()
     text = make_needle_prompt(args.needle_facts, 0)["prompt"]
     chat = tok.apply_chat_template([{"role": "user", "content": text}], add_generation_prompt=True, tokenize=False)
     ids = tok(chat, return_tensors="pt", add_special_tokens=False).input_ids.cuda()
