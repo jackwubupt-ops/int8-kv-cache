@@ -236,6 +236,24 @@ L1 int8_per_token_head:plain:off: FAIL top1=0.9898 |dlogp|=0.0346
 - **chunked prefill 的影响单独记录：** 默认 2048 下 needle 掉到 0.957，这是 SGLang 默认部署下的真实代价，留到阶段 4 报告中讨论。
 - **FP8 很差（0.82）：** SGLang 的 FP8 KV 不带 scale（scale=1），e4m3 只有 3 位尾数，而 Qwen2.5 的 K 有很大的离群值，所以误差大。这正好说明 per-token-head INT8 的价值，报告中会用。
 
+### 7.2 L1 v3 结果（2026-11-09，patch `3d9312a`，chunked prefill 关闭）
+
+| 配置 | top1/prompt | short | needle | gen_exact | 判定 |
+|---|---|---|---|---|---|
+| BF16 | 1.0000 | 1.0000 | 1.0000 | 1.00 | 噪声底线 |
+| FP8 e4m3 | 0.8644 | 0.8705 | 0.8571 | 0.00 | 只报告 |
+| INT8，graph 开 | **0.9888** | 0.9795 | **1.0000** | 0.59 | PASS（阶段 3 为 0.9879） |
+| INT8，graph 关 | **0.9895** | 0.9808 | **1.0000** | 0.64 | PASS |
+
+- **INT8 正确性：** 关闭分块后 needle 回到 1.0，总分 0.9888，和阶段 3 的 0.9879 一致。至此 SGLang 实现与阶段 3 的 PyTorch 参考对齐。
+- **新问题：** INT8 在 CUDA graph 开和关时，有 3/22 条生成结果不同（exact 0.86）。
+  - 原因：SGLang 在 graph 开和关时走的不是同一条数值路径。decode 的 KV split 数按填充后的 graph batch 计算，prefill 用的是分段 CUDA graph，累加顺序不同，近似平局的 token 在贪心生成时就可能翻转。
+  - 佐证：forced-decode 的 |Δlogp| 在 graph 开和关时完全相同（0.0208），top-1 只差 0.0007。
+- **修正（L1 v4）：**
+  - 加一组 BF16 graph 关闭的对照（`auto:plain:off`）。
+  - INT8 在 graph 开和关之间出现分歧的 prompt 数，最多比 BF16 自己的分歧数多 `--graph-slack`（默认 2）条。
+  - 噪声底线只看 BF16 graph 开（`noise_floor()`），因为它和参考的运行方式完全相同。
+
 ---
 
 ## 8. 服务器部署问题记录

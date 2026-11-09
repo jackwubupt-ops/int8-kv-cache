@@ -106,3 +106,29 @@ def test_engine_kwargs_disable_chunked_prefill_by_default():
     kwargs = L1.engine_kwargs("m", "int8_per_token_head", cuda_graph=False)
     assert kwargs["chunked_prefill_size"] == -1 and kwargs["disable_cuda_graph"] is True
     assert L1.engine_kwargs("m", "auto", cuda_graph=True, chunked_prefill_size=2048)["chunked_prefill_size"] == 2048
+
+
+_SAME = [[1, 2], [3, 4], [5, 6]]
+_ONE_DIFF = [[1, 2], [3, 9], [5, 6]]
+_TWO_DIFF = [[1, 2], [3, 9], [5, 7]]
+
+
+def test_graph_check_allows_int8_the_divergence_bf16_shows():
+    r = L1.graph_check(_SAME, _ONE_DIFF, _SAME, _ONE_DIFF, slack=0)
+    assert r == {"int8_diverged": 1, "bf16_diverged": 1, "n": 3, "slack": 0, "pass": True}
+
+
+def test_graph_check_fails_beyond_bf16_plus_slack():
+    assert not L1.graph_check(_SAME, _TWO_DIFF, _SAME, _SAME, slack=1)["pass"]
+    assert L1.graph_check(_SAME, _ONE_DIFF, _SAME, _SAME, slack=1)["pass"]
+
+
+def test_graph_check_without_bf16_control_needs_identical_generations():
+    r = L1.graph_check(_SAME, _ONE_DIFF, None, None, slack=2)
+    assert r["bf16_diverged"] is None and not r["pass"]
+    assert L1.graph_check(_SAME, _SAME, None, None, slack=2)["pass"]
+
+
+def test_noise_floor_only_counts_graph_on_bf16():
+    results = {"auto:plain:on": 1.0, "auto:plain:off": 0.97, "int8_per_token_head:plain:on": 0.98}
+    assert L1.noise_floor(results) == 1.0
