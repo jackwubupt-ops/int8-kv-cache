@@ -77,6 +77,7 @@ def test_unknown_task_is_rejected():
 
 
 @pytest.mark.parametrize("kv,impl,name", [("auto", "plain", "bf16"), ("fp8_e4m3", "plain", "fp8_e4m3"),
+                                          ("fp8_e5m2", "plain", "fp8_e5m2"),
                                           ("int8_per_token_head", "plain", "int8_plain"),
                                           ("int8_per_token_head", "fused", "int8_fused")])
 def test_config_names(kv, impl, name):
@@ -108,3 +109,7 @@ def test_summarize_rejects_mismatched_question_sets(tmp_path):
     _write_preds(tmp_path, "gsm8k", "fp8_e4m3", [True, True, False])
     with pytest.raises(ValueError, match="paired"):
         E.summarize_accuracy(tmp_path)
+
+
+def test_cli_accepts_fp8_e5m2():
+    assert "fp8_e5m2" in E.KV_DTYPES

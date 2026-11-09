@@ -26,6 +26,7 @@ GSM8K_FILE = ROOT / "data" / "gsm8k" / "test.jsonl"
 NEEDLE_FACTS = {"needle150": 150, "needle600": 600}
 TASKS = ("gsm8k", *NEEDLE_FACTS)
 BASELINE = "bf16"
+KV_DTYPES = ("auto", "fp8_e4m3", "fp8_e5m2", "int8_per_token_head")
 
 
 def config_name(kv_dtype: str, impl: str) -> str:
@@ -115,7 +116,7 @@ def summarize_accuracy(directory: Path) -> Dict[str, Dict[str, dict]]:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model")
-    ap.add_argument("--kv-dtype", default="auto", choices=["auto", "fp8_e4m3", "int8_per_token_head"])
+    ap.add_argument("--kv-dtype", default="auto", choices=KV_DTYPES)
     ap.add_argument("--impl", default="fused", choices=["fused", "plain"])
     ap.add_argument("--task", choices=TASKS)
     ap.add_argument("--n", type=int, default=None, help="questions (default: 1319 for gsm8k, 100 for needles)")

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Stage 4 accuracy on the GPU server: Qwen2.5-7B-Instruct, 4 KV configs x 3 tasks, then a paired summary.
+# Stage 4 accuracy on the GPU server: Qwen2.5-7B-Instruct, 5 KV configs x 3 tasks, then a paired summary.
 # Usage: bash scripts/stage4/eval.sh [configs] [tasks]
-#   configs: comma list of kv_dtype:impl (default auto:plain,fp8_e4m3:plain,int8_per_token_head:plain,int8_per_token_head:fused)
+#   configs: comma list of kv_dtype:impl (default auto:plain,fp8_e4m3:plain,fp8_e5m2:plain,int8_per_token_head:plain,int8_per_token_head:fused)
 #   tasks:   comma list (default gsm8k,needle150,needle600)
 # Resumable: a (task, config) whose result JSON exists is skipped; delete it to rerun.
 # Smoke run: EVAL_N=20 bash scripts/stage4/eval.sh  (first 20 items per task, written to accuracy_smoke20/)
@@ -14,7 +14,7 @@ exec 9>/tmp/int8kv_stage4_test.lock
 flock -n 9 || { echo "Another stage 4 GPU job is running; wait for it." >&2; exit 1; }
 
 MODEL="$MODELS/Qwen2.5-7B-Instruct"
-CONFIGS="${1:-auto:plain,fp8_e4m3:plain,int8_per_token_head:plain,int8_per_token_head:fused}"
+CONFIGS="${1:-auto:plain,fp8_e4m3:plain,fp8_e5m2:plain,int8_per_token_head:plain,int8_per_token_head:fused}"
 TASKS="${2:-gsm8k,needle150,needle600}"
 OUT="results/stage4/$(basename "$MODEL")/accuracy"
 N_ARGS=()
