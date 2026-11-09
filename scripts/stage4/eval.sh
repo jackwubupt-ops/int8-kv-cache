@@ -36,7 +36,7 @@ for task in "${tasks[@]}"; do
         if [[ -f $result ]]; then echo "skip $task $cfg (exists: $result)"; continue; fi
         echo "--- $task $cfg ($(date +%T))"
         if ! "$PY" experiments/stage4/eval_accuracy.py --model "$MODEL" --kv-dtype "$kv" --impl "$impl" \
-                --task "$task" --out "$OUT" "${N_ARGS[@]}" 2>&1 | grep -a -E "^EVAL|Error|error:|Traceback"; then
+                --task "$task" --out "$OUT" ${N_ARGS[@]+"${N_ARGS[@]}"} 2>&1 | grep -a -E "^EVAL|Error|error:|Traceback"; then
             :
         fi
         [[ -f $result ]] || { echo "FAILED $task $cfg"; failed=1; }
