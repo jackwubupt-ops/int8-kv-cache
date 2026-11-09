@@ -1,7 +1,7 @@
 # 阶段 4 工程底稿：在 SGLang v0.5.12 中实现 `int8_per_token_head` KV Cache
 
 - 分支：`stage4-int8-kv`
-- 快照：2026-11-10，tag `stage4-snapshot-20261110`（上一版 `stage4-snapshot-20261109`）
+- 快照：2026-11-10，tag `stage4-snapshot-20261110b`（更早：`stage4-snapshot-20261110`、`stage4-snapshot-20261109`）
 - 决策记录：[stage4-decision-log.md](stage4-decision-log.md)（执行过程中每个偏离计划的决定、原因和代价）
 - 前置：
   - [阶段 0-3 分析报告](stage0-3-report.md)
@@ -38,7 +38,8 @@
 | Task 6 | 融合 decode kernel | ✅ 服务器 L0 通过（70 项） |
 | Task 7 | 融合 extend kernel | ✅ 服务器 L0 通过（87 项） |
 | Task 8 | 接入 Triton 后端 | ✅ L1 全部通过（fused 与 plain 差距 < 0.0015）；后端接线测试 3 项通过（`0055369`，用 `l0.sh` 运行） |
-| Task 9-11 | 7B 上 GSM8K 全量、needle、吞吐和并发基准、最终报告 | 未开始 |
+| Task 9 | 精度评测脚本（GSM8K 全量、needle150/600，McNemar 汇总） | ✅ 脚本完成并在 7B 上冒烟（每任务 20 题）；FP8 基线异常，原因调查中（7.6） |
+| Task 10-11 | 吞吐和并发基准、7B 正式评测、最终报告 | 未开始 |
 
 最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261110`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
 
@@ -362,6 +363,34 @@ L0 92 passed、1 failed：分块用例原先要求 600 条事实（约 1.3 万 t
 
 据此把用例改为：512 分块下，plain 检索到的针 fused 也必须检索到（`fe002aa`）。
 
+### 7.6 Task 9：7B 冒烟评测和 FP8 异常（进行中）
+
+脚本：`experiments/stage4/eval_accuracy.py`、`scripts/stage4/eval.sh`（配置格式 `kv:impl[:attention_backend]`，可断点续跑，`EVAL_N=20` 为冒烟模式，结果写到 `results/stage4/Qwen2.5-7B-Instruct/accuracy[_smoke20]/`）。GSM8K 测试集放在 `data/gsm8k/`（MIT）。评测使用 SGLang 默认设置：chunked prefill 2048、CUDA Graph 开。
+
+冒烟结果（Qwen2.5-7B-Instruct，每任务 20 题）：
+
+| 配置 | GSM8K | needle150 | needle600 | GSM8K 用时 |
+|---|---|---|---|---|
+| BF16（triton） | 19/20 | 20/20 | 20/20 | 10s |
+| BF16（flashinfer，对照） | 18/20 | 20/20 | 20/20 | 11s |
+| INT8 fused | 19/20 | 20/20 | 20/20 | 11s |
+| INT8 plain | 18/20 | 20/20 | 20/20 | 89s |
+| FP8 e4m3（triton） | 0/20 | 1/20 | 1/20 | 18s |
+| FP8 e5m2（triton） | 0/20 | 1/20 | 0/20 | 19s |
+| FP8 e4m3（flashinfer） | 1/20 | 0/20 | 0/20 | 18s |
+| FP8 e5m2（flashinfer） | 0/20 | 0/20 | 0/20 | 19s |
+
+- INT8 fused 与 BF16 持平；fused 比 plain 快约 8 倍（plain 每步反量化整个 pool）。
+- FP8（scale 1.0，没有 checkpoint scale）在 7B 上输出乱码，例如 `TheThe The access code for me*0 is8 is0 EntityState ...`。
+
+FP8 原因排查：
+
+1. **e4m3 溢出（448）？** 不足以解释：e5m2（最大 57344）同样崩溃。
+2. **Triton 后端把 Q 也转成 FP8？** 原版 Triton kernel 确实这样做（decode `q.to(K_Buffer dtype)`、extend 前缀 `q.to(k.dtype)`），但换 FlashInfer（Q 保持 bf16）照样崩溃，排除。
+3. **当前假设：Qwen K 的离群通道（k_proj bias）。** 几个通道数值达几百：e4m3 超过 448 会变 NaN（已确认 torch 的转换不饱和），e5m2 只有 2 位尾数，几百量级的间隔约 64；softmax 对所有 token 共有的分量不敏感，决定注意力的是去掉通道均值后的部分，FP8 的误差可能超过这部分。INT8 per-token-head 按每行 absmax 均匀量化，误差小且均匀。
+
+验证工具：`experiments/stage4/fp8_probe.py`（`bash scripts/stage4/fp8_probe.sh`），在 7B 上取一个 needle 提示词的逐层真实 K/V，统计 e4m3 溢出比例、通道离群程度、三种格式相对“去均值后 K/V”的误差。**尚未在服务器上跑通**（第一次因 venv 没有 `accelerate` 报错，已在 `7f69eef` 修复）。
+
 ## 8. 服务器部署问题记录
 
 | # | 现象 | 原因 | 修复（commit） |
@@ -398,14 +427,15 @@ AutoDL 操作要点：
 - 分块 prefill 时后续块从 INT8 读前面块，150 条事实的 needle 上 INT8 分块比不分块少对 1 根（plain、fused 相同）。SGLang 在 24 GB 卡上默认分块 2048。
 - FP8 KV 没有校准 scale 时精度很差（top1 0.8644），原因是 Qwen K 的离群值。
 
-### 9.3 后续任务
+### 9.3 后续任务（暂停点：2026-11-10）
 
-1. Task 9-11：Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：
-   - GSM8K 全部 1319 题（McNemar 检验）；
-   - needle；
-   - 最大 token 容量、并发和吞吐；
-   - 撰写 `docs/stage4-report.md`。
-2. 全分支代码审查（最强模型），然后合并。
+1. **下一步**：服务器上更新到 `7f69eef` 之后的版本，运行 `bash scripts/stage4/fp8_probe.sh`，用结果确认或推翻 7.6 的离群通道假设。
+2. 根据结论决定正式评测里的 FP8 配置（只报告 scale 1.0 的 FP8 并说明原因，或另找带 scale 的 FP8 基线），然后跑正式评测：`nohup bash scripts/stage4/eval.sh > eval.log 2>&1 &`（5 个配置 × 3 个任务，INT8 plain 最慢，预计数小时，可断点续跑）。
+3. Task 10：性能测试脚本（最大 token 容量、并发、吞吐）。
+4. Task 11：7B 正式运行，撰写 `docs/stage4-report.md`。需要写入的已知代价：分块 prefill 读 INT8 的检索损失（9.2）、FP8 无 scale 的崩溃及原因。
+5. 全分支代码审查（最强模型），然后合并。
+
+服务器操作备忘：GitHub 不稳定时，用 bundle（`git bundle create int8-kv-cache.bundle stage4-int8-kv`，上传到 `/root`，`git pull ~/int8-kv-cache.bundle stage4-int8-kv`）；GPU 命令都通过 `scripts/stage4/*.sh` 运行（`common.sh` 负责 PATH 上的 ninja/nvcc）。
 
 ---
 
