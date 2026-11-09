@@ -37,7 +37,7 @@
 | Task 5 | 融合写入 kernel | ✅ 服务器 L0 通过；scale 与 PyTorch 逐比特一致 |
 | Task 6 | 融合 decode kernel | ✅ 服务器 L0 通过（70 项） |
 | Task 7 | 融合 extend kernel | ✅ 服务器 L0 通过（87 项） |
-| Task 8 | 接入 Triton 后端 | ⚠️ L1 全部通过（fused 已在模型中运行）；L0 后端接线测试的分块用例已按诊断结果改写，“被杀”的原因已查明是 PATH 缺 ninja（9.1），待用 `l0.sh` 在服务器上确认 |
+| Task 8 | 接入 Triton 后端 | ✅ L1 全部通过（fused 与 plain 差距 < 0.0015）；后端接线测试 3 项通过（`0055369`，用 `l0.sh` 运行） |
 | Task 9-11 | 7B 上 GSM8K 全量、needle、吞吐和并发基准、最终报告 | 未开始 |
 
 最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261110`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
@@ -400,13 +400,12 @@ AutoDL 操作要点：
 
 ### 9.3 后续任务
 
-1. 用 `l0.sh` 在服务器上跑通后端接线测试，Task 8 收尾。
-2. Task 9-11：Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：
+1. Task 9-11：Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：
    - GSM8K 全部 1319 题（McNemar 检验）；
    - needle；
    - 最大 token 容量、并发和吞吐；
    - 撰写 `docs/stage4-report.md`。
-3. 全分支代码审查（最强模型），然后合并。
+2. 全分支代码审查（最强模型），然后合并。
 
 ---
 
