@@ -13,6 +13,16 @@ KERNEL_VERSION=0.4.2.post2
 
 # GitHub needs AutoDL's academic proxy; pip mirrors are faster without it.
 with_proxy() { ( if [[ -f /etc/network_turbo ]]; then source /etc/network_turbo >/dev/null; fi; "$@" ) }
+# The proxy often answers 503 and direct access sometimes works instead: alternate, 4 tries in all.
+github() {
+    local try
+    for try in 1 2 3 4; do
+        if (( try % 2 )); then with_proxy "$@" && return 0; else "$@" && return 0; fi
+        echo "GitHub attempt $try failed; retrying $([[ $((try % 2)) == 1 ]] && echo without || echo with) the proxy" >&2
+        sleep 5
+    done
+    return 1
+}
 
 ensure_cu128_torch() {
     if [[ $("$PY" -c "import torch; print(torch.__version__)" 2>/dev/null) != "$TORCH_VERSION+cu128" ]]; then
@@ -50,7 +60,7 @@ if [[ $(pkg_version sglang-kernel) != "$KERNEL_VERSION+cu129" ]]; then
     echo "=== sglang-kernel $KERNEL_VERSION+cu129 ==="
     mkdir -p "$WHEELS"
     if [[ ! -f $WHEELS/$KERNEL_WHL ]]; then
-        with_proxy curl -fL -C - --retry 30 --retry-delay 5 --retry-all-errors --connect-timeout 30 \
+        github curl -fL -C - --retry 30 --retry-delay 5 --retry-all-errors --connect-timeout 30 \
             -o "$WHEELS/$KERNEL_WHL.part" "$KERNEL_URL" || {
             echo "Download failed; re-run setup.sh to resume it, or copy $KERNEL_WHL into $WHEELS by hand." >&2
             exit 1
@@ -70,7 +80,7 @@ nvcc --version | tail -n 2
 "$PY" -c "import torch, kernels; print('torch', torch.__version__, 'cuda ok:', torch.cuda.is_available(), '| kernels', kernels.__version__)"
 
 echo "=== patched source ==="
-with_proxy bash sglang_patch/apply.sh third_party
+github bash sglang_patch/apply.sh third_party
 # The source tree needs Rust to build; overlay the patched .py files onto the installed wheel instead.
 "$PY" sglang_patch/overlay.py apply --checkout third_party
 "$PY" -m pip install -e ".[dev]" --no-deps
