@@ -9,11 +9,10 @@ from transformers import DynamicCache
 
 from int8kv.cache import QuantizedKVCache
 from int8kv.metrics import mcnemar_exact
+from int8kv.prompts import GSM8K_INSTRUCTION as INSTRUCTION
 from int8kv.prompts import extract_number
 from int8kv.qwen2_patch import patch_qwen2
 from int8kv.runtime import encode_chat, environment_info, greedy_generate, load_model, parse_configs, pick_device, save_json
-
-INSTRUCTION = "\n\nPlease reason step by step, and put your final answer within \\boxed{}."
 
 
 def load_samples(data_file, count):

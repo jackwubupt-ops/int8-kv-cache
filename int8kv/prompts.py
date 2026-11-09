@@ -20,6 +20,8 @@ SHORT_PROMPTS = [
     "请解释为什么 GPU 适合做深度学习计算。",
 ]
 
+GSM8K_INSTRUCTION = "\n\nPlease reason step by step, and put your final answer within \\boxed{}."
+
 _WORDS = ["harbor", "cobalt", "meadow", "lantern", "falcon", "granite", "willow", "ember", "quartz", "summit"]
 
 
