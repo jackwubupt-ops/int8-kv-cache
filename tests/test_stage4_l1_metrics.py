@@ -1,3 +1,4 @@
+import json
 import importlib.util
 from pathlib import Path
 
@@ -76,7 +77,32 @@ def test_generation_agreement_counts_exact_matches_and_first_divergence():
     assert out == {"exact_rate": 0.5, "mean_first_divergence": 1.0}
 
 
-def test_int8_verdict_needs_a_clean_noise_floor():
-    assert L1.verdict(0.995, min_top1=0.99, noise_floor=1.0) == "PASS"
-    assert L1.verdict(0.98, min_top1=0.99, noise_floor=1.0) == "FAIL"
-    assert L1.verdict(0.995, min_top1=0.99, noise_floor=0.99) == "INVALID"
+def test_int8_verdict_compares_with_stage3_on_the_same_prompts():
+    assert L1.verdict(0.985, expected=0.9879, tol=0.005, noise_floor=1.0) == "PASS"
+    assert L1.verdict(0.9684, expected=0.9879, tol=0.005, noise_floor=1.0) == "FAIL"
+    assert L1.verdict(0.995, expected=0.9879, tol=0.005, noise_floor=0.99) == "INVALID"
+
+
+def _stage3_metrics(tmp_path, rows):
+    path = tmp_path / "model_metrics.json"
+    path.write_text(json.dumps({"results": {"per_token_head:dequant": {"per_prompt": rows}}}))
+    return path
+
+
+def test_stage3_expected_averages_the_matching_prompts(tmp_path):
+    rows = [{"kind": "short", "top1": 1.0}, {"kind": "short", "top1": 0.9}, {"kind": "short", "top1": 0.0},
+            {"kind": "needle", "top1": 0.6}, {"kind": "needle", "top1": 0.0}]
+    expected = L1.stage3_expected(_stage3_metrics(tmp_path, rows), n_short=2, n_needle=1)
+    assert expected == pytest.approx({"short": 0.95, "needle": 0.6, "all": (1.0 + 0.9 + 0.6) / 3})
+
+
+def test_stage3_expected_rejects_prompts_stage3_never_ran(tmp_path):
+    rows = [{"kind": "short", "top1": 1.0}, {"kind": "needle", "top1": 1.0}]
+    with pytest.raises(ValueError, match="needle"):
+        L1.stage3_expected(_stage3_metrics(tmp_path, rows), n_short=1, n_needle=2)
+
+
+def test_engine_kwargs_disable_chunked_prefill_by_default():
+    kwargs = L1.engine_kwargs("m", "int8_per_token_head", cuda_graph=False)
+    assert kwargs["chunked_prefill_size"] == -1 and kwargs["disable_cuda_graph"] is True
+    assert L1.engine_kwargs("m", "auto", cuda_graph=True, chunked_prefill_size=2048)["chunked_prefill_size"] == 2048

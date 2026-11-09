@@ -213,6 +213,29 @@ L1 int8_per_token_head:plain:off: FAIL top1=0.9898 |dlogp|=0.0346
 - **真实生成**：每个配置先 `flush_cache`，再贪心生成，报告与 BF16 完全一致的比例和第一次分歧的位置；INT8 在 CUDA graph 开、关下生成的 token 必须完全相同。
 - **判定**：只对 INT8 配置判定，按 prompt 平均的 Top-1 ≥ 0.99，并且噪声底线有效。
 
+### 7.1 L1 v2 第一次完整结果（2026-11-09，新服务器，patch `4059b73`）
+
+| 配置 | top1/prompt | short | needle | gen_exact |
+|---|---|---|---|---|
+| BF16（噪声底线） | 1.0000 | 1.0000 | 1.0000 | 1.00 |
+| FP8 e4m3 | 0.8244 | 0.8685 | 0.7714 | 0.00 |
+| INT8（graph 开/关，结果完全相同） | 0.9684 | 0.9779 | 0.9571 | 0.50 |
+
+当时以 0.99 为门槛，判为 FAIL。在同一批 prompt 上和阶段 3 逐组对比后，结论是实现没有问题，门槛和测法有误：
+
+- **short（12 个）：** SGLang INT8 为 0.9779，阶段 3 PyTorch 为 0.9779（`results/.../stage3/model_metrics.json` 前 12 条），**完全一致**。
+- **needle（seed 0-9）：** 阶段 3 float prefill 为 1.0，阶段 3 int8 prefill 为 0.857，SGLang 为 0.957，落在两者之间。
+  - needle prompt 约 3,330 token。SGLang 在 24 GB 显卡上默认 `chunked_prefill_size=2048`，所以第二块 prefill 要从 INT8 缓存读第一块，即部分走了 "int8 prefill"。
+  - 阶段 3 的 float prefill 是整段一次算完，从来没有这一步。
+- **门槛：** 0.99 是阶段 3 在 112 个 prompt 上的平均值（99.38%），其中 100 个是 needle。L1 只用 22 个 prompt，short 占的比例大，阶段 3 在这 22 个 prompt 上的期望值本来就只有 0.9879。所以按 0.99 判，即使实现完美也会 FAIL。
+
+修正（L1 v3）：
+
+- **新判定：** 和阶段 3 在同样 prompt 上的结果比，`stage3_expected()` 从阶段 3 的 json 读取对应行，INT8 ≥ 期望值 − 0.005 判为通过。
+- **关闭 chunked prefill：** 默认 `--chunked-prefill-size -1`，与阶段 3 的测法一致。
+- **chunked prefill 的影响单独记录：** 默认 2048 下 needle 掉到 0.957，这是 SGLang 默认部署下的真实代价，留到阶段 4 报告中讨论。
+- **FP8 很差（0.82）：** SGLang 的 FP8 KV 不带 scale（scale=1），e4m3 只有 3 位尾数，而 Qwen2.5 的 K 有很大的离群值，所以误差大。这正好说明 per-token-head INT8 的价值，报告中会用。
+
 ---
 
 ## 8. 服务器部署问题记录

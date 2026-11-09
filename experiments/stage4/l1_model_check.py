@@ -4,7 +4,13 @@ Same method as stage 3 (int8kv.runtime.teacher_forced_logits): BF16 KV greedily 
 a continuation for each prompt, then every config is fed that continuation one token per
 request. logprob_start_len = len - 1 makes SGLang take every earlier token from the KV
 cache, so each prediction reads the whole prompt and continuation back from the
-(quantized) cache, exactly as decoding does. The prompt itself is prefilled in float.
+(quantized) cache, exactly as decoding does. The prompt itself is prefilled in float:
+chunked prefill is off by default, because with SGLang's 2048-token chunks the second
+chunk of a ~3.3k-token needle prompt would read the first chunk back from INT8, which
+stage 3 never did (its "int8 prefill" run shows that costs needle top-1 1.0 -> 0.86).
+
+Pass criterion: INT8 must reproduce stage 3's PyTorch result on the same prompts
+(results/<model>/stage3/model_metrics.json, per_token_head:dequant), within --tol.
 
 Controls: a fresh BF16 engine ("auto") gives the noise floor; it must agree with the
 reference almost perfectly or the comparison is not trustworthy (verdict INVALID).
@@ -75,10 +81,24 @@ def generation_agreement(ref: Sequence[List[int]], other: Sequence[List[int]]) -
     }
 
 
-def verdict(top1: float, min_top1: float, noise_floor: float) -> str:
+def verdict(top1: float, expected: float, tol: float, noise_floor: float) -> str:
     if noise_floor < NOISE_FLOOR_MIN:
         return "INVALID"
-    return "PASS" if top1 >= min_top1 else "FAIL"
+    return "PASS" if top1 >= expected - tol else "FAIL"
+
+
+def stage3_expected(metrics_path: Path, n_short: int, n_needle: int,
+                    config: str = "per_token_head:dequant") -> Dict[str, float]:
+    """Stage 3's per-prompt top-1, averaged over the same prompts L1 runs (first n of each kind)."""
+    rows = json.loads(Path(metrics_path).read_text())["results"][config]["per_prompt"]
+    picked = {}
+    for kind, n in (("short", n_short), ("needle", n_needle)):
+        of_kind = [r["top1"] for r in rows if r["kind"] == kind]
+        if len(of_kind) < n:
+            raise ValueError(f"stage 3 ran {len(of_kind)} {kind} prompts, L1 asks for {n}")
+        picked[kind] = of_kind[:n]
+    every = picked["short"] + picked["needle"]
+    return {kind: sum(v) / len(v) for kind, v in (*picked.items(), ("all", every)) if v}
 
 
 def build_prompts(tokenizer, needles: int, needle_facts: int) -> List[Tuple[str, List[int]]]:
@@ -94,14 +114,17 @@ def build_prompts(tokenizer, needles: int, needle_facts: int) -> List[Tuple[str,
     return [(kind, encode(t)) for kind, t in texts]
 
 
-def make_engine(model: str, kv_dtype: str, impl: str, cuda_graph: bool):
+def engine_kwargs(model: str, kv_dtype: str, cuda_graph: bool, chunked_prefill_size: int = -1) -> dict:
+    return dict(model_path=model, attention_backend="triton", kv_cache_dtype=kv_dtype,
+                disable_cuda_graph=not cuda_graph, chunked_prefill_size=chunked_prefill_size,
+                mem_fraction_static=0.7, log_level="error")
+
+
+def make_engine(model: str, kv_dtype: str, impl: str, cuda_graph: bool, chunked_prefill_size: int = -1):
     import sglang
 
     os.environ["SGLANG_INT8_KV_IMPL"] = impl
-    return sglang.Engine(
-        model_path=model, attention_backend="triton", kv_cache_dtype=kv_dtype,
-        disable_cuda_graph=not cuda_graph, mem_fraction_static=0.7, log_level="error",
-    )
+    return sglang.Engine(**engine_kwargs(model, kv_dtype, cuda_graph, chunked_prefill_size))
 
 
 def greedy(engine, prompts, max_new_tokens: int) -> List[List[int]]:
@@ -114,8 +137,9 @@ def greedy(engine, prompts, max_new_tokens: int) -> List[List[int]]:
     return [[tok for _, tok, _ in o["meta_info"]["output_token_logprobs"]] for o in outs]
 
 
-def run_config(model, kv_dtype, impl, cuda_graph, prompts, continuations=None, max_new_tokens=64):
-    engine = make_engine(model, kv_dtype, impl, cuda_graph)
+def run_config(model, kv_dtype, impl, cuda_graph, prompts, continuations=None, max_new_tokens=64,
+               chunked_prefill_size=-1):
+    engine = make_engine(model, kv_dtype, impl, cuda_graph, chunked_prefill_size)
     try:
         generated = greedy(engine, prompts, max_new_tokens)
         engine.flush_cache()
@@ -143,7 +167,12 @@ def main(argv=None) -> int:
     parser.add_argument("--needles", type=int, default=10)
     parser.add_argument("--needle-facts", type=int, default=150)
     parser.add_argument("--max-new-tokens", type=int, default=64)
-    parser.add_argument("--min-top1", type=float, default=0.99, help="per-prompt mean top-1, as in stage 3 (99.4%%)")
+    parser.add_argument("--stage3-metrics", type=Path, default=None,
+                        help="stage 3 model_metrics.json (default: results/<model name>/stage3/model_metrics.json)")
+    parser.add_argument("--tol", type=float, default=0.005,
+                        help="allowed drop of per-prompt mean top-1 below stage 3 on the same prompts")
+    parser.add_argument("--chunked-prefill-size", type=int, default=-1,
+                        help="-1 (default) prefills each prompt in one pass, as stage 3 did; 2048 is SGLang's default here")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     configs = [tuple(item.split(":")) for item in args.configs.split(",")]
@@ -151,16 +180,23 @@ def main(argv=None) -> int:
         parser.error("--configs must include an auto (BF16) entry: it is the noise floor")
 
     from transformers import AutoTokenizer
+    from int8kv.prompts import SHORT_PROMPTS
 
+    stage3_path = args.stage3_metrics or ROOT / "results" / Path(args.model).name / "stage3" / "model_metrics.json"
+    expected = stage3_expected(stage3_path, len(SHORT_PROMPTS), args.needles)
+    print(f"stage 3 on the same prompts: top1/prompt={expected['all']:.4f} short={expected['short']:.4f} "
+          f"needle={expected.get('needle', float('nan')):.4f} (pass if INT8 >= {expected['all'] - args.tol:.4f}); "
+          f"chunked_prefill_size={args.chunked_prefill_size}", flush=True)
     prompts = build_prompts(AutoTokenizer.from_pretrained(args.model), args.needles, args.needle_facts)
-    continuations, ref = run_config(args.model, "auto", "plain", True, prompts, max_new_tokens=args.max_new_tokens)
+    continuations, ref = run_config(args.model, "auto", "plain", True, prompts, max_new_tokens=args.max_new_tokens,
+                                    chunked_prefill_size=args.chunked_prefill_size)
     print(f"reference: {len(prompts)} prompts, {sum(map(len, continuations))} continuation tokens", flush=True)
 
     results, generations = {}, {}
     for kv_dtype, impl, graph in configs:
         item = f"{kv_dtype}:{impl}:{graph}"
         generated, scores = run_config(args.model, kv_dtype, impl, graph == "on", prompts, continuations,
-                                       args.max_new_tokens)
+                                       args.max_new_tokens, args.chunked_prefill_size)
         generations[item] = generated
         summary = summarize(prompts, ref, scores)
         summary["generation_vs_bf16"] = generation_agreement(continuations, generated)
@@ -170,7 +206,7 @@ def main(argv=None) -> int:
     failed = False
     for item, summary in results.items():
         top1 = summary["all"]["top1_per_prompt_mean"]
-        summary["verdict"] = (verdict(top1, args.min_top1, noise_floor) if item.startswith("int8_")
+        summary["verdict"] = (verdict(top1, expected["all"], args.tol, noise_floor) if item.startswith("int8_")
                               else ("NOISE-FLOOR" if item.startswith("auto:") else "REFERENCE-ONLY"))
         failed |= summary["verdict"] in ("FAIL", "INVALID")
         gen = summary["generation_vs_bf16"]
@@ -189,7 +225,8 @@ def main(argv=None) -> int:
               flush=True)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({"model": args.model, "min_top1": args.min_top1, "noise_floor": noise_floor,
+    args.out.write_text(json.dumps({"model": args.model, "stage3_expected": expected, "tol": args.tol,
+                                    "chunked_prefill_size": args.chunked_prefill_size, "noise_floor": noise_floor,
                                     "cuda_graph_on_vs_off": graph_check, "results": results}, indent=2))
     return 1 if failed else 0
 
