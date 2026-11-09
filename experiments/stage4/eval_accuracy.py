@@ -29,12 +29,15 @@ BASELINE = "bf16"
 KV_DTYPES = ("auto", "fp8_e4m3", "fp8_e5m2", "int8_per_token_head")
 
 
-def config_name(kv_dtype: str, impl: str) -> str:
+def config_name(kv_dtype: str, impl: str, backend: str = "triton") -> str:
+    """bf16, fp8_e4m3, int8_fused, ...; a non-Triton attention backend is appended (fp8_e4m3_flashinfer)."""
     if kv_dtype == "auto":
-        return BASELINE
-    if kv_dtype == "int8_per_token_head":
-        return f"int8_{impl}"
-    return kv_dtype
+        name = BASELINE
+    elif kv_dtype == "int8_per_token_head":
+        name = f"int8_{impl}"
+    else:
+        name = kv_dtype
+    return name if backend == "triton" else f"{name}_{backend}"
 
 
 def build_prompt(task: str, item: dict) -> str:
@@ -118,6 +121,8 @@ def main(argv=None) -> int:
     ap.add_argument("--model")
     ap.add_argument("--kv-dtype", default="auto", choices=KV_DTYPES)
     ap.add_argument("--impl", default="fused", choices=["fused", "plain"])
+    ap.add_argument("--attention-backend", default="triton",
+                    help="int8 needs triton; FP8 on triton casts Q to FP8 too, flashinfer keeps Q in bf16")
     ap.add_argument("--task", choices=TASKS)
     ap.add_argument("--n", type=int, default=None, help="questions (default: 1319 for gsm8k, 100 for needles)")
     ap.add_argument("--max-new-tokens", type=int, default=None, help="default: 1024 for gsm8k, 64 for needles")
@@ -144,10 +149,10 @@ def main(argv=None) -> int:
 
     n = args.n if args.n is not None else (1319 if args.task == "gsm8k" else 100)
     max_new = args.max_new_tokens or (1024 if args.task == "gsm8k" else 64)
-    config = config_name(args.kv_dtype, args.impl)
+    config = config_name(args.kv_dtype, args.impl, args.attention_backend)
     out_dir = args.out or ROOT / "results" / "stage4" / Path(args.model).name / "accuracy"
     os.environ["SGLANG_INT8_KV_IMPL"] = args.impl
-    kwargs = dict(model_path=args.model, attention_backend="triton", kv_cache_dtype=args.kv_dtype, log_level="error")
+    kwargs = dict(model_path=args.model, attention_backend=args.attention_backend, kv_cache_dtype=args.kv_dtype, log_level="error")
     if args.chunked_prefill_size is not None:
         kwargs["chunked_prefill_size"] = args.chunked_prefill_size
     engine = sglang.Engine(**kwargs)
@@ -162,7 +167,7 @@ def main(argv=None) -> int:
     finally:
         engine.shutdown()
     result.update({"task": args.task, "config": config, "model": args.model, "kv_dtype": args.kv_dtype,
-                   "impl": args.impl, "max_new_tokens": max_new, "seconds": elapsed,
+                   "impl": args.impl, "attention_backend": args.attention_backend, "max_new_tokens": max_new, "seconds": elapsed,
                    "chunked_prefill_size": server.get("chunked_prefill_size", args.chunked_prefill_size)})
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{args.task}_{config}.json"

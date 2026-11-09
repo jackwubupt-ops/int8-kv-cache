@@ -113,3 +113,19 @@ def test_summarize_rejects_mismatched_question_sets(tmp_path):
 
 def test_cli_accepts_fp8_e5m2():
     assert "fp8_e5m2" in E.KV_DTYPES
+
+
+@pytest.mark.parametrize("kv,impl,backend,name", [
+    ("fp8_e4m3", "plain", "flashinfer", "fp8_e4m3_flashinfer"),
+    ("auto", "plain", "flashinfer", "bf16_flashinfer"),
+    ("int8_per_token_head", "fused", "triton", "int8_fused"),
+])
+def test_config_names_carry_a_non_triton_backend(kv, impl, backend, name):
+    assert E.config_name(kv, impl, backend) == name
+
+
+def test_summarize_pairs_only_with_triton_bf16(tmp_path):
+    _write_preds(tmp_path, "gsm8k", "bf16", [True, True, False])
+    _write_preds(tmp_path, "gsm8k", "bf16_flashinfer", [True, False, False])
+    s = E.summarize_accuracy(tmp_path)
+    assert s["gsm8k"]["bf16_flashinfer"]["only_baseline"] == 1
