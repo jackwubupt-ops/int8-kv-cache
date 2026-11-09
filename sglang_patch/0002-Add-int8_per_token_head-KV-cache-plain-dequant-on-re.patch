@@ -1,7 +1,7 @@
 From 1ce4a3889acbcc6ec7ae50f389ddd8e0a95a745d Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Sun, 8 Nov 2026 13:50:43 +0000
-Subject: [PATCH 2/3] Add int8_per_token_head KV cache (plain dequant-on-read
+Subject: [PATCH 2/4] Add int8_per_token_head KV cache (plain dequant-on-read
  pool)
 
 ---

@@ -1,0 +1,170 @@
+From 71c5a9b4561ca53f606234e7362ebf78aa0a23d6 Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Mon, 9 Nov 2026 14:34:37 +0000
+Subject: [PATCH 4/4] Add fused INT8 KV path to the grouped Triton decode
+ kernel
+
+decode_attention_fwd takes k_scale_buffer / v_scale_buffer; when set, stage 1
+loads int8 K/V and their per-(token, head) bf16 scales and dequantizes in
+registers. Non-grouped, MLA and HIP paths raise NotImplementedError.
+---
+ .../attention/triton_ops/decode_attention.py  | 74 ++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 4 deletions(-)
+
+diff --git a/python/sglang/srt/layers/attention/triton_ops/decode_attention.py b/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
+index b42ffa43..26f41f49 100644
+--- a/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
++++ b/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
+@@ -283,6 +283,13 @@ def _fwd_grouped_kernel_stage1(
+     Lv: tl.constexpr,
+     HAS_MLA: tl.constexpr = False,
+     USE_PDL: tl.constexpr = False,
++    K_Scale=None,
++    V_Scale=None,
++    stride_ks_bs=0,
++    stride_ks_h=0,
++    stride_vs_bs=0,
++    stride_vs_h=0,
++    KV_INT8: tl.constexpr = False,
+ ):
+     cur_batch = tl.program_id(0)
+     cur_head_id = tl.program_id(1)
+@@ -340,7 +347,10 @@ def _fwd_grouped_kernel_stage1(
+ 
+     if split_kv_end > split_kv_start:
+         q = tl.load(Q + offs_q, mask=(mask_h[:, None]) & (mask_d[None, :]), other=0.0)
+-        q_k = q.to(K_Buffer.dtype.element_ty)
++        if KV_INT8:
++            q_k = q
++        else:
++            q_k = q.to(K_Buffer.dtype.element_ty)
+         if BLOCK_DPE > 0:
+             qpe = tl.load(
+                 Q + off_qpe, mask=(mask_h[:, None]) & (mask_dpe[None, :]), other=0.0
+@@ -358,7 +368,15 @@ def _fwd_grouped_kernel_stage1(
+                 mask=(offs_n[None, :] < split_kv_end) & (mask_d[:, None]),
+                 other=0.0,
+             )
+-            qk = tl.dot(q_k, k)
++            if KV_INT8:
++                s_k = tl.load(
++                    K_Scale + kv_loc * stride_ks_bs + cur_kv_head * stride_ks_h,
++                    mask=offs_n < split_kv_end,
++                    other=0.0,
++                ).to(tl.float32)
++                qk = tl.dot(q_k, k.to(q_k.dtype)) * s_k[None, :]
++            else:
++                qk = tl.dot(q_k, k)
+             if BLOCK_DPE > 0:
+                 offs_buf_kpe = kv_loc[None, :] * stride_buf_kbs + base_offs_kpe
+                 kpe = tl.load(
+@@ -392,7 +410,15 @@ def _fwd_grouped_kernel_stage1(
+             re_scale = tl.exp(e_max - n_e_max)
+             p = tl.exp(qk - n_e_max[:, None])
+             acc *= re_scale[:, None]
+-            acc += tl.dot(p.to(v.dtype), v)
++            if KV_INT8:
++                s_v = tl.load(
++                    V_Scale + kv_loc * stride_vs_bs + cur_kv_head * stride_vs_h,
++                    mask=offs_n < split_kv_end,
++                    other=0.0,
++                ).to(tl.float32)
++                acc += tl.dot((p * s_v[None, :]).to(q_k.dtype), v.to(q_k.dtype))
++            else:
++                acc += tl.dot(p.to(v.dtype), v)
+ 
+             e_sum = e_sum * re_scale + tl.sum(p, 1)
+             e_max = n_e_max
+@@ -441,6 +467,8 @@ def _decode_grouped_att_m_fwd(
+     xai_temperature_len=-1,
+     has_mla=False,
+     use_pdl=False,
++    k_scale_buffer=None,
++    v_scale_buffer=None,
+ ):
+     BLOCK = 32
+     Lk = k_buffer.shape[-1]
+@@ -473,11 +501,21 @@ def _decode_grouped_att_m_fwd(
+     )
+ 
+     extra_kargs = {}
++    if k_scale_buffer is not None:
++        extra_kargs.update(
++            K_Scale=k_scale_buffer,
++            V_Scale=v_scale_buffer,
++            stride_ks_bs=k_scale_buffer.stride(0),
++            stride_ks_h=k_scale_buffer.stride(1),
++            stride_vs_bs=v_scale_buffer.stride(0),
++            stride_vs_h=v_scale_buffer.stride(1),
++            KV_INT8=True,
++        )
+     num_stages = 2
+     if _is_hip:
+         # https://rocm.docs.amd.com/en/docs-6.2.0/how-to/llm-fine-tuning-optimization/optimizing-triton-kernel.html
+         # https://github.com/triton-lang/triton/blob/main/third_party/amd/backend/compiler.py
+-        extra_kargs = {"waves_per_eu": 1, "matrix_instr_nonkdim": 16, "kpack": 2}
++        extra_kargs.update({"waves_per_eu": 1, "matrix_instr_nonkdim": 16, "kpack": 2})
+         num_stages = 1
+ 
+     _fwd_grouped_kernel_stage1[grid](
+@@ -710,6 +748,8 @@ def decode_attention_fwd_grouped(
+     xai_temperature_len=-1,
+     has_mla=False,
+     use_pdl=False,
++    k_scale_buffer=None,
++    v_scale_buffer=None,
+ ):
+     _decode_grouped_att_m_fwd(
+         q,
+@@ -726,6 +766,8 @@ def decode_attention_fwd_grouped(
+         xai_temperature_len,
+         has_mla=has_mla,
+         use_pdl=use_pdl,
++        k_scale_buffer=k_scale_buffer,
++        v_scale_buffer=v_scale_buffer,
+     )
+     _decode_softmax_reducev_fwd(
+         attn_logits,
+@@ -761,13 +803,21 @@ def decode_attention_fwd(
+     xai_temperature_len=-1,
+     has_mla=False,
+     use_pdl=False,
++    k_scale_buffer=None,
++    v_scale_buffer=None,
+ ):
++    """k_scale_buffer / v_scale_buffer [S, H_kv] bf16: per-(token, head) scales of an int8 KV cache.
++
++    When given, the grouped stage-1 kernel dequantizes int8 K/V blocks in registers."""
+     assert max_kv_splits == attn_logits.shape[2]
+     assert q.shape[0] <= kv_indptr.shape[0] - 1
+     assert q.shape[0] <= attn_logits.shape[0]
+ 
+     kv_group_num = q.shape[1] // v_buffer.shape[1]
+ 
++    if k_scale_buffer is not None or v_scale_buffer is not None:
++        _check_int8_decode(kv_group_num, has_mla, k_scale, v_scale, k_scale_buffer, v_scale_buffer)
++
+     if kv_group_num == 1:
+         # MHA
+         decode_attention_fwd_normal(
+@@ -807,4 +857,20 @@ def decode_attention_fwd(
+             xai_temperature_len=xai_temperature_len,
+             has_mla=has_mla,
+             use_pdl=use_pdl,
++            k_scale_buffer=k_scale_buffer,
++            v_scale_buffer=v_scale_buffer,
+         )
++
++
++def _check_int8_decode(kv_group_num, has_mla, k_scale, v_scale, k_scale_buffer, v_scale_buffer):
++    if k_scale_buffer is None or v_scale_buffer is None:
++        raise ValueError("int8 KV decode needs both k_scale_buffer and v_scale_buffer")
++    for name, value in (("k_scale", k_scale), ("v_scale", v_scale)):
++        if not isinstance(value, (int, float)) or value != 1.0:
++            raise ValueError(f"int8 KV decode carries per-token scales; {name} must be 1.0, got {value!r}")
++    if kv_group_num == 1:
++        raise NotImplementedError("int8 KV decode supports only the grouped (GQA/MQA) kernel, not kv_group_num == 1")
++    if has_mla:
++        raise NotImplementedError("int8 KV decode does not support MLA")
++    if _is_hip:
++        raise NotImplementedError("int8 KV decode is not supported on HIP")
