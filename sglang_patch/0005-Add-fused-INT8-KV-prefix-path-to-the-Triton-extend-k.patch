@@ -1,0 +1,147 @@
+From 1b9fc534050e691db96aeb46493b06ad01e2dddb Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Mon, 9 Nov 2026 15:23:49 +0000
+Subject: [PATCH 5/5] Add fused INT8 KV prefix path to the Triton extend kernel
+
+extend_attention_fwd takes k_scale_buffer / v_scale_buffer; when set, the
+prefix loop loads int8 K/V and per-(token, head) bf16 scales and dequantizes
+in registers, while this extend's own K/V stay in their original precision.
+The unified (deterministic) kernel, split head dims and HIP raise
+NotImplementedError.
+---
+ .../attention/triton_ops/extend_attention.py  | 65 ++++++++++++++++++-
+ 1 file changed, 63 insertions(+), 2 deletions(-)
+
+diff --git a/python/sglang/srt/layers/attention/triton_ops/extend_attention.py b/python/sglang/srt/layers/attention/triton_ops/extend_attention.py
+index e6a353e9..6610165b 100644
+--- a/python/sglang/srt/layers/attention/triton_ops/extend_attention.py
++++ b/python/sglang/srt/layers/attention/triton_ops/extend_attention.py
+@@ -270,6 +270,13 @@ def _fwd_kernel(
+     SKIP_PREFIX_CUSTOM_MASK: tl.constexpr,
+     STORE_TRANSPOSE: tl.constexpr,
+     HAS_SINK: tl.constexpr,
++    K_Scale=None,
++    V_Scale=None,
++    stride_ks_bs=0,
++    stride_ks_h=0,
++    stride_vs_bs=0,
++    stride_vs_h=0,
++    KV_INT8: tl.constexpr = False,
+ ):
+     cur_seq = tl.program_id(0)
+     cur_head = tl.program_id(1)
+@@ -382,7 +389,15 @@ def _fwd_kernel(
+                 mask=(mask_n[None, :]) & (mask_d[:, None]),
+                 other=0.0,
+             )
+-            qk = tl.dot(q.to(k.dtype), k)
++            if KV_INT8:
++                s_k = tl.load(
++                    K_Scale + offs_kv_loc * stride_ks_bs + cur_kv_head * stride_ks_h,
++                    mask=mask_n,
++                    other=0.0,
++                ).to(tl.float32)
++                qk = tl.dot(q, k.to(q.dtype)) * s_k[None, :]
++            else:
++                qk = tl.dot(q.to(k.dtype), k)
+             if BLOCK_DPE > 0:
+                 offs_kpe = (
+                     offs_kv_loc[None, :] * stride_buf_kbs
+@@ -423,7 +438,16 @@ def _fwd_kernel(
+                 mask=mask_n[:, None] & mask_dv[None, :],
+                 other=0.0,
+             )
+-            p = p.to(v.dtype)
++            if KV_INT8:
++                s_v = tl.load(
++                    V_Scale + offs_kv_loc * stride_vs_bs + cur_kv_head * stride_vs_h,
++                    mask=mask_n,
++                    other=0.0,
++                ).to(tl.float32)
++                p = (p * s_v[None, :]).to(q.dtype)
++                v = v.to(q.dtype)
++            else:
++                p = p.to(v.dtype)
+             acc = acc * re_scale[:, None] + tl.dot(p, v) * v_scale
+ 
+             e_max = n_e_max
+@@ -579,11 +603,16 @@ def extend_attention_fwd(
+     sinks=None,
+     window_kv_offsets=None,
+     xai_temperature_len=-1,
++    k_scale_buffer=None,
++    v_scale_buffer=None,
+ ):
+     """
+     q_extend, k_extend, v_extend, o_extend: contiguous tensors
+ 
+     k_buffer, v_buffer: (prefix + extend) tensors in mem_manager
++
++    k_scale_buffer, v_scale_buffer [S, H_kv] bf16: per-(token, head) scales of an int8 KV cache. When given,
++    the prefix read from k_buffer / v_buffer is int8 and dequantized in registers; k_extend / v_extend are not.
+     """
+     Lq, Lk, Lv = (
+         q_extend.shape[-1],
+@@ -600,6 +629,19 @@ def extend_attention_fwd(
+     batch_size, head_num = qo_indptr.shape[0] - 1, q_extend.shape[1]
+     kv_group_num = q_extend.shape[1] // k_extend.shape[1]
+ 
++    int8_kargs = {}
++    if k_scale_buffer is not None or v_scale_buffer is not None:
++        _check_int8_extend(BLOCK_DPE, k_scale, v_scale, k_scale_buffer, v_scale_buffer)
++        int8_kargs = dict(
++            K_Scale=k_scale_buffer,
++            V_Scale=v_scale_buffer,
++            stride_ks_bs=k_scale_buffer.stride(0),
++            stride_ks_h=k_scale_buffer.stride(1),
++            stride_vs_bs=v_scale_buffer.stride(0),
++            stride_vs_h=v_scale_buffer.stride(1),
++            KV_INT8=True,
++        )
++
+     USE_CUSTOM_MASK = custom_mask is not None
+     # Skip custom mask for prefix part
+     SKIP_PREFIX_CUSTOM_MASK = skip_prefix_custom_mask
+@@ -661,9 +703,22 @@ def extend_attention_fwd(
+         num_warps=num_warps,
+         num_stages=num_stages,
+         **extra_kargs,
++        **int8_kargs,
+     )
+ 
+ 
++def _check_int8_extend(block_dpe, k_scale, v_scale, k_scale_buffer, v_scale_buffer):
++    if k_scale_buffer is None or v_scale_buffer is None:
++        raise ValueError("int8 KV extend needs both k_scale_buffer and v_scale_buffer")
++    for name, value in (("k_scale", k_scale), ("v_scale", v_scale)):
++        if not isinstance(value, (int, float)) or value != 1.0:
++            raise ValueError(f"int8 KV extend carries per-token scales; {name} must be 1.0, got {value!r}")
++    if block_dpe > 0:
++        raise NotImplementedError("int8 KV extend does not support MLA-style split head dims")
++    if _is_hip:
++        raise NotImplementedError("int8 KV extend is not supported on HIP")
++
++
+ def redundant_attention(
+     q_extend,
+     o_extend,
+@@ -974,6 +1029,8 @@ def extend_attention_fwd_unified(
+     sinks=None,
+     window_start_pos=None,
+     xai_temperature_len=-1,
++    k_scale_buffer=None,
++    v_scale_buffer=None,
+ ):
+     """
+     Unified 1-stage extend attention for deterministic inference.
+@@ -999,6 +1056,10 @@ def extend_attention_fwd_unified(
+                          (None if sliding window not used)
+         xai_temperature_len: XAI temperature length
+     """
++    if k_scale_buffer is not None or v_scale_buffer is not None:
++        raise NotImplementedError(
++            "int8 KV cache is not supported by the unified (deterministic) extend kernel"
++        )
+     Lq, Lv = q.shape[-1], v_buffer.shape[-1]
+ 
+     # Get block sizes and configuration

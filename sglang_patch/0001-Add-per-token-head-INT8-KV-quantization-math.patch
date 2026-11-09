@@ -1,7 +1,7 @@
 From f13e99a11d6bb9352a3ab3e6146be9695faf74e0 Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Sun, 8 Nov 2026 13:34:39 +0000
-Subject: [PATCH 1/4] Add per-token-head INT8 KV quantization math
+Subject: [PATCH 1/5] Add per-token-head INT8 KV quantization math
 
 ---
  .../sglang/srt/layers/quantization/int8_kv.py | 55 +++++++++++++++++++

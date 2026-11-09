@@ -1,7 +1,7 @@
 From 71c5a9b4561ca53f606234e7362ebf78aa0a23d6 Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Mon, 9 Nov 2026 14:34:37 +0000
-Subject: [PATCH 4/4] Add fused INT8 KV path to the grouped Triton decode
+Subject: [PATCH 4/5] Add fused INT8 KV path to the grouped Triton decode
  kernel
 
 decode_attention_fwd takes k_scale_buffer / v_scale_buffer; when set, stage 1
