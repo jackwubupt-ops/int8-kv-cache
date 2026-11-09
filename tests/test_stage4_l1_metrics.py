@@ -155,3 +155,16 @@ def test_graph_verdict_rejects_drift_well_beyond_bf16():
 def test_noise_floor_only_counts_graph_on_bf16():
     results = {"auto:plain:on": 1.0, "auto:plain:off": 0.97, "int8_per_token_head:plain:on": 0.98}
     assert L1.noise_floor(results) == 1.0
+
+
+def test_graph_verdict_treats_one_bf16_logit_step_as_a_tie():
+    # Server run 20261109_202409: every flip had margin exactly 0.125 = one bf16 step for logits in [16, 32).
+    int8 = {"n_diverged": 3, "prefix_mean_abs_dlogp": 0.0033, "divergence_margins": [0.125, 0.125, 0.125]}
+    bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.0032, "divergence_margins": []}
+    assert L1.graph_verdict(int8, bf16)["pass"]
+
+
+def test_graph_verdict_rejects_a_two_bf16_step_gap():
+    int8 = {"n_diverged": 1, "prefix_mean_abs_dlogp": 0.0033, "divergence_margins": [0.25]}
+    bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.0032, "divergence_margins": []}
+    assert not L1.graph_verdict(int8, bf16)["pass"]

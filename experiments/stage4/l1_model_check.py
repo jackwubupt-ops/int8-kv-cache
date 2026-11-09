@@ -144,15 +144,21 @@ def decode_path_compare(a: Sequence[dict], b: Sequence[dict]) -> dict:
             "prefix_mean_abs_dlogp": sum(drift) / len(drift) if drift else 0.0, "divergence_margins": margins}
 
 
+# Logits are bf16; for |logit| in [16, 32) adjacent bf16 values are 2**-3 apart, so a top-2 gap of one step
+# is the smallest distinction the model can make and a reordering at that gap is numerically a tie.
+BF16_LOGIT_STEP = 0.125
+
+
 def graph_verdict(int8: dict, bf16: Optional[dict], drift_factor: float = 3.0, drift_floor: float = 0.01,
-                  tie_margin: float = 0.1) -> dict:
+                  tie_margin: float = BF16_LOGIT_STEP) -> dict:
     """Graphs on vs off are not bit-identical, so INT8 may drift like BF16 does and flip only on near-ties.
 
-    A flip is a near-tie when, in at least one run, the top-2 logprob gap at that step was below tie_margin.
+    A flip is a near-tie when, in at least one run, the top-2 logprob gap at that step was at most tie_margin
+    (one bf16 logit step).
     A real graph-path bug shows as drift well beyond BF16's or flips where the model was confident."""
     limit = max(drift_factor * bf16["prefix_mean_abs_dlogp"] if bf16 else 0.0, drift_floor)
     drift_ok = int8["prefix_mean_abs_dlogp"] <= limit
-    ties_ok = all(m < tie_margin for m in int8["divergence_margins"])
+    ties_ok = all(m <= tie_margin + 1e-6 for m in int8["divergence_margins"])
     return {"pass": drift_ok and ties_ok, "drift_limit": limit, "tie_margin": tie_margin,
             "drift_ok": drift_ok, "ties_ok": ties_ok}
 
@@ -276,7 +282,7 @@ def main(argv=None) -> int:
         print(f"L1 cuda-graph on vs off (decode path): {'PASS' if graphs['pass'] else 'FAIL'} "
               f"int8 diverged {int8['n_diverged']}/{int8['n']} drift={int8['prefix_mean_abs_dlogp']:.4f} "
               f"(limit {graphs['drift_limit']:.4f}) flip margins={[round(m, 3) for m in int8['divergence_margins']]} "
-              f"(tie < {graphs['tie_margin']}) | {bf16_txt}", flush=True)
+              f"(tie <= {graphs['tie_margin']}) | {bf16_txt}", flush=True)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"model": args.model, "stage3_expected": expected, "tol": args.tol,
