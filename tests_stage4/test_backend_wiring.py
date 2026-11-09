@@ -3,6 +3,7 @@
 CUDA graphs are off here to keep L0 short; L1 covers fused and plain with graphs on and off."""
 import gc
 import os
+import shutil
 from pathlib import Path
 
 import pytest
@@ -32,6 +33,10 @@ def _needle(facts):
 def _engine(monkeypatch, impl, chunked_prefill_size=-1):
     if not MODEL.exists():
         pytest.skip(f"{MODEL} not found")
+    missing = [tool for tool in ("ninja", "nvcc") if shutil.which(tool) is None]
+    if missing:
+        pytest.fail(f"{missing} not on PATH: SGLang's kernel JIT would kill this process (exit 137). "
+                    "Run through scripts/stage4/l0.sh or test.sh, which source common.sh.")
     import sglang
 
     monkeypatch.setenv("SGLANG_INT8_KV_IMPL", impl)

@@ -37,7 +37,7 @@
 | Task 5 | 融合写入 kernel | ✅ 服务器 L0 通过；scale 与 PyTorch 逐比特一致 |
 | Task 6 | 融合 decode kernel | ✅ 服务器 L0 通过（70 项） |
 | Task 7 | 融合 extend kernel | ✅ 服务器 L0 通过（87 项） |
-| Task 8 | 接入 Triton 后端 | ⚠️ L1 全部通过（fused 已在模型中运行）；L0 后端接线测试的分块用例已按诊断结果改写（`fe002aa`），新版在服务器上运行时进程无输出退出，原因待查（9.1） |
+| Task 8 | 接入 Triton 后端 | ⚠️ L1 全部通过（fused 已在模型中运行）；L0 后端接线测试的分块用例已按诊断结果改写，“被杀”的原因已查明是 PATH 缺 ninja（9.1），待用 `l0.sh` 在服务器上确认 |
 | Task 9-11 | 7B 上 GSM8K 全量、needle、吞吐和并发基准、最终报告 | 未开始 |
 
 最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261110`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
@@ -387,17 +387,11 @@ AutoDL 操作要点：
 
 ## 9. 已知问题和下一步
 
-### 9.1 待查：后端接线测试运行后没有任何输出
+### 9.1 已查明：后端接线测试“被杀”（exit 137）
 
-`fe002aa` 上运行 `pytest tests_stage4/test_backend_wiring.py ... | tail -5`，终端没有输出。pytest 正常结束一定会打印结果行，没有输出说明进程很可能被系统杀掉（例如内存不足，管道里 shell 不会显示 `Killed`）。这个文件会连续启动 4 次 Engine。
+不是内存不足：容器 cgroup 上限 66.6 GB，每个测试峰值约 16.3 GB。直接调用 venv 的 python 跑 pytest 时跳过了 `common.sh`，`ninja`、`nvcc` 不在 PATH 上；SGLang 启动时 JIT 编译 kernel 抛 `FileNotFoundError: 'ninja'`，scheduler 子进程退出后向主进程发 SIGQUIT，表现为 `Killed`、退出码 137。之前直接跑 Task 6/7 的 kernel 测试没出问题，是因为它们不启动 Engine。
 
-下一步在服务器上运行：
-
-```bash
-cd ~/int8-kv-cache && git log --oneline -1 && /root/autodl-tmp/venv-sglang/bin/python -m pytest -q tests_stage4/test_backend_wiring.py -p no:cacheprovider > wiring.log 2>&1; echo "exit code: $?"; tail -20 wiring.log; free -g | head -2
-```
-
-退出码 137 表示被杀，再用 `dmesg | grep -i -E "killed process|out of memory"` 确认。
+修复：新增 `scripts/stage4/l0.sh`，通过 `common.sh` 设置环境后运行 pytest；Engine 测试在缺少 ninja/nvcc 时直接报清楚的错误。服务器上运行 L0 统一用 `bash scripts/stage4/l0.sh [pytest 参数]`。
 
 ### 9.2 已知代价（写入报告）
 
@@ -406,7 +400,7 @@ cd ~/int8-kv-cache && git log --oneline -1 && /root/autodl-tmp/venv-sglang/bin/p
 
 ### 9.3 后续任务
 
-1. 解决 9.1，Task 8 收尾。
+1. 用 `l0.sh` 在服务器上跑通后端接线测试，Task 8 收尾。
 2. Task 9-11：Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：
    - GSM8K 全部 1319 题（McNemar 检验）；
    - needle；
