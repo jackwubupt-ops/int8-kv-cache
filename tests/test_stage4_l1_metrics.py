@@ -168,3 +168,20 @@ def test_graph_verdict_rejects_a_two_bf16_step_gap():
     int8 = {"n_diverged": 1, "prefix_mean_abs_dlogp": 0.0033, "divergence_margins": [0.25]}
     bf16 = {"n_diverged": 0, "prefix_mean_abs_dlogp": 0.0032, "divergence_margins": []}
     assert not L1.graph_verdict(int8, bf16)["pass"]
+
+
+def test_impl_gap_passes_when_fused_tracks_plain():
+    top1 = {"int8_per_token_head:plain:on": 0.9888, "int8_per_token_head:fused:on": 0.9861,
+            "int8_per_token_head:plain:off": 0.9895, "int8_per_token_head:fused:off": 0.9895}
+    gaps = L1.impl_gaps(top1, tol=0.005)
+    assert gaps == {"on": {"gap": pytest.approx(0.0027), "pass": True},
+                    "off": {"gap": pytest.approx(0.0), "pass": True}}
+
+
+def test_impl_gap_fails_when_fused_drifts_from_plain():
+    top1 = {"int8_per_token_head:plain:on": 0.9888, "int8_per_token_head:fused:on": 0.9800}
+    assert not L1.impl_gaps(top1, tol=0.005)["on"]["pass"]
+
+
+def test_impl_gap_skips_graph_modes_without_both_impls():
+    assert L1.impl_gaps({"int8_per_token_head:plain:on": 0.99}, tol=0.005) == {}

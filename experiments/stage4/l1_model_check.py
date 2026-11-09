@@ -163,6 +163,18 @@ def graph_verdict(int8: dict, bf16: Optional[dict], drift_factor: float = 3.0, d
             "drift_ok": drift_ok, "ties_ok": ties_ok}
 
 
+def impl_gaps(top1_by_item: Dict[str, float], tol: float = 0.005) -> Dict[str, dict]:
+    """|top1(fused) - top1(plain)| per CUDA-graph mode where both INT8 implementations ran."""
+    out = {}
+    for graph in ("on", "off"):
+        plain = top1_by_item.get(f"int8_per_token_head:plain:{graph}")
+        fused = top1_by_item.get(f"int8_per_token_head:fused:{graph}")
+        if plain is not None and fused is not None:
+            gap = abs(fused - plain)
+            out[graph] = {"gap": gap, "pass": gap < tol}
+    return out
+
+
 def engine_kwargs(model: str, kv_dtype: str, cuda_graph: bool, chunked_prefill_size: int = -1) -> dict:
     return dict(model_path=model, attention_backend="triton", kv_cache_dtype=kv_dtype,
                 disable_cuda_graph=not cuda_graph, chunked_prefill_size=chunked_prefill_size,
@@ -218,6 +230,8 @@ def main(argv=None) -> int:
     parser.add_argument("--max-new-tokens", type=int, default=64)
     parser.add_argument("--stage3-metrics", type=Path, default=None,
                         help="stage 3 model_metrics.json (default: results/<model name>/stage3/model_metrics.json)")
+    parser.add_argument("--impl-tol", type=float, default=0.005,
+                        help="max |top1 fused - top1 plain| per CUDA-graph mode")
     parser.add_argument("--tol", type=float, default=0.005,
                         help="allowed drop of per-prompt mean top-1 below stage 3 on the same prompts")
     parser.add_argument("--chunked-prefill-size", type=int, default=-1,
@@ -269,25 +283,33 @@ def main(argv=None) -> int:
               f"short={summary['short']['top1_per_prompt_mean']:.4f} needle={summary['needle']['top1_per_prompt_mean']:.4f} "
               f"gen_exact={gen['exact_rate']:.2f} first_div={gen['mean_first_divergence']}", flush=True)
 
-    on, off = "int8_per_token_head:plain:on", "int8_per_token_head:plain:off"
-    graphs = None
-    if on in generations and off in generations:
+    bf16 = (decode_path_compare(generations["auto:plain:on"], generations["auto:plain:off"])
+            if "auto:plain:on" in generations and "auto:plain:off" in generations else None)
+    bf16_txt = (f"bf16 diverged {bf16['n_diverged']}/{bf16['n']} drift={bf16['prefix_mean_abs_dlogp']:.4f}"
+                if bf16 else "no bf16 control")
+    graphs = {}
+    for impl in ("plain", "fused"):
+        on, off = f"int8_per_token_head:{impl}:on", f"int8_per_token_head:{impl}:off"
+        if on not in generations or off not in generations:
+            continue
         int8 = decode_path_compare(generations[on], generations[off])
-        bf16 = (decode_path_compare(generations["auto:plain:on"], generations["auto:plain:off"])
-                if "auto:plain:on" in generations and "auto:plain:off" in generations else None)
-        graphs = {"int8": int8, "bf16": bf16, **graph_verdict(int8, bf16)}
-        failed |= not graphs["pass"]
-        bf16_txt = (f"bf16 diverged {bf16['n_diverged']}/{bf16['n']} drift={bf16['prefix_mean_abs_dlogp']:.4f}"
-                    if bf16 else "no bf16 control")
-        print(f"L1 cuda-graph on vs off (decode path): {'PASS' if graphs['pass'] else 'FAIL'} "
+        g = graphs[impl] = {"int8": int8, "bf16": bf16, **graph_verdict(int8, bf16)}
+        failed |= not g["pass"]
+        print(f"L1 cuda-graph on vs off ({impl}, decode path): {'PASS' if g['pass'] else 'FAIL'} "
               f"int8 diverged {int8['n_diverged']}/{int8['n']} drift={int8['prefix_mean_abs_dlogp']:.4f} "
-              f"(limit {graphs['drift_limit']:.4f}) flip margins={[round(m, 3) for m in int8['divergence_margins']]} "
-              f"(tie <= {graphs['tie_margin']}) | {bf16_txt}", flush=True)
+              f"(limit {g['drift_limit']:.4f}) flip margins={[round(m, 3) for m in int8['divergence_margins']]} "
+              f"(tie <= {g['tie_margin']}) | {bf16_txt}", flush=True)
+
+    gaps = impl_gaps({item: r["all"]["top1_per_prompt_mean"] for item, r in results.items()}, args.impl_tol)
+    for graph, gap in gaps.items():
+        failed |= not gap["pass"]
+        print(f"L1 fused vs plain (graph {graph}): {'PASS' if gap['pass'] else 'FAIL'} "
+              f"top1 gap={gap['gap']:.4f} (< {args.impl_tol})", flush=True)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"model": args.model, "stage3_expected": expected, "tol": args.tol,
                                     "chunked_prefill_size": args.chunked_prefill_size, "noise_floor": floor,
-                                    "cuda_graph_on_vs_off": graphs, "results": results}, indent=2))
+                                    "cuda_graph_on_vs_off": graphs, "fused_vs_plain": gaps, "results": results}, indent=2))
     return 1 if failed else 0
 
 

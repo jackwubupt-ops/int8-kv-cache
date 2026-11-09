@@ -1,7 +1,7 @@
 From 1b9fc534050e691db96aeb46493b06ad01e2dddb Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Mon, 9 Nov 2026 15:23:49 +0000
-Subject: [PATCH 5/5] Add fused INT8 KV prefix path to the Triton extend kernel
+Subject: [PATCH 5/6] Add fused INT8 KV prefix path to the Triton extend kernel
 
 extend_attention_fwd takes k_scale_buffer / v_scale_buffer; when set, the
 prefix loop loads int8 K/V and per-(token, head) bf16 scales and dequantizes

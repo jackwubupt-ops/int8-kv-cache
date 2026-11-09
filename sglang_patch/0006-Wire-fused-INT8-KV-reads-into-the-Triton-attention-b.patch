@@ -1,0 +1,174 @@
+From 131427bfd731293771a58426efac2c226cdb137d Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Mon, 9 Nov 2026 16:01:40 +0000
+Subject: [PATCH 6/6] Wire fused INT8 KV reads into the Triton attention
+ backend
+
+MHATokenToKVPoolINT8 reads SGLANG_INT8_KV_IMPL once and exposes raw int8
+buffers plus scales via get_int8_kv_buffers. With impl=fused the Triton
+backend passes them to the extend and decode kernels; plain keeps the
+dequantized get_key_buffer path. Fused with deterministic inference raises.
+---
+ .../srt/layers/attention/triton_backend.py    | 42 +++++++++++++++++--
+ .../sglang/srt/layers/quantization/int8_kv.py |  9 ++++
+ python/sglang/srt/mem_cache/memory_pool.py    | 16 +++++--
+ 3 files changed, 60 insertions(+), 7 deletions(-)
+
+diff --git a/python/sglang/srt/layers/attention/triton_backend.py b/python/sglang/srt/layers/attention/triton_backend.py
+index f6d27e9c..310876b1 100644
+--- a/python/sglang/srt/layers/attention/triton_backend.py
++++ b/python/sglang/srt/layers/attention/triton_backend.py
+@@ -168,6 +168,16 @@ class TritonAttnBackend(AttentionBackend):
+             model_runner.server_args.enable_deterministic_inference
+         )
+ 
++        # int8_per_token_head KV cache: fused kernels read int8 + scales directly.
++        int8_impl = getattr(model_runner.token_to_kv_pool, "int8_impl", None)
++        self.int8_kv_fused = int8_impl == "fused"
++        if int8_impl is not None:
++            from sglang.srt.layers.quantization.int8_kv import check_int8_backend_mode
++
++            check_int8_backend_mode(
++                impl=int8_impl, enable_deterministic=self.enable_deterministic
++            )
++
+         # Configure deterministic inference settings
+         if self.enable_deterministic:
+             # Use fixed split tile size for batch invariance
+@@ -984,13 +994,16 @@ class TritonAttnBackend(AttentionBackend):
+             k_descale = 1.0
+             v_descale = 1.0
+ 
++        k_buffer, v_buffer, int8_scales = self._kv_buffers_for_read(
++            forward_batch, layer
++        )
+         self.extend_attention_fwd(
+             q.view(-1, layer.tp_q_head_num, layer.qk_head_dim),
+             k.contiguous(),
+             v.contiguous(),
+             o.view(-1, layer.tp_q_head_num, layer.v_head_dim),
+-            forward_batch.token_to_kv_pool.get_key_buffer(layer.layer_id),
+-            forward_batch.token_to_kv_pool.get_value_buffer(layer.layer_id),
++            k_buffer,
++            v_buffer,
+             self.forward_metadata.qo_indptr,
+             kv_indptr,
+             kv_indices,
+@@ -1006,9 +1019,26 @@ class TritonAttnBackend(AttentionBackend):
+             sinks=sinks,
+             window_kv_offsets=window_kv_offsets,
+             xai_temperature_len=layer.xai_temperature_len,
++            **int8_scales,
+         )
+         return o
+ 
++    def _kv_buffers_for_read(self, forward_batch: ForwardBatch, layer: RadixAttention):
++        """K/V buffers for the attention kernels, plus int8 scale kwargs when the fused path is on."""
++        pool = forward_batch.token_to_kv_pool
++        if self.int8_kv_fused:
++            k_buffer, v_buffer, k_scales, v_scales = pool.get_int8_kv_buffers(
++                layer.layer_id
++            )
++            return k_buffer, v_buffer, dict(
++                k_scale_buffer=k_scales, v_scale_buffer=v_scales
++            )
++        return (
++            pool.get_key_buffer(layer.layer_id),
++            pool.get_value_buffer(layer.layer_id),
++            {},
++        )
++
+     def _forward_extend_unified(
+         self,
+         q: torch.Tensor,
+@@ -1222,10 +1252,13 @@ class TritonAttnBackend(AttentionBackend):
+         ):
+             attn_logits = self.forward_metadata.swa_attn_logits
+ 
++        k_buffer, v_buffer, int8_scales = self._kv_buffers_for_read(
++            forward_batch, layer
++        )
+         self.decode_attention_fwd(
+             q.view(-1, layer.tp_q_head_num, layer.qk_head_dim),
+-            forward_batch.token_to_kv_pool.get_key_buffer(layer.layer_id),
+-            forward_batch.token_to_kv_pool.get_value_buffer(layer.layer_id),
++            k_buffer,
++            v_buffer,
+             o.view(-1, layer.tp_q_head_num, layer.v_head_dim),
+             kv_indptr,
+             kv_indices,
+@@ -1241,6 +1274,7 @@ class TritonAttnBackend(AttentionBackend):
+             xai_temperature_len=layer.xai_temperature_len,
+             has_mla=self.use_mla,
+             use_pdl=self.use_pdl,
++            **int8_scales,
+         )
+         return o
+ 
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+index 18902c91..4e17ee72 100644
+--- a/python/sglang/srt/layers/quantization/int8_kv.py
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -76,6 +76,15 @@ def store_quantized(
+     scale_buf[loc] = scale
+ 
+ 
++def check_int8_backend_mode(*, impl: str, enable_deterministic: bool) -> None:
++    """Fused reads exist only in the standard 2-stage extend kernel, not the deterministic unified one."""
++    if impl == "fused" and enable_deterministic:
++        raise NotImplementedError(
++            "--kv-cache-dtype int8_per_token_head with SGLANG_INT8_KV_IMPL=fused does not support "
++            "--enable-deterministic-inference; use SGLANG_INT8_KV_IMPL=plain"
++        )
++
++
+ def int8_kv_cell_size(
+     *, head_num: int, head_dim: int, v_head_dim: int, num_layers: int
+ ) -> int:
+diff --git a/python/sglang/srt/mem_cache/memory_pool.py b/python/sglang/srt/mem_cache/memory_pool.py
+index 1a69a757..89944492 100644
+--- a/python/sglang/srt/mem_cache/memory_pool.py
++++ b/python/sglang/srt/mem_cache/memory_pool.py
+@@ -1395,14 +1395,17 @@ class MHATokenToKVPoolFP4(MHATokenToKVPool):
+ class MHATokenToKVPoolINT8(MHATokenToKVPool):
+     """MHA pool with int8 K/V and one bf16 scale per (token, head).
+ 
+-    Reads dequantize the whole layer to compute_dtype, so any attention backend
+-    sees a plain K/V buffer.
++    get_key_buffer / get_value_buffer dequantize the whole layer to compute_dtype,
++    so any reader sees a plain K/V buffer. With int8_impl == "fused" (read once from
++    SGLANG_INT8_KV_IMPL), writes use the Triton store kernel and the Triton backend
++    reads get_int8_kv_buffers instead, dequantizing inside its attention kernels.
+     """
+ 
+     def __init__(self, *args, compute_dtype: torch.dtype, **kwargs):
+         if kwargs.get("enable_kv_cache_copy"):
+             raise NotImplementedError("int8_per_token_head KV cache does not support KV copy")
+         self.compute_dtype = compute_dtype
++        self.int8_impl = int8_kv_impl()
+         super().__init__(*args, **kwargs)
+ 
+     def _create_buffers(self):
+@@ -1451,6 +1454,13 @@ class MHATokenToKVPoolINT8(MHATokenToKVPool):
+         i = layer_id - self.start_layer
+         return self.k_scale_buffer[i], self.v_scale_buffer[i]
+ 
++    def get_int8_kv_buffers(
++        self, layer_id: int
++    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
++        """Raw int8 K, int8 V, bf16 K scales, bf16 V scales of one layer, for fused kernels."""
++        i = layer_id - self.start_layer
++        return self.k_buffer[i], self.v_buffer[i], self.k_scale_buffer[i], self.v_scale_buffer[i]
++
+     def _get_key_buffer(self, layer_id: int):
+         i = layer_id - self.start_layer
+         return dequantize_per_token_head(
+@@ -1480,7 +1490,7 @@ class MHATokenToKVPoolINT8(MHATokenToKVPool):
+             )
+         layer_id = layer_id_override if layer_id_override is not None else layer.layer_id
+         i = layer_id - self.start_layer
+-        if int8_kv_impl() == "fused":
++        if self.int8_impl == "fused":
+             int8_quantize_and_store(cache_k, loc, self.k_buffer[i], self.k_scale_buffer[i])
+             int8_quantize_and_store(cache_v, loc, self.v_buffer[i], self.v_scale_buffer[i])
+         else:
