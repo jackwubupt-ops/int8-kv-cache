@@ -1,7 +1,8 @@
 # 阶段 4 工程底稿：在 SGLang v0.5.12 中实现 `int8_per_token_head` KV Cache
 
 - 分支：`stage4-int8-kv`
-- 快照：2026-11-09，tag `stage4-snapshot-20261109`
+- 快照：2026-11-10，tag `stage4-snapshot-20261110`（上一版 `stage4-snapshot-20261109`）
+- 决策记录：[stage4-decision-log.md](stage4-decision-log.md)（执行过程中每个偏离计划的决定、原因和代价）
 - 前置：
   - [阶段 0-3 分析报告](stage0-3-report.md)
   - [阶段 4 设计](superpowers/specs/2026-11-08-stage4-sglang-int8-kv-design.md)
@@ -30,11 +31,18 @@
 |---|---|---|
 | Task 0 | 服务器环境、SGLang 版本锁定、冒烟测试 | ✅ 服务器上 `SMOKE OK`（BF16、FP8 KV 均能生成） |
 | Task 1 | 补丁工作流（apply / export / overlay） | ✅ |
-| Task 2 | 量化数学 `int8_kv.py` | ✅ 18 个 Mac 测试 + 服务器 L0 通过 |
-| Task 3 | `MHATokenToKVPoolINT8` 简单版（读时整层反量化） | ✅ 代码完成，服务器 L0（23 个测试）通过 |
-| Task 4 | L1 模型级检查 | ⚠️ 见第 7 节：第一版测法有缺陷，已重写，新版待服务器结果 |
-| Task 5-8 | 融合 Triton kernel（写入量化、decode、extend、后端接线） | 未开始，按计划在 L1 通过后进行 |
-| Task 9-11 | GSM8K 全量、needle、吞吐和并发基准、最终报告 | 未开始 |
+| Task 2 | 量化数学 `int8_kv.py` | ✅ |
+| Task 3 | `MHATokenToKVPoolINT8` 简单版（读时整层反量化） | ✅ |
+| Task 4 | L1 模型级检查 | ✅ INT8 与阶段 3 同 prompt 持平（0.9888 / 0.9895 vs 0.9879），graph 开关检查通过（第 7 节） |
+| Task 5 | 融合写入 kernel | ✅ 服务器 L0 通过；scale 与 PyTorch 逐比特一致 |
+| Task 6 | 融合 decode kernel | ✅ 服务器 L0 通过（70 项） |
+| Task 7 | 融合 extend kernel | ✅ 服务器 L0 通过（87 项） |
+| Task 8 | 接入 Triton 后端 | ⚠️ L1 全部通过（fused 已在模型中运行）；L0 后端接线测试的分块用例已按诊断结果改写（`fe002aa`），新版在服务器上运行时进程无输出退出，原因待查（9.1） |
+| Task 9-11 | 7B 上 GSM8K 全量、needle、吞吐和并发基准、最终报告 | 未开始 |
+
+最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261110`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
+
+本地测试：150 passed, 66 skipped（GPU 测试在 Mac 上跳过）。服务器最近一次完整 L0（`45dd78e`）：92 passed, 1 failed（分块用例，已改写）。
 
 ---
 
@@ -152,6 +160,23 @@ Qwen2 不走 fused set_kv 路径，写缓存统一经过 `token_to_kv_pool.set_k
 
 ---
 
+### 5.4 融合 kernel 和后端接线（Task 5-8）
+
+开关：环境变量 `SGLANG_INT8_KV_IMPL`，`fused`（默认）或 `plain`，其他值报错。pool 在构造时读一次，存为 `pool.int8_impl`。
+
+| 文件 | 改动 |
+|---|---|
+| `srt/layers/attention/triton_ops/int8_kv_store.py`（新增） | `int8_quantize_and_store(cache, loc, q_buf, scale_buf)`：一个 program 处理一个 (token, head)；用 `div_rn`（IEEE 除法）和 `rint`（round-half-even），scale 与 PyTorch 参考实现逐比特一致；支持非连续输入（qkv 的 view） |
+| `srt/layers/quantization/int8_kv.py` | `int8_kv_impl()` 读开关；`check_int8_backend_mode()`：fused 与 `--enable-deterministic-inference` 同时开启时报错（确定性模式走 unified kernel，没有 INT8 路径） |
+| `srt/mem_cache/memory_pool.py` | `set_kv_buffer` 按开关选 Triton 写入或 PyTorch 写入；新增 `get_int8_kv_buffers(layer_id)` 返回原始 int8 K/V 和两组 scale；`get_key_buffer` 仍返回反量化结果，其他读取方不受影响 |
+| `srt/layers/attention/triton_ops/decode_attention.py` | grouped stage-1 kernel 增加 `KV_INT8` 分支：`qk = dot(q, k→bf16) * s_k`，乘 V 前 `p * s_v`，softmax 分母用未乘 scale 的 p；非 grouped、MLA、HIP、标量 scale ≠ 1.0、只给一个 scale buffer 都报错 |
+| `srt/layers/attention/triton_ops/extend_attention.py` | `_fwd_kernel` 只改前缀循环（从缓存池读的部分），本次新输入保持原始精度；unified kernel 收到 scale 报 `NotImplementedError` |
+| `srt/layers/attention/triton_backend.py` | `_kv_buffers_for_read()`：fused 时把 int8 buffer 和 scale 传给 extend、decode kernel；plain 时照旧取反量化 buffer |
+
+不传 scale 时，decode 和 extend kernel 在 BF16 和 FP8 下都与未打补丁的原版逐比特相同（L0 测试保证）。
+
+---
+
 ## 6. 测试体系
 
 | 层级 | 位置 | 运行环境 | 内容 |
@@ -163,8 +188,16 @@ Qwen2 不走 fused set_kv 路径，写缓存统一经过 `token_to_kv_pool.set_k
 | L1 指标 | `tests/test_stage4_l1_metrics.py` | Mac | L1 脚本的纯函数部分（用假 engine 测请求构造和解析） |
 | L1 模型 | `experiments/stage4/l1_model_check.py` | 服务器 | 见第 7 节 |
 | 冒烟 | `experiments/stage4/smoke.py` | 服务器 | Triton 后端，BF16 和 FP8 KV 各生成 8 个 token |
+| L0 写入 kernel | `tests_stage4/test_int8_store_kernel.py` | 开关解析 Mac，其余 GPU | 与 PyTorch 参考逐比特（N 取 1/7/4096，bf16/fp16）、非连续输入、只写 loc、全 0 行、空 batch、pool 两种实现 |
+| L0 参考 attention | `tests_stage4/reference.py`、`test_reference.py` | Mac | FP32 参考 attention（GQA、因果偏移），供 decode/extend 测试共用 |
+| L0 decode | `tests_stage4/test_fused_decode.py` | GPU | 与精确反量化参考相对 L2 < 1e-2、与 plain 余弦 > 0.9999、关闭时与原版逐比特（BF16、FP8）、各种报错 |
+| L0 extend | `tests_stage4/test_fused_extend.py` | GPU | 前缀 {0,5,300} × 新输入 {1,64,257} 对参考、对 plain、无前缀时与 BF16 逐比特、关闭时与原版逐比特、unified 拒绝 |
+| L0 后端接线 | `tests_stage4/test_backend_wiring.py`、`test_int8_impl_wiring.py` | GPU（Engine）/ Mac | fused 生成与 plain 前 8 token 相同、radix cache 命中前后输出相同、512 分块时 fused 检索到 plain 检索到的每根针；确定性模式检查 |
+| 分块诊断 | `experiments/stage4/chunk_diag.py`、`scripts/stage4/diag_chunk.sh` | 服务器 | BF16 / INT8 plain / INT8 fused × 分块与否，长 needle 的检索结果 |
 
-本地完整测试：127 passed, 5 skipped（GPU 测试被跳过）。服务器 L0：23 passed。
+测试数据约定（Task 6 的教训）：参考值用精确 FP32 反量化（`int8 × scale`，不舍入到 bf16）；q 乘 0.05，让 attention logit 标准差不超过 5 左右；FP8 的 scale 取 absmax/200，避免 e4m3 溢出成 NaN。
+
+本地完整测试：150 passed, 66 skipped（GPU 测试被跳过）。
 
 服务器脚本：
 
@@ -283,6 +316,52 @@ L1 int8_per_token_head:plain:off: FAIL top1=0.9898 |dlogp|=0.0346
 - INT8 比 BF16 更容易碰上平局，是因为 INT8 本身改变了 logit（|dlogp| 0.02），让一些位置的 top-2 落进了一个步长内；graph 与 eager 的累加顺序差异再把它翻过去。
 - v5 的平局阈值 0.1 低于 bf16 分辨率，是判据写错了。v6 改为“差距不超过一个 bf16 步长（0.125）”，两个步长（0.25）仍判 FAIL。按 v5 的数据重判为 PASS。
 
+### 7.5 Task 5-8 的服务器结果
+
+**Task 5（`0591288`）**：L0 44 passed；L1 PASS，`fused:on`（此时只有写入是融合的）与 `plain:on` 指标完全相同（0.9888 / 0.0208），写入逐比特一致的直接证据。
+
+**Task 6（`9536038` → `e2b6e49`）**：第一次 L0 有 5 个失败，全部是测试数据问题，CPU 复现后修正，kernel 未改：
+
+- 参考值用了舍入到 bf16 的反量化 K/V，而 kernel 直接算 `int8 × scale`；
+- q ~ N(0,1) 配 100 倍幅度的 K head，logit 标准差约 110，softmax 近似 one-hot，仅 bf16 舍入就让输出偏 2%；
+- FP8 用例 scale 0.5 让 |k|/0.5 超过 e4m3 上限 448，变成 NaN，`torch.equal` 永远不等。
+
+修正后 70 passed。
+
+**Task 7（`286ad79`）**：L0 87 passed。
+
+**Task 8 检查点 2（`45dd78e`）**：L1 全部通过，融合 kernel 第一次在模型中运行：
+
+| 配置 | top1/prompt | \|dlogp\| | needle |
+|---|---|---|---|
+| int8 plain:on | 0.9888 | 0.0208 | 1.0 |
+| int8 plain:off | 0.9895 | 0.0208 | 1.0 |
+| int8 fused:on | 0.9902 | 0.0199 | 1.0 |
+| int8 fused:off | 0.9895 | 0.0201 | 1.0 |
+
+fused 与 plain 差距 < 0.0015（阈值 0.005）。fused 的 \|dlogp\| 略小，因为 plain 把反量化结果多舍入了一次 bf16。
+
+L0 92 passed、1 failed：分块用例原先要求 600 条事实（约 1.3 万 token）的 needle 在 512 分块和不分块下输出 token 完全相同。
+
+**分块诊断。** 600 条事实，4 根针：
+
+- BF16 本身只对 1/4，所有 INT8 配置 0/4；
+- 各配置答案互不相同，连不分块的 plain 和 fused 都不同；
+- 这个长度已超出 1.5B 的检索能力，模型在近似平局的候选间猜测，比较 token 只量到噪声。
+
+150 条事实（约 3300 token），4 根针：
+
+| | 不分块 | 512 分块 |
+|---|---|---|
+| BF16 | 3/4 | 3/4 |
+| INT8 plain | 3/4 | 2/4 |
+| INT8 fused | 3/4 | 2/4 |
+
+- seed 3：所有配置都错，包括 BF16；
+- seed 0：INT8 一分块就把最后一位答错（224672 vs 224679），plain 和 fused 错得一样，是“后续块从 INT8 读前面块”的设计代价，不是融合 kernel 的问题。这条要写进最终报告（与阶段 3 的分块观察一致）。
+
+据此把用例改为：512 分块下，plain 检索到的针 fused 也必须检索到（`fe002aa`）。
+
 ## 8. 服务器部署问题记录
 
 | # | 现象 | 原因 | 修复（commit） |
@@ -308,20 +387,32 @@ AutoDL 操作要点：
 
 ## 9. 已知问题和下一步
 
-1. **L1 第二版的服务器结果还没拿到。** 这是进入 Task 5 的前提。
-2. **简单版读取的开销。** 每层每次前向都把整个 pool 反量化，产生 fp32 中间结果和 bf16 输出：
-   - 1.5B 模型、`mem_fraction_static=0.7` 时，pool 约 90 万 token，每层 K 的 fp32 临时结果约 0.9 GB；
-   - 所以简单版 L1 会比 BF16 慢很多，显存余量也更紧；
-   - 这是设计中预期的（简单版只用来验证正确性），融合 kernel 会直接在 kernel 内按块读 int8 + scale；
-   - 如果 L1 因此太慢或 OOM，可以给 L1 加 `--mem-fraction-static` 参数缩小 pool，不影响正确性结论。
-3. Task 5-8：
-   - `int8_quantize_and_store` Triton 写入 kernel，用 `SGLANG_INT8_KV_IMPL` 切换 plain/fused 实现；
-   - decode kernel（`triton_ops/decode_attention.py`）在 kernel 内反量化；
-   - extend kernel 的前缀部分在 kernel 内反量化；
-   - 后端接线：通过 `get_kv_scale_buffer` 传入 scale。
-4. Task 9-11：
-   - Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：GSM8K 全部 1319 题（McNemar 检验）、needle、最大 token 容量、并发和吞吐；
+### 9.1 待查：后端接线测试运行后没有任何输出
+
+`fe002aa` 上运行 `pytest tests_stage4/test_backend_wiring.py ... | tail -5`，终端没有输出。pytest 正常结束一定会打印结果行，没有输出说明进程很可能被系统杀掉（例如内存不足，管道里 shell 不会显示 `Killed`）。这个文件会连续启动 4 次 Engine。
+
+下一步在服务器上运行：
+
+```bash
+cd ~/int8-kv-cache && git log --oneline -1 && /root/autodl-tmp/venv-sglang/bin/python -m pytest -q tests_stage4/test_backend_wiring.py -p no:cacheprovider > wiring.log 2>&1; echo "exit code: $?"; tail -20 wiring.log; free -g | head -2
+```
+
+退出码 137 表示被杀，再用 `dmesg | grep -i -E "killed process|out of memory"` 确认。
+
+### 9.2 已知代价（写入报告）
+
+- 分块 prefill 时后续块从 INT8 读前面块，150 条事实的 needle 上 INT8 分块比不分块少对 1 根（plain、fused 相同）。SGLang 在 24 GB 卡上默认分块 2048。
+- FP8 KV 没有校准 scale 时精度很差（top1 0.8644），原因是 Qwen K 的离群值。
+
+### 9.3 后续任务
+
+1. 解决 9.1，Task 8 收尾。
+2. Task 9-11：Qwen2.5-7B-Instruct 上 BF16 / FP8 / INT8 三方对比：
+   - GSM8K 全部 1319 题（McNemar 检验）；
+   - needle；
+   - 最大 token 容量、并发和吞吐；
    - 撰写 `docs/stage4-report.md`。
+3. 全分支代码审查（最强模型），然后合并。
 
 ---
 
