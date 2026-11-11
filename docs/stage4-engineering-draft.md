@@ -1,7 +1,7 @@
 # 阶段 4 工程底稿：在 SGLang v0.5.12 中实现 `int8_per_token_head` KV Cache
 
 - 分支：`stage4-int8-kv`
-- 快照：2026-11-10，tag `stage4-snapshot-20261110b`（更早：`stage4-snapshot-20261110`、`stage4-snapshot-20261109`）
+- 快照：2026-11-11，tag `stage4-snapshot-20261111`（更早：`stage4-snapshot-20261110b`、`stage4-snapshot-20261110`、`stage4-snapshot-20261109`）
 - 决策记录：[stage4-decision-log.md](stage4-decision-log.md)（执行过程中每个偏离计划的决定、原因和代价）
 - 前置：
   - [阶段 0-3 分析报告](stage0-3-report.md)
@@ -38,12 +38,13 @@
 | Task 6 | 融合 decode kernel | ✅ 服务器 L0 通过（70 项） |
 | Task 7 | 融合 extend kernel | ✅ 服务器 L0 通过（87 项） |
 | Task 8 | 接入 Triton 后端 | ✅ L1 全部通过（fused 与 plain 差距 < 0.0015）；后端接线测试 3 项通过（`0055369`，用 `l0.sh` 运行） |
-| Task 9 | 精度评测脚本（GSM8K 全量、needle150/600，McNemar 汇总） | ✅ 脚本完成并在 7B 上冒烟（每任务 20 题）；FP8 基线异常，原因调查中（7.6） |
-| Task 10-11 | 吞吐和并发基准、7B 正式评测、最终报告 | 未开始 |
+| Task 9 | 精度评测脚本（GSM8K 全量、needle150/600，McNemar 汇总） | ✅ 脚本完成并在 7B 上冒烟（每任务 20 题）；FP8 基线异常的原因已在源码和本地 1.5B 上查清，7B 上的确认随正式运行一起做（7.6） |
+| Task 10 | 性能测试脚本（容量、吞吐、长请求并发、decode kernel 微基准） | ⚠️ 代码完成，Mac 上测试通过（含用假 server 跑通整个流程）；**还没在服务器上运行过**（7.7） |
+| Task 11 | 7B 正式运行和阶段 4 报告 | ⚠️ 一键运行脚本 `run_all.sh` 和报告表格生成器已就绪并测试；正式运行和报告正文待服务器结果（9.3） |
 
-最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261110`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
+最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261111`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
 
-本地测试：150 passed, 66 skipped（GPU 测试在 Mac 上跳过）。服务器最近一次完整 L0（`45dd78e`）：92 passed, 1 failed（分块用例，已改写）。
+本地测试：223 passed, 66 skipped（GPU 测试在 Mac 上跳过）。服务器上 `tests_stage4` 最近一次完整运行（`45dd78e`）：92 passed, 1 failed（分块用例，之后改写并单独跑通，`0055369`）。
 
 ---
 
@@ -195,10 +196,15 @@ Qwen2 不走 fused set_kv 路径，写缓存统一经过 `token_to_kv_pool.set_k
 | L0 extend | `tests_stage4/test_fused_extend.py` | GPU | 前缀 {0,5,300} × 新输入 {1,64,257} 对参考、对 plain、无前缀时与 BF16 逐比特、关闭时与原版逐比特、unified 拒绝 |
 | L0 后端接线 | `tests_stage4/test_backend_wiring.py`、`test_int8_impl_wiring.py` | GPU（Engine）/ Mac | fused 生成与 plain 前 8 token 相同、radix cache 命中前后输出相同、512 分块时 fused 检索到 plain 检索到的每根针；确定性模式检查 |
 | 分块诊断 | `experiments/stage4/chunk_diag.py`、`scripts/stage4/diag_chunk.sh` | 服务器 | BF16 / INT8 plain / INT8 fused × 分块与否，长 needle 的检索结果 |
+| 精度评测 | `tests/test_stage4_eval.py` | Mac | 假 Engine 下的打分、任务加载、配置名、与 BF16 的配对汇总 |
+| FP8 探针和格式模拟 | `tests/test_stage4_fp8_probe.py`、`tests/test_stage4_format_sim.py` | Mac | 各格式的往返、溢出计数、校准 scale、SGLang 的 quant-param JSON、float prefill 语义、两种 transformers 调用约定 |
+| 性能脚本 | `tests/test_stage4_parse_logs.py`、`tests/test_stage4_bench_kernel.py` | Mac | 日志和 bench_serving 输出解析、多次运行取中位数；kernel 基准的框架逻辑（注入假 kernel），并用 ast 核对补丁版 SGLang 的函数签名 |
+| 服务器流程 | `tests/test_stage4_server_flow.py` | Mac | 用假的 venv python 端到端运行 `bench.sh`、`eval.sh`、`run_all.sh` |
+| 报告表格 | `tests/test_stage4_report_tables.py` | Mac | 从合成的结果目录生成表格和核对项 |
 
 测试数据约定（Task 6 的教训）：参考值用精确 FP32 反量化（`int8 × scale`，不舍入到 bf16）；q 乘 0.05，让 attention logit 标准差不超过 5 左右；FP8 的 scale 取 absmax/200，避免 e4m3 溢出成 NaN。
 
-本地完整测试：150 passed, 66 skipped（GPU 测试被跳过）。
+本地完整测试：223 passed, 66 skipped（GPU 测试被跳过；其中服务器流程测试约 1.5 分钟）。
 
 服务器脚本：
 
@@ -363,7 +369,7 @@ L0 92 passed、1 failed：分块用例原先要求 600 条事实（约 1.3 万 t
 
 据此把用例改为：512 分块下，plain 检索到的针 fused 也必须检索到（`fe002aa`）。
 
-### 7.6 Task 9：7B 冒烟评测和 FP8 异常（进行中）
+### 7.6 Task 9：7B 冒烟评测和 FP8 异常
 
 脚本：`experiments/stage4/eval_accuracy.py`、`scripts/stage4/eval.sh`（配置格式 `kv:impl[:attention_backend]`，可断点续跑，`EVAL_N=20` 为冒烟模式，结果写到 `results/stage4/Qwen2.5-7B-Instruct/accuracy[_smoke20]/`）。GSM8K 测试集放在 `data/gsm8k/`（MIT）。评测使用 SGLang 默认设置：chunked prefill 2048、CUDA Graph 开。
 
@@ -383,13 +389,81 @@ L0 92 passed、1 failed：分块用例原先要求 600 条事实（约 1.3 万 t
 - INT8 fused 与 BF16 持平；fused 比 plain 快约 8 倍（plain 每步反量化整个 pool）。
 - FP8（scale 1.0，没有 checkpoint scale）在 7B 上输出乱码，例如 `TheThe The access code for me*0 is8 is0 EntityState ...`。
 
-FP8 原因排查：
+FP8 原因排查（2026-11-11 更新）：
 
-1. **e4m3 溢出（448）？** 不足以解释：e5m2（最大 57344）同样崩溃。
+1. **e4m3 溢出（448）？** 单独不足以解释：e5m2（最大 57344）同样崩溃。
 2. **Triton 后端把 Q 也转成 FP8？** 原版 Triton kernel 确实这样做（decode `q.to(K_Buffer dtype)`、extend 前缀 `q.to(k.dtype)`），但换 FlashInfer（Q 保持 bf16）照样崩溃，排除。
-3. **当前假设：Qwen K 的离群通道（k_proj bias）。** 几个通道数值达几百：e4m3 超过 448 会变 NaN（已确认 torch 的转换不饱和），e5m2 只有 2 位尾数，几百量级的间隔约 64；softmax 对所有 token 共有的分量不敏感，决定注意力的是去掉通道均值后的部分，FP8 的误差可能超过这部分。INT8 per-token-head 按每行 absmax 均匀量化，误差小且均匀。
+3. **结论：是 FP8 这种存储格式和 Qwen 的 K 分布不匹配，不是 SGLang 的实现错误。** 证据分三层：
 
-验证工具：`experiments/stage4/fp8_probe.py`（`bash scripts/stage4/fp8_probe.sh`），在 7B 上取一个 needle 提示词的逐层真实 K/V，统计 e4m3 溢出比例、通道离群程度、三种格式相对“去均值后 K/V”的误差。**尚未在服务器上跑通**（第一次因 venv 没有 `accelerate` 报错，已在 `7f69eef` 修复）。
+**(a) SGLang 源码（读代码，未执行）。** 没有 checkpoint scale 时，`MHATokenToKVPool.set_kv_buffer` 直接把 K/V 转成 FP8 dtype（`mem_cache/memory_pool.py:1061-1067`，scale 等于 1.0）。torch 把超过 448 的值转成 `float8_e4m3fn` 时得到 NaN，不饱和（本地验证）。
+
+SGLang 提供了 `--quantization-param-path` 给 `fp8_e4m3` 每层一个静态 scale，但在 v0.5.12 里这条路对未量化的 Qwen2 走不通：
+
+- `Qwen2Model.load_kv_cache_scales` 只设置 `attn.k_scale` / `v_scale`，不设置 `k_scale_float` / `v_scale_float`；而两个后端传给 kernel 的都是后者（`triton_backend.py` 的 `forward_extend` / `forward_decode`，`flashinfer_backend.py:834-835、926-927`）。`k_scale_float` 只在加载已量化 checkpoint 时由 `BaseKVCacheMethod.process_weights_after_loading` 设置。
+- FlashInfer 读前缀的 ragged + paged 路径（`flashinfer_backend.py:876-882`）完全不传 scale。
+- Triton kernel 把 Q 也转成 KV 的 dtype。
+
+所以没有在 SGLang 里做“带校准 scale 的 FP8”基线：要补三处上游代码，而且本地无法验证。改为在纯 PyTorch 里测 FP8 的最好情况（见 c）。
+
+**(b) 探针（本地，Qwen2.5-1.5B-Instruct，一个 3353 token 的 needle 提示词的逐层真实 K/V）。** 结果文件：`results/stage4/Qwen2.5-1.5B-Instruct/local_mac/fp8_probe.json`。
+
+- K 的 absmax 最大 321.3（第 0 层），没有超过 448，所以 1.5B 上 e4m3 不产生 NaN；V 的 absmax 最大 25.4。
+- K 里离群通道的 absmax 是中位通道的 77.7 倍；V 只有 4.8 倍。
+- 误差相对“去掉通道均值后的张量”（softmax 对所有 token 共有的分量不敏感）：
+
+| 格式 | K 均值 | K 最差层 | V 均值 | V 最差层 |
+|---|---|---|---|---|
+| fp8_e4m3（scale 1.0） | 0.077 | 0.83 | 0.031 | 0.035 |
+| fp8_e5m2（scale 1.0） | 0.169 | 2.18 | 0.061 | 0.070 |
+| fp8_e4m3 + 每层校准 scale | 0.090 | 1.19 | 0.031 | 0.035 |
+| int8_per_token_head | 0.036 | 0.39 | 0.011 | 0.020 |
+
+FP8 是浮点格式，相对精度固定（e4m3 约 1/16，e5m2 约 1/8），数值越大绝对误差越大；INT8 per-token-head 按每行 absmax 均匀切 127 档。校准 scale 只能防溢出，不改变相对精度，所以对 1.5B 没有帮助（scale 在 1.0 到 1.43 之间）。
+
+**(c) 格式模拟（本地，同一个模型，和 SGLang L1 相同的 22 个提示词）。** `experiments/stage4/kv_format_sim.py` 在未修改的 HF 模型上，把 K/V 存成“量化再反量化”的结果（多 token 的 prefill 块读自己的浮点 K/V，之后的步骤从缓存读，与 SGLang 一致），完全不经过 SGLang。结果文件：`local_mac/format_sim.json`（MPS、fp16）。
+
+| 格式 | top1/prompt | needle（基线 7/10） | 生成完全一致 | SGLang L1 的对应数字 |
+|---|---|---|---|---|
+| int8_per_token_head | 0.985 | 7/10 | 0.64 | 0.989（阶段 3：0.988） |
+| fp8_e4m3（scale 1.0） | 0.812 | 0/10 | 0.00 | 0.864，生成完全一致 0.00 |
+| fp8_e5m2（scale 1.0） | 0.862 | 7/10 | 0.45 | 没测 |
+| fp8_e4m3 + 每层校准 scale | 0.693 | 0/10 | 0.05 | 没测（SGLang 里走不通） |
+
+- INT8 的模拟结果和 SGLang、阶段 3 一致，说明模拟本身可信。
+- FP8 e4m3 在纯 PyTorch 里和在 SGLang 里一样差，所以问题在格式，不在 SGLang 的 FP8 实现。
+- 校准后的 e4m3 更差。scale 只变了不到 1.5 倍，top1 从 0.81 掉到 0.69：结果对离群通道的值落在舍入网格的哪一侧很敏感。
+- **没有解释清楚的现象**：e5m2 的 K 误差最大（探针里最差层 2.18），但 needle 反而答对 7/10，比 e4m3 好。探针的“去均值误差”不能预测 FP8 各变体之间的排序。
+
+**7B 上还需要确认的**（随正式运行一起做，`run_all.sh` 的 fp8 步骤）：7B 的 K absmax 是否超过 448（预期超过，对应 SGLang 上 e4m3 的乱码）；纯 PyTorch 模拟里 e4m3、e5m2、校准后的 e4m3 在 7B 上各是什么表现，以及 100 道 GSM8K 上的配对结果。
+
+### 7.7 Task 10-11：性能测试和一键运行（Mac 上完成，待服务器运行）
+
+**性能测试（Task 10）**
+
+| 文件 | 作用 |
+|---|---|
+| `scripts/stage4/bench.sh` | 对每个配置启动 `sglang.launch_server`（`--mem-fraction-static 0.85`），读容量，跑 `bench_serving`，再跑长请求并发测试；最前面跑 decode kernel 微基准。可断点续跑，`BENCH_SMOKE=1` 是几分钟的小规模试跑 |
+| `experiments/stage4/bench_decode_kernel.py` | 只测 decode attention kernel：bf16 / fp8 / int8（融合）/ int8_plain（先反量化再用 bf16 kernel），batch 32，上下文 1024 到 32768，CUDA event 计时，预热 10 次、取 100 次的中位数 |
+| `experiments/stage4/parse_logs.py` | 从 server 日志读容量和峰值并发，从 bench_serving 输出读吞吐、TTFT、TPOT；同一配置多次运行取中位数，写 `bench_summary.json` |
+
+和计划不同的地方（原因见决策记录）：
+
+- `bench_serving` 用 `random-ids` 加 `--tokenize-prompt`，不用 `random`：后者要从 Hugging Face 下载 ShareGPT，而且默认的长度是在 [1, N] 里随机取的。
+- 请求数：(1024, 256) 用 256 个，(4096, 512) 用 64 个，(8192, 512) 用 32 个；长请求并发测试是 128 个 8192 + 512 的请求（计划写的是 256，`LONG_REQUESTS=256` 可以恢复）。
+- 默认配置：BF16、FP8 e4m3、INT8 fused（完整测试），INT8 plain（只测容量和 (1024, 256)），BF16 + FlashInfer（参考）。
+- 如果一次压测里有请求没完成，脚本会打印 `INCOMPLETE` 并以失败退出，汇总表里带“完成数”。
+
+**一键运行（Task 11 的准备）**
+
+- `scripts/stage4/run_all.sh`：依次执行 l0（`tests_stage4`）→ fp8（探针、校准、格式模拟）→ eval（5 个配置 × 3 个任务）→ bench → pack（把 `results/stage4` 打成一个 tar.gz）。每一步单独记日志；某一步失败会在最后的 SUMMARY 里标出，但不影响后面的步骤；已完成的部分重跑时自动跳过。`RUN_ALL_SMOKE=1` 用很小的规模把整条流程走一遍，结果写到单独的目录。
+- `experiments/stage4/make_report.py <结果目录>`：从结果文件生成 `report_tables.md`（精度配对表、容量和吞吐表、FP8 探针和模拟表），并列出核对项，例如 INT8 容量比是否接近理论值 1.969。
+
+**这些代码的验证程度**
+
+- 纯函数部分都有 Mac 上的单元测试。
+- `tests/test_stage4_server_flow.py` 用一个假的 venv python（模拟 server 启动、bench_serving、评测脚本）在 Mac 上把 `bench.sh`、`eval.sh`、`run_all.sh` 真正跑了一遍，覆盖结果目录结构、断点续跑、server 启动失败、丢请求、某一步失败后继续。
+- 探针和格式模拟在本地 1.5B 上实际运行过；并对照 transformers 5.6.0（服务器 venv 的版本）的源码检查了用到的缓存接口。
+- **没有验证的**：`bench_decode_kernel.py` 的 GPU 部分、真实的 `launch_server` / `bench_serving` 调用和日志格式（样例是按源码里的格式串写的）、探针和模拟在 7B 和 CUDA 上的运行。所以到服务器上第一步先跑 `RUN_ALL_SMOKE=1`。
 
 ## 8. 服务器部署问题记录
 
@@ -425,15 +499,34 @@ AutoDL 操作要点：
 ### 9.2 已知代价（写入报告）
 
 - 分块 prefill 时后续块从 INT8 读前面块，150 条事实的 needle 上 INT8 分块比不分块少对 1 根（plain、fused 相同）。SGLang 在 24 GB 卡上默认分块 2048。
-- FP8 KV 没有校准 scale 时精度很差（top1 0.8644），原因是 Qwen K 的离群值。
+- FP8 KV 在 Qwen 上不可用：1.5B 上 top1 0.86 且生成全部偏离，7B 上输出乱码；原因和证据见 7.6。SGLang v0.5.12 里无法给未量化的 Qwen2 加载校准 scale。
 
-### 9.3 后续任务（暂停点：2026-11-10）
+### 9.3 后续任务（2026-11-11：代码已备好，等服务器运行）
 
-1. **下一步**：服务器上更新到 `7f69eef` 之后的版本，运行 `bash scripts/stage4/fp8_probe.sh`，用结果确认或推翻 7.6 的离群通道假设。
-2. 根据结论决定正式评测里的 FP8 配置（只报告 scale 1.0 的 FP8 并说明原因，或另找带 scale 的 FP8 基线），然后跑正式评测：`nohup bash scripts/stage4/eval.sh > eval.log 2>&1 &`（5 个配置 × 3 个任务，INT8 plain 最慢，预计数小时，可断点续跑）。
-3. Task 10：性能测试脚本（最大 token 容量、并发、吞吐）。
-4. Task 11：7B 正式运行，撰写 `docs/stage4-report.md`。需要写入的已知代价：分块 prefill 读 INT8 的检索损失（9.2）、FP8 无 scale 的崩溃及原因。
-5. 全分支代码审查（最强模型），然后合并。
+**服务器上的步骤**
+
+1. 更新代码（GitHub 或 bundle），确认 `git log --oneline -1` 是最新提交。
+2. 重新打补丁（补丁本身这次没变，但保险起见）：`bash scripts/stage4/setup.sh > setup.log 2>&1`。
+3. 小规模试跑，约 20 到 30 分钟：
+
+   ```bash
+   cd ~/int8-kv-cache && RUN_ALL_SMOKE=1 nohup bash scripts/stage4/run_all.sh > run_all_smoke.log 2>&1 &
+   ```
+
+   看结果：`tail -n 30 run_all_smoke.log`，最后的 `RUN_ALL SUMMARY` 里每一步应该是 OK。
+4. 试跑没问题后，正式运行，预计 5 到 6 小时（INT8 plain 的 GSM8K 和格式模拟的 GSM8K 最慢）：
+
+   ```bash
+   cd ~/int8-kv-cache && nohup bash scripts/stage4/run_all.sh > run_all.log 2>&1 &
+   ```
+
+5. 把 `results/stage4_results_<时间>.tar.gz` 下载到 Mac，解压到仓库的 `results/` 下。
+
+**拿到结果之后（Mac 上）**
+
+1. `python experiments/stage4/make_report.py results/stage4/Qwen2.5-7B-Instruct`，先看“核对”一节。
+2. 写 `docs/stage4-report.md`：按设计文档第 1 节的成功标准逐项给结论，写明已知代价（9.2）和没解释清楚的现象（7.6 末尾）。
+3. 全分支代码审查（最强模型），处理发现的问题，然后合并。
 
 服务器操作备忘：GitHub 不稳定时，用 bundle（`git bundle create int8-kv-cache.bundle stage4-int8-kv`，上传到 `/root`，`git pull ~/int8-kv-cache.bundle stage4-int8-kv`）；GPU 命令都通过 `scripts/stage4/*.sh` 运行（`common.sh` 负责 PATH 上的 ninja/nvcc）。
 
