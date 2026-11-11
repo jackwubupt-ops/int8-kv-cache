@@ -16,7 +16,7 @@ flock -n 9 || { echo "Another stage 4 GPU job is running; wait for it." >&2; exi
 MODEL="$MODELS/Qwen2.5-7B-Instruct"
 CONFIGS="${1:-auto:plain,fp8_e4m3:plain,fp8_e5m2:plain,int8_per_token_head:plain,int8_per_token_head:fused}"
 TASKS="${2:-gsm8k,needle150,needle600}"
-OUT="results/stage4/$(basename "$MODEL")/accuracy"
+OUT="$RESULTS/$(basename "$MODEL")/accuracy"
 N_ARGS=()
 if [[ -n ${EVAL_N:-} ]]; then OUT="${OUT}_smoke$EVAL_N"; N_ARGS=(--n "$EVAL_N"); fi
 mkdir -p "$OUT"

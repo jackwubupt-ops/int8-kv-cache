@@ -3,6 +3,8 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 STAGE4_VENV="${STAGE4_VENV:-/root/autodl-tmp/venv-sglang}"
 MODELS="${MODELS:-/root/autodl-tmp/models}"
 PY="$STAGE4_VENV/bin/python"
+# Where results go, relative to the repository root unless absolute (tests point this at a temp directory).
+RESULTS="${STAGE4_RESULTS:-results/stage4}"
 # SGLang JIT-compiles some kernels at runtime and calls `ninja` and `nvcc` by name:
 # the venv's bin holds ninja, the image's CUDA toolkit holds nvcc.
 export CUDA_HOME="${CUDA_HOME:-/usr/local/cuda}"
