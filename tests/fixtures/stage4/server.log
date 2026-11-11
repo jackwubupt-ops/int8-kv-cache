@@ -1,0 +1,10 @@
+[2026-11-10 02:00:00] server_args=ServerArgs(model_path='/root/autodl-tmp/models/Qwen2.5-7B-Instruct', kv_cache_dtype='int8_per_token_head', mem_fraction_static=0.85, attention_backend='triton')
+[2026-11-10 02:00:21] Load weight end. elapsed=18.42 s, type=Qwen2ForCausalLM, avail mem=7.90 GB, mem usage=15.33 GB.
+[2026-11-10 02:00:21] KV Cache is allocated. #tokens: 151872, K size: 2.06 GB, V size: 2.06 GB
+[2026-11-10 02:00:21] Memory pool end. avail mem=3.71 GB
+[2026-11-10 02:00:48] max_total_num_tokens=151872, chunked_prefill_size=2048, max_prefill_tokens=16384, max_running_requests=2048, context_len=32768, available_gpu_mem=2.93 GB
+[2026-11-10 02:01:02] Prefill batch, #new-seq: 1, #new-token: 2048, #cached-token: 0, token usage: 0.00, #running-req: 0, #queue-req: 255, #pending-token: 6144, 
+[2026-11-10 02:01:09] Prefill batch, #new-seq: 2, #new-token: 2048, #cached-token: 0, token usage: 0.11, #running-req: 2, #queue-req: 253, #pending-token: 4096, 
+[2026-11-10 02:01:30] Decode batch, #running-req: 17, #token: 148992, token usage: 0.98, cuda graph: True, gen throughput (token/s): 412.33, #queue-req: 239
+[2026-11-10 02:01:41] Decode batch, #running-req: 16, #token: 140210, token usage: 0.92, cuda graph: True, gen throughput (token/s): 498.10, #queue-req: 238
+[2026-11-10 02:01:55] Prefill batch, #new-seq: 1, #new-token: 2048, #cached-token: 0, token usage: 0.93, #running-req: 15, #queue-req: 237, #pending-token: 6144, 
