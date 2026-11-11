@@ -36,7 +36,7 @@ step() {  # step <name> <command...>: run, log, record the outcome, never abort 
     fi
     tail -n 40 "$LOGS/$name.log"
     # Failures may have scrolled out of the tail; repeat them so they are not missed.
-    grep -a -E "^FAILED|FAILED " "$LOGS/$name.log" | sort -u | sed 's/^/!! /'
+    grep -a -E "^FAILED|FAILED |^INCOMPLETE" "$LOGS/$name.log" | sort -u | sed 's/^/!! /'
     echo "##### $name end ($(date +%T))"
 }
 

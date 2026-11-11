@@ -82,13 +82,20 @@ start_server() {  # start_server <kv> <impl> <backend> <dir>; leaves SERVER_PID 
 }
 
 run_bench() {  # run_bench <out.jsonl> <input_len> <output_len> <num_prompts> <seed>
-    local out=$1
+    # Returns 0 when every request completed, 2 when the run finished but lost requests, 1 when it produced nothing.
+    local out=$1 completed
     rm -f "$out.tmp"
     "$PY" -m sglang.bench_serving --backend sglang --host 127.0.0.1 --port "$PORT" --model "$MODEL" \
         --dataset-name random-ids --tokenize-prompt --random-input-len "$2" --random-output-len "$3" \
         --random-range-ratio 1.0 --num-prompts "$4" --request-rate inf --seed "$5" --flush-cache \
         --disable-tqdm --output-file "$out.tmp" >"${out%.jsonl}.log" 2>&1
-    if [[ -s $out.tmp ]] && grep -q '"completed"' "$out.tmp"; then mv "$out.tmp" "$out"; return 0; fi
+    if [[ -s $out.tmp ]] && grep -q '"completed"' "$out.tmp"; then
+        mv "$out.tmp" "$out"
+        completed=$(grep -o '"completed": *[0-9]*' "$out" | tail -1 | grep -o '[0-9]*$')
+        [[ $completed == "$4" ]] && return 0
+        LOST_MSG="$completed of $4 requests completed"
+        return 2
+    fi
     echo "  bench_serving failed, see ${out%.jsonl}.log:"; tail -n 5 "${out%.jsonl}.log"
     return 1
 }
@@ -138,7 +145,12 @@ for cfg in "${configs[@]}"; do
         f="$dir/${kind}_${in_len}x${out_len}_run$run.jsonl"
         start_bytes=$(wc -c <"$dir/server.log")
         echo "  $kind ${in_len}x${out_len} n=$num run $run ($(date +%T))"
-        if ! run_bench "$f" "$in_len" "$out_len" "$num" "$run"; then echo "FAILED $cname $kind ${in_len}x${out_len}"; failed=1; fi
+        run_bench "$f" "$in_len" "$out_len" "$num" "$run"
+        case $? in
+            0) ;;
+            2) echo "INCOMPLETE $cname $kind ${in_len}x${out_len}: $LOST_MSG"; failed=1 ;;
+            *) echo "FAILED $cname $kind ${in_len}x${out_len}"; failed=1 ;;
+        esac
         if [[ $kind == long ]]; then
             tail -c "+$((start_bytes + 1))" "$dir/server.log" >"$dir/long_${in_len}x${out_len}_server.log"
         fi

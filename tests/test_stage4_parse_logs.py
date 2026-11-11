@@ -79,8 +79,15 @@ def test_summarize_bench_takes_medians_over_runs(tmp_path):
     assert shape["runs"] == 3 and shape["output_throughput"] == 1600.0
     assert shape["median_ttft_ms"] == 200.0 and shape["median_tpot_ms"] == 20.0
     assert s["configs"]["bf16"]["serving"]["4096x512"] == pytest.approx(
-        {"runs": 1, "output_throughput": 900.0, "median_ttft_ms": 9120.5, "median_tpot_ms": 81.3})
+        {"runs": 1, "output_throughput": 900.0, "median_ttft_ms": 9120.5, "median_tpot_ms": 81.3, "completed": 256})
     assert s["configs"]["int8_fused"]["serving"]["1024x256"]["output_throughput"] == 1425.0  # median of two = mean
+
+
+def test_summarize_bench_reports_the_fewest_completed_requests_over_runs(tmp_path):
+    d = _bench_dir(tmp_path)
+    partial = json.loads((d / "bf16" / "serving_1024x256_run2.jsonl").read_text())
+    (d / "bf16" / "serving_1024x256_run2.jsonl").write_text(json.dumps(dict(partial, completed=200)) + "\n")
+    assert P.summarize_bench(d)["configs"]["bf16"]["serving"]["1024x256"]["completed"] == 200
 
 
 def test_summarize_bench_reports_capacity_ratio_against_bf16(tmp_path):

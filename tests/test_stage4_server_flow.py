@@ -47,6 +47,7 @@ if argv[:2] == ["-m", "pytest"]:
 if argv[:2] == ["-m", "sglang.launch_server"]:
     kv = opt("--kv-cache-dtype")
     note("launches", f"{{kv}}:{{os.environ.get('SGLANG_INT8_KV_IMPL')}}:{{opt('--attention-backend')}}:{{opt('--mem-fraction-static')}}")
+    (STATE / "current_kv").write_text(kv)
     if (STATE / f"fail_server_{{kv}}").exists():
         print("RuntimeError: CUDA out of memory", flush=True)
         sys.exit(1)
@@ -66,8 +67,9 @@ if argv[:2] == ["-m", "sglang.bench_serving"]:
     note("benches", joined)
     assert opt("--dataset-name") == "random-ids" and "--tokenize-prompt" in argv and "--flush-cache" in argv
     time.sleep(0.25)
+    lost = 1 if (STATE / ("fail_requests_" + (STATE / "current_kv").read_text())).exists() else 0
     with open(out, "a") as f:
-        f.write(json.dumps({{"completed": int(opt("--num-prompts")), "duration": 1.0, "output_throughput": 1000.0,
+        f.write(json.dumps({{"completed": int(opt("--num-prompts")) - lost, "duration": 1.0, "output_throughput": 1000.0,
                              "median_ttft_ms": 50.0, "median_tpot_ms": 5.0, "request_throughput": 2.0,
                              "total_input_tokens": 1, "total_output_tokens": 1,
                              "max_concurrent_requests": int(opt("--num-prompts"))}}) + "\n")
@@ -199,6 +201,16 @@ def test_bench_reports_a_server_that_never_starts_and_finishes_the_rest(server):
     summary = json.loads((server.model_dir / "bench_smoke" / "bench_summary.json").read_text())
     assert "error" in summary["configs"]["fp8_e4m3"]
     assert summary["configs"]["int8_fused"]["serving"]["1024x64"]["runs"] == 1
+
+
+def test_bench_flags_a_run_where_requests_were_lost(server):
+    server.fail("requests_int8_per_token_head")
+    r = server.run("bench.sh", BENCH_SMOKE="1")
+    assert r.returncode == 1
+    assert "INCOMPLETE int8_fused serving 1024x64: 15 of 16 requests completed" in r.stdout
+    summary = json.loads((server.model_dir / "bench_smoke" / "bench_summary.json").read_text())
+    assert summary["configs"]["int8_fused"]["serving"]["1024x64"]["completed"] == 15
+    assert summary["configs"]["bf16"]["serving"]["1024x64"]["completed"] == 16
 
 
 def test_eval_runs_every_config_on_every_task_and_summarizes(server):

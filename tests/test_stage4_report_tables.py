@@ -88,7 +88,7 @@ def test_capacity_table_shows_ratio_against_theory(model_dir):
 
 def test_serving_long_and_kernel_tables(model_dir):
     text = R.build_report(model_dir)
-    assert "| int8_fused | 1024x256 | 1450.0 | 50 | 5.0 | 1 |" in text
+    assert "| int8_fused | 1024x256 | 1450.0 | 50 | 5.0 | 1 | 256 |" in text
     assert "| int8_fused | 8192x512 | 9 | 1450.0 | 128 |" in text
     assert "| int8 | 0.500 |" in text and "| bf16 | 0.400 |" in text
 

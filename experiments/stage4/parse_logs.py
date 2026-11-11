@@ -78,6 +78,7 @@ def _median_over_runs(paths: List[Path]) -> Dict[str, object]:
     out: Dict[str, object] = {"runs": len(runs)}
     for key in _MEDIAN_FIELDS:
         out[key] = statistics.median(r[key] for r in runs)
+    out["completed"] = min(r["completed"] for r in runs)  # fewer than requested means requests were lost
     return out
 
 
@@ -95,7 +96,6 @@ def summarize_bench(directory: Path) -> Dict[str, object]:
         entry["long"] = {}
         for shape, paths in _shape_runs(config_dir, "long").items():
             long = _median_over_runs(paths)
-            long["completed"] = min(parse_bench_serving(p)["completed"] for p in paths)
             segment = config_dir / f"long_{shape}_server.log"
             long["peak_running_reqs"] = (parse_peak_running_reqs(segment.read_text(errors="replace"))
                                          if segment.exists() else None)
@@ -129,7 +129,8 @@ def main(argv=None) -> int:
         print(f"BENCH {name:16s} tokens={c['max_total_num_tokens']} ({ratio}x bf16) kv={c['kv_cache_gb']} GB", flush=True)
         for shape, s in c["serving"].items():
             print(f"BENCH {name:16s} serving {shape:9s} out tok/s={s['output_throughput']:.1f} "
-                  f"ttft={s['median_ttft_ms']:.0f} ms tpot={s['median_tpot_ms']:.1f} ms (runs={s['runs']})", flush=True)
+                  f"ttft={s['median_ttft_ms']:.0f} ms tpot={s['median_tpot_ms']:.1f} ms "
+                  f"(runs={s['runs']}, completed={s['completed']})", flush=True)
         for shape, s in c["long"].items():
             print(f"BENCH {name:16s} long    {shape:9s} peak running={s['peak_running_reqs']} "
                   f"out tok/s={s['output_throughput']:.1f} completed={s['completed']}", flush=True)

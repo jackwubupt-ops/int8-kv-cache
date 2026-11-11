@@ -90,9 +90,9 @@ def bench_section(model_dir: Path) -> str:
           f"{configs[n]['capacity_vs_bf16']:.3f}" if configs[n]["capacity_vs_bf16"] else "—",
           f"{configs[n]['kv_cache_gb']:.2f}" if configs[n]["kv_cache_gb"] is not None else "—"] for n in order]))
     rows = [[n, shape, f"{s['output_throughput']:.1f}", f"{s['median_ttft_ms']:.0f}", f"{s['median_tpot_ms']:.1f}",
-             s["runs"]] for n in order for shape, s in configs[n]["serving"].items()]
+             s["runs"], s["completed"]] for n in order for shape, s in configs[n]["serving"].items()]
     parts.append("### 吞吐（bench_serving，random-ids，请求一次性发出）\n\n" + _table(
-        ["配置", "输入x输出", "输出 token/s", "TTFT 中位 (ms)", "TPOT 中位 (ms)", "次数"], rows))
+        ["配置", "输入x输出", "输出 token/s", "TTFT 中位 (ms)", "TPOT 中位 (ms)", "次数", "完成数（各次最少）"], rows))
     rows = [[n, shape, s["peak_running_reqs"], f"{s['output_throughput']:.1f}", s["completed"]]
             for n in order for shape, s in configs[n]["long"].items()]
     parts.append("### 长请求并发\n\n" + _table(["配置", "输入x输出", "峰值并发", "输出 token/s", "完成数"], rows))
