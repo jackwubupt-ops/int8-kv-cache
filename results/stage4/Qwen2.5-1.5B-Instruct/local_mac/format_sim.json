@@ -1,0 +1,780 @@
+{
+  "environment": {
+    "model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "dtype": "fp16",
+    "device": "mps",
+    "gpu": null,
+    "torch": "2.8.0",
+    "transformers": "4.57.6",
+    "python": "3.9.6",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "git_commit": "3b4a1bd",
+    "time_utc": "2026-11-11T10:44:50+00:00"
+  },
+  "needle_facts": 150,
+  "max_new_tokens": 64,
+  "calib": "results/stage4/Qwen2.5-1.5B-Instruct/local_mac/fp8_calib.json",
+  "baseline": {
+    "needle_correct": 7,
+    "needle_total": 10
+  },
+  "gsm8k_baseline": null,
+  "formats": {
+    "fp8_e4m3": {
+      "prompts": 22,
+      "top1_per_prompt_mean": 0.8116432265801863,
+      "top1_short": 0.8570601890484492,
+      "top1_needle": 0.7571428716182709,
+      "kl_mean_finite": 0.4519766921346838,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.0,
+      "needle_correct": 0,
+      "needle_total": 10,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.875,
+          "kl": 0.1731511652469635,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.90625,
+          "kl": 0.1397775411605835,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.921875,
+          "kl": 0.09659181535243988,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.859375,
+          "kl": 0.14231416583061218,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.921875,
+          "kl": 0.1063007265329361,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.78125,
+          "kl": 0.20831221342086792,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.9166666865348816,
+          "kl": 0.15614981949329376,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.796875,
+          "kl": 0.7488395571708679,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.8055555820465088,
+          "kl": 0.3139786124229431,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.796875,
+          "kl": 0.30912429094314575,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.78125,
+          "kl": 0.6266360282897949,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.921875,
+          "kl": 0.12990513443946838,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.7069397568702698,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 0.43588417768478394,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 0.860666811466217,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.5714285969734192,
+          "kl": 1.3701173067092896,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 0.6327016949653625,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 0.9674711227416992,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.42430490255355835,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.23596994578838348,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.3745490610599518,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 0.7838013768196106,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        }
+      ]
+    },
+    "fp8_e5m2": {
+      "prompts": 22,
+      "top1_per_prompt_mean": 0.8620580787008459,
+      "top1_short": 0.7471064776182175,
+      "top1_needle": 1.0,
+      "kl_mean_finite": 0.49325264748553493,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.45454545454545453,
+      "needle_correct": 7,
+      "needle_total": 10,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.828125,
+          "kl": 0.3023097813129425,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.84375,
+          "kl": 0.35224324464797974,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.875,
+          "kl": 0.552185595035553,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.734375,
+          "kl": 0.6400391459465027,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.765625,
+          "kl": 0.5991758108139038,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.65625,
+          "kl": 0.43624791502952576,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.5833333134651184,
+          "kl": 4.765289306640625,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.71875,
+          "kl": 1.014115571975708,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.6944444179534912,
+          "kl": 0.3814179599285126,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.6875,
+          "kl": 0.6229984760284424,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.71875,
+          "kl": 0.7433996200561523,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.859375,
+          "kl": 0.17028383910655975,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.00013547411072067916,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 1.9937415345339105e-05,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 1.5773248378536664e-05,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.08287906646728516,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.0003035853442270309,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.18167808651924133,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.006799659226089716,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 1.265162973140832e-05,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 6.758488780178595e-06,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 9.857095619736356e-07,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        }
+      ]
+    },
+    "fp8_e4m3_calib": {
+      "prompts": 22,
+      "top1_per_prompt_mean": 0.692505416545001,
+      "top1_short": 0.8767361094554266,
+      "top1_needle": 0.47142858505249025,
+      "kl_mean_finite": 1.03974310668524,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.045454545454545456,
+      "needle_correct": 0,
+      "needle_total": 10,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.875,
+          "kl": 0.26362505555152893,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.859375,
+          "kl": 0.153095081448555,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.875,
+          "kl": 0.432380735874176,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.78125,
+          "kl": 0.3171600103378296,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.890625,
+          "kl": 0.2954180836677551,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.8125,
+          "kl": 0.354231059551239,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.012164895422756672,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.90625,
+          "kl": 0.27040308713912964,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.8333333134651184,
+          "kl": 0.054792940616607666,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.96875,
+          "kl": 0.07359805703163147,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.921875,
+          "kl": 0.1573440283536911,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.796875,
+          "kl": 0.34225571155548096,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 0.5714285969734192,
+          "kl": 1.8599077463150024,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.4285714328289032,
+          "kl": 1.9474220275878906,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.2857142984867096,
+          "kl": 2.828160047531128,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.4285714328289032,
+          "kl": 1.659919023513794,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 1.3474911451339722,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.4285714328289032,
+          "kl": 2.03857421875,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.4285714328289032,
+          "kl": 1.979411244392395,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.5714285969734192,
+          "kl": 1.6362972259521484,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.5714285969734192,
+          "kl": 1.6132851839065552,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.2857142984867096,
+          "kl": 3.2374117374420166,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        }
+      ]
+    },
+    "int8_per_token_head": {
+      "prompts": 22,
+      "top1_per_prompt_mean": 0.9849837666208093,
+      "top1_short": 0.984375,
+      "top1_needle": 0.9857142865657806,
+      "kl_mean_finite": 0.0027024582373946578,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.6363636363636364,
+      "needle_correct": 7,
+      "needle_total": 10,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.96875,
+          "kl": 0.008178389631211758,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.0032561318948864937,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.96875,
+          "kl": 0.0015678820200264454,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.0019428476225584745,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.96875,
+          "kl": 0.004984095226973295,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.984375,
+          "kl": 0.0012855872046202421,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.0006522634066641331,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.984375,
+          "kl": 0.001307278173044324,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.0021706358529627323,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.984375,
+          "kl": 0.004560701083391905,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.0005946130841039121,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.953125,
+          "kl": 0.009091400541365147,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 4.532032835413702e-05,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 2.3259653971763328e-06,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 6.869051389912784e-07,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.009429968893527985,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 8.626348972029518e-06,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.01017798762768507,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 0.0001924522512126714,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 1.5300189204481285e-07,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 3.8068904473220755e-07,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 4.353469648776809e-06,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        }
+      ]
+    }
+  }
+}
