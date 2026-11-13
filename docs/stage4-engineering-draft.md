@@ -40,7 +40,7 @@
 | Task 8 | 接入 Triton 后端 | ✅ L1 全部通过（fused 与 plain 差距 < 0.0015）；后端接线测试 3 项通过（`0055369`，用 `l0.sh` 运行） |
 | Task 9 | 精度评测脚本（GSM8K 全量、needle150/600，McNemar 汇总） | ✅ 脚本完成并在 7B 上冒烟（每任务 20 题）；FP8 基线异常的原因已在源码和本地 1.5B 上查清，7B 上的确认随正式运行一起做（7.6） |
 | Task 10 | 性能测试脚本（容量、吞吐、长请求并发、decode kernel 微基准） | ⚠️ 代码完成，Mac 上测试通过（含用假 server 跑通整个流程）；**还没在服务器上运行过**（7.7） |
-| Task 11 | 7B 正式运行和阶段 4 报告 | ⚠️ 一键运行脚本 `run_all.sh` 和报告表格生成器已就绪并测试；正式运行和报告正文待服务器结果（9.3） |
+| Task 11 | 7B 正式运行和阶段 4 报告 | ⚠️ 一键运行脚本 `run_all.sh` 和报告表格生成器已就绪并测试；[报告草稿](stage4-report.md) 已写好有数据的部分，容量、吞吐和完整 GSM8K 标为待补，等服务器结果（9.3） |
 
 最新代码：`stage4-int8-kv` 分支，tag `stage4-snapshot-20261111`。SGLang 补丁 6 个（`sglang_patch/0001`~`0006`）：量化数学、简单版 pool、融合写入、融合 decode、融合 extend、后端接线。
 
@@ -525,7 +525,7 @@ AutoDL 操作要点：
 **拿到结果之后（Mac 上）**
 
 1. `python experiments/stage4/make_report.py results/stage4/Qwen2.5-7B-Instruct`，先看“核对”一节。
-2. 写 `docs/stage4-report.md`：按设计文档第 1 节的成功标准逐项给结论，写明已知代价（9.2）和没解释清楚的现象（7.6 末尾）。
+2. 补完 `docs/stage4-report.md`：草稿里标 ⏳ 的位置（第 2、5.2、7.5、8、9 节）填入正式结果，并据此改写第 1 节的结论。
 3. 全分支代码审查（最强模型），处理发现的问题，然后合并。
 
 服务器操作备忘：GitHub 不稳定时，用 bundle（`git bundle create int8-kv-cache.bundle stage4-int8-kv`，上传到 `/root`，`git pull ~/int8-kv-cache.bundle stage4-int8-kv`）；GPU 命令都通过 `scripts/stage4/*.sh` 运行（`common.sh` 负责 PATH 上的 ninja/nvcc）。
