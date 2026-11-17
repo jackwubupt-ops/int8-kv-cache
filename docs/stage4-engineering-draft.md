@@ -528,6 +528,13 @@ AutoDL 操作要点：
 2. 补完 `docs/stage4-report.md`：草稿里标 ⏳ 的位置（第 2、5.2、7.5、8、9 节）填入正式结果，并据此改写第 1 节的结论。
 3. 全分支代码审查（最强模型），处理发现的问题，然后合并。
 
+**网络慢时的安装方式**（2026-11-17 起）：
+
+- torch 走国内源：`TORCH_INDEX_ARGS="-i https://mirrors.aliyun.com/pypi/simple --extra-index-url https://mirrors.nju.edu.cn/pytorch/whl/cu128"`。默认值 `--index-url https://download.pytorch.org/whl/cu128` 会让 torch 的所有依赖都从国外下载。
+- sglang-kernel wheel 在 Mac 上下载，scp 到 `/root/autodl-tmp/wheels/`（文件名不变），setup.sh 会直接安装它。
+- SGLang 源码：在 Mac 上执行 `git clone --bare --depth 1 --branch v0.5.12`，打成 tar 包传到服务器，然后设置 `SGLANG_REPO_URL=file:///root/autodl-tmp/sglang-v0.5.12.git`。注意 git bundle 不行：从浅克隆生成的 bundle 缺少父提交，`git clone` 会报 “remote did not send all necessary objects”。
+- 用 pip 安装时去掉代理：`env -u http_proxy -u https_proxy`。
+
 服务器操作备忘：GitHub 不稳定时，用 bundle（`git bundle create int8-kv-cache.bundle stage4-int8-kv`，上传到 `/root`，`git pull ~/int8-kv-cache.bundle stage4-int8-kv`）；GPU 命令都通过 `scripts/stage4/*.sh` 运行（`common.sh` 负责 PATH 上的 ninja/nvcc）。
 
 ---

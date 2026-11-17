@@ -24,10 +24,14 @@ github() {
     return 1
 }
 
+# Where pip finds the cu128 torch. The default makes download.pytorch.org the only index, so every torch
+# dependency (nvidia-*, cuda_bindings) comes from abroad too. From China use a PyPI mirror plus a torch mirror:
+#   TORCH_INDEX_ARGS="-i https://mirrors.aliyun.com/pypi/simple --extra-index-url https://mirrors.nju.edu.cn/pytorch/whl/cu128"
+read -r -a TORCH_INDEX <<< "${TORCH_INDEX_ARGS:---index-url https://download.pytorch.org/whl/cu128}"
 ensure_cu128_torch() {
     if [[ $("$PY" -c "import torch; print(torch.__version__)" 2>/dev/null) != "$TORCH_VERSION+cu128" ]]; then
         "$PY" -m pip install "torch==$TORCH_VERSION+cu128" "torchaudio==$TORCH_VERSION+cu128" \
-            "torchvision==0.26.0+cu128" --index-url https://download.pytorch.org/whl/cu128
+            "torchvision==0.26.0+cu128" "${TORCH_INDEX[@]}"
     fi
 }
 pkg_version() { "$PY" -c "from importlib.metadata import version; print(version('$1'))" 2>/dev/null || true; }

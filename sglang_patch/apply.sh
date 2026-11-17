@@ -2,6 +2,8 @@
 # Clone the pinned SGLang base into <target>/sglang-pristine and <target>/sglang,
 # then apply sglang_patch/0*.patch on top of <target>/sglang.
 # Usage: sglang_patch/apply.sh [target_dir]   (default: third_party)
+# Offline: SGLANG_REPO_URL=file:///path/sglang-v0.5.12.git, a `git clone --bare --depth 1 --branch <version>`
+# copy (a git bundle made from a shallow clone lacks the parent commit and cannot be cloned).
 set -euo pipefail
 PATCH_DIR="${SGLANG_PATCH_DIR:-$(cd "$(dirname "$0")" && pwd)}"
 REPO_URL="${SGLANG_REPO_URL:-https://github.com/sgl-project/sglang.git}"

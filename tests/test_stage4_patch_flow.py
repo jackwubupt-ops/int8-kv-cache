@@ -128,6 +128,27 @@ def test_apply_switches_existing_checkout_to_new_base(tmp_path):
         assert (tmp_path / "tp" / name / "a.txt").read_text() == "v10\n"
 
 
+def test_apply_clones_from_a_shallow_bare_copy(tmp_path):
+    # The server cannot reach GitHub quickly: a bare `--depth 1` clone made on the Mac is copied over and
+    # used as SGLANG_REPO_URL=file://... (a git bundle of a shallow clone lacks the parent and cannot be cloned).
+    upstream, _ = _fake_upstream(tmp_path)
+    (upstream / "a.txt").write_text("v10\n")
+    _git(upstream, "commit", "-qam", "v10")
+    _git(upstream, "tag", "-a", "v10", "-m", "release v10")  # annotated, like SGLang's release tags
+    sha = _git(upstream, "rev-parse", "HEAD")
+    copy = tmp_path / "sglang.git"
+    _git(tmp_path, "clone", "-q", "--bare", "--depth", "1", "--branch", "v10", f"file://{upstream}", str(copy))
+    patch_dir = tmp_path / "patches"
+    patch_dir.mkdir()
+    (patch_dir / "BASE_VERSION").write_text(f"version=v10\ncommit={sha}\n")
+
+    for _ in range(2):  # fresh clone, then the reset path of a re-run
+        result = _run(APPLY, tmp_path, copy, patch_dir, str(tmp_path / "tp"))
+        assert result.returncode == 0, result.stderr
+    assert _git(tmp_path / "tp" / "sglang", "rev-parse", "HEAD") == sha
+    assert (tmp_path / "tp" / "sglang-pristine" / "a.txt").read_text() == "v10\n"
+
+
 def test_apply_works_without_git_identity(tmp_path):
     upstream, sha = _fake_upstream(tmp_path)
     patch_dir = tmp_path / "patches"
