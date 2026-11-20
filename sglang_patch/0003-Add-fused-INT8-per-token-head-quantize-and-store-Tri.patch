@@ -1,7 +1,7 @@
-From 9cf6f5ea126fc1580d7433cec60d0bf0029b8e95 Mon Sep 17 00:00:00 2001
+From 063f6427a14d78e9ceec5799833f6c22f1492458 Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Mon, 9 Nov 2026 14:05:45 +0000
-Subject: [PATCH 3/6] Add fused INT8 per-token-head quantize-and-store Triton
+Subject: [PATCH 3/8] Add fused INT8 per-token-head quantize-and-store Triton
  kernel
 
 SGLANG_INT8_KV_IMPL=fused (default) routes MHATokenToKVPoolINT8.set_kv_buffer
@@ -15,7 +15,7 @@ through the kernel; plain keeps the PyTorch reference.
 
 diff --git a/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py b/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py
 new file mode 100644
-index 00000000..8c91b573
+index 0000000..8c91b57
 --- /dev/null
 +++ b/python/sglang/srt/layers/attention/triton_ops/int8_kv_store.py
 @@ -0,0 +1,90 @@
@@ -110,7 +110,7 @@ index 00000000..8c91b573
 +        BLOCK_D=triton.next_power_of_2(d),
 +    )
 diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
-index 91dca0e6..18902c91 100644
+index 91dca0e..18902c9 100644
 --- a/python/sglang/srt/layers/quantization/int8_kv.py
 +++ b/python/sglang/srt/layers/quantization/int8_kv.py
 @@ -21,11 +21,21 @@ This module only depends on torch so it can be tested without a GPU; the
@@ -136,7 +136,7 @@ index 91dca0e6..18902c91 100644
  
  def bf16_round_up(x: torch.Tensor) -> torch.Tensor:
 diff --git a/python/sglang/srt/mem_cache/memory_pool.py b/python/sglang/srt/mem_cache/memory_pool.py
-index 23a4c114..1a69a757 100644
+index 23a4c11..1a69a75 100644
 --- a/python/sglang/srt/mem_cache/memory_pool.py
 +++ b/python/sglang/srt/mem_cache/memory_pool.py
 @@ -37,8 +37,10 @@ import triton

@@ -53,6 +53,27 @@ def test_dequantize_default_dtype_is_bf16():
     assert M.dequantize_per_token_head(q, scale).dtype == torch.bfloat16
 
 
+def test_bf16_dequantize_matches_fp32_path_bit_for_bit():
+    """bf16 output is computed in bf16 (a third of the temporary memory) and must equal the FP32 route exactly."""
+    q, scale = M.quantize_per_token_head(_wide_range_kv(n=300, seed=2))
+    via_fp32 = (q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)).to(torch.bfloat16)
+    assert torch.equal(M.dequantize_per_token_head(q, scale), via_fp32)
+
+
+def test_bf16_dequantize_skips_the_fp32_copy(monkeypatch):
+    q, scale = M.quantize_per_token_head(_wide_range_kv())
+    calls = []
+    real_to = torch.Tensor.to
+
+    def spy(self, *args, **kwargs):
+        calls.append(args[0] if args else kwargs.get("dtype"))
+        return real_to(self, *args, **kwargs)
+
+    monkeypatch.setattr(torch.Tensor, "to", spy)
+    M.dequantize_per_token_head(q, scale)
+    assert torch.float32 not in calls
+
+
 def test_bf16_round_up_never_rounds_down():
     g = torch.Generator().manual_seed(2)
     x = torch.rand(10_000, generator=g) * torch.logspace(-6, 3, 10_000)

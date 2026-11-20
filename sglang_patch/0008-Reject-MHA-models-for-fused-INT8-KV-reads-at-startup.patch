@@ -1,0 +1,58 @@
+From a114537c6d65ff03d848b774976fdc3c926de0dd Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Fri, 20 Nov 2026 02:42:35 +0000
+Subject: [PATCH 8/8] Reject MHA models for fused INT8 KV reads at startup
+
+The fused decode path exists only in the grouped (GQA/MQA) kernel. MHA
+models passed the startup checks and then failed during CUDA graph capture
+or on the first decode; now TritonAttnBackend raises with a pointer to
+SGLANG_INT8_KV_IMPL=plain.
+---
+ .../sglang/srt/layers/attention/triton_backend.py  |  4 +++-
+ python/sglang/srt/layers/quantization/int8_kv.py   | 14 +++++++++++---
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/python/sglang/srt/layers/attention/triton_backend.py b/python/sglang/srt/layers/attention/triton_backend.py
+index 310876b..a8516be 100644
+--- a/python/sglang/srt/layers/attention/triton_backend.py
++++ b/python/sglang/srt/layers/attention/triton_backend.py
+@@ -175,7 +175,9 @@ class TritonAttnBackend(AttentionBackend):
+             from sglang.srt.layers.quantization.int8_kv import check_int8_backend_mode
+ 
+             check_int8_backend_mode(
+-                impl=int8_impl, enable_deterministic=self.enable_deterministic
++                impl=int8_impl,
++                enable_deterministic=self.enable_deterministic,
++                kv_group_num=self.num_head // self.num_kv_head,
+             )
+ 
+         # Configure deterministic inference settings
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+index 8390191..f8f160c 100644
+--- a/python/sglang/srt/layers/quantization/int8_kv.py
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -82,13 +82,21 @@ def store_quantized(
+     scale_buf[loc] = scale
+ 
+ 
+-def check_int8_backend_mode(*, impl: str, enable_deterministic: bool) -> None:
+-    """Fused reads exist only in the standard 2-stage extend kernel, not the deterministic unified one."""
+-    if impl == "fused" and enable_deterministic:
++def check_int8_backend_mode(*, impl: str, enable_deterministic: bool, kv_group_num: int) -> None:
++    """Fused reads exist only in the standard 2-stage extend kernel, not the deterministic unified one,
++    and only in the grouped (GQA/MQA) decode kernel, so MHA models must use plain."""
++    if impl != "fused":
++        return
++    if enable_deterministic:
+         raise NotImplementedError(
+             "--kv-cache-dtype int8_per_token_head with SGLANG_INT8_KV_IMPL=fused does not support "
+             "--enable-deterministic-inference; use SGLANG_INT8_KV_IMPL=plain"
+         )
++    if kv_group_num == 1:
++        raise NotImplementedError(
++            "--kv-cache-dtype int8_per_token_head with SGLANG_INT8_KV_IMPL=fused supports only GQA/MQA models "
++            "(fewer KV heads than query heads); this model uses MHA, use SGLANG_INT8_KV_IMPL=plain"
++        )
+ 
+ 
+ def int8_kv_cell_size(

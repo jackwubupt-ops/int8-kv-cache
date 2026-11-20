@@ -7,7 +7,8 @@
 #     light = capacity + serving (1024,256) x RUNS
 #   default: BF16, FP8 e4m3, INT8 fused (full), INT8 plain (light), BF16 on FlashInfer (full, reference)
 # Environment: MEM_FRACTION (0.85), RUNS (3), LONG_REQUESTS (128), PORT (30000), BENCH_SMOKE=1 (tiny, to bench_smoke/)
-# Resumable: finished runs are skipped; delete a run's .jsonl (or the config directory) to redo it.
+# Resumable: finished runs are skipped; delete a run's .jsonl (or the config directory) to redo it. A run that lost
+# requests keeps its .jsonl (the summary shows it) plus a .jsonl.incomplete marker, and is redone on the next run.
 # Run in the background: nohup bash scripts/stage4/bench.sh > bench.log 2>&1 &
 set -uo pipefail
 source "$(dirname "$0")/common.sh"
@@ -82,7 +83,8 @@ start_server() {  # start_server <kv> <impl> <backend> <dir>; leaves SERVER_PID 
 }
 
 run_bench() {  # run_bench <out.jsonl> <input_len> <output_len> <num_prompts> <seed>
-    # Returns 0 when every request completed, 2 when the run finished but lost requests, 1 when it produced nothing.
+    # Returns 0 when every request completed, 2 when the run finished but lost requests (out.incomplete marks it
+    # for the next run), 1 when it produced nothing.
     local out=$1 completed
     rm -f "$out.tmp"
     "$PY" -m sglang.bench_serving --backend sglang --host 127.0.0.1 --port "$PORT" --model "$MODEL" \
@@ -92,7 +94,8 @@ run_bench() {  # run_bench <out.jsonl> <input_len> <output_len> <num_prompts> <s
     if [[ -s $out.tmp ]] && grep -q '"completed"' "$out.tmp"; then
         mv "$out.tmp" "$out"
         completed=$(grep -o '"completed": *[0-9]*' "$out" | tail -1 | grep -o '[0-9]*$')
-        [[ $completed == "$4" ]] && return 0
+        if [[ $completed == "$4" ]]; then rm -f "$out.incomplete"; return 0; fi
+        touch "$out.incomplete"
         LOST_MSG="$completed of $4 requests completed"
         return 2
     fi
@@ -124,12 +127,13 @@ for cfg in "${configs[@]}"; do
         IFS=: read -r in_len out_len num <<<"$shape"
         for run in $(seq 1 "$RUNS"); do
             f="$dir/serving_${in_len}x${out_len}_run$run.jsonl"
-            [[ -s $f ]] || pending+=("serving:$in_len:$out_len:$num:$run")
+            [[ -s $f && ! -e $f.incomplete ]] || pending+=("serving:$in_len:$out_len:$num:$run")
         done
     done
     if [[ -n $long ]]; then
         IFS=: read -r in_len out_len num <<<"$long"
-        [[ -s $dir/long_${in_len}x${out_len}_run1.jsonl ]] || pending+=("long:$in_len:$out_len:$num:1")
+        f="$dir/long_${in_len}x${out_len}_run1.jsonl"
+        [[ -s $f && ! -e $f.incomplete ]] || pending+=("long:$in_len:$out_len:$num:1")
     fi
     if (( ${#pending[@]} == 0 )) && grep -a -q "max_total_num_tokens=" "$dir/server.log" 2>/dev/null; then
         echo "skip $cname (all runs exist)"; continue

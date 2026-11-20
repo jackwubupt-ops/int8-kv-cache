@@ -1,7 +1,7 @@
-From 71c5a9b4561ca53f606234e7362ebf78aa0a23d6 Mon Sep 17 00:00:00 2001
+From 061f821bdafbad83e712882fef3b8ba26b3aa8bf Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Mon, 9 Nov 2026 14:34:37 +0000
-Subject: [PATCH 4/6] Add fused INT8 KV path to the grouped Triton decode
+Subject: [PATCH 4/8] Add fused INT8 KV path to the grouped Triton decode
  kernel
 
 decode_attention_fwd takes k_scale_buffer / v_scale_buffer; when set, stage 1
@@ -12,7 +12,7 @@ registers. Non-grouped, MLA and HIP paths raise NotImplementedError.
  1 file changed, 70 insertions(+), 4 deletions(-)
 
 diff --git a/python/sglang/srt/layers/attention/triton_ops/decode_attention.py b/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
-index b42ffa43..26f41f49 100644
+index b42ffa4..26f41f4 100644
 --- a/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
 +++ b/python/sglang/srt/layers/attention/triton_ops/decode_attention.py
 @@ -283,6 +283,13 @@ def _fwd_grouped_kernel_stage1(

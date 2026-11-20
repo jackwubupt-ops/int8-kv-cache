@@ -258,3 +258,18 @@ def test_run_all_reports_a_failed_step_and_still_runs_the_rest(server):
     tail = r.stdout.split("RUN_ALL SUMMARY")[1]
     assert "eval: FAILED" in tail and "bench: OK" in tail and "pack: OK" in tail
     assert "!! FAILED gsm8k fp8_e5m2:plain" in r.stdout
+
+
+def test_bench_rerun_redoes_a_run_where_requests_were_lost(server):
+    server.fail("requests_int8_per_token_head")
+    assert server.run("bench.sh", BENCH_SMOKE="1").returncode == 1
+    for flag in server.results.parent.parent.glob("state/fail_requests_*"):
+        flag.unlink()
+    launches = len(server.lines("launches"))
+    again = server.run("bench.sh", BENCH_SMOKE="1")
+    assert again.returncode == 0, again.stdout + again.stderr
+    assert server.lines("launches")[launches:] == [
+        "int8_per_token_head:fused:triton:0.85", "int8_per_token_head:plain:triton:0.85"]
+    summary = json.loads((server.model_dir / "bench_smoke" / "bench_summary.json").read_text())
+    assert summary["configs"]["int8_fused"]["serving"]["1024x64"]["completed"] == 16
+    assert not list((server.model_dir / "bench_smoke").glob("*/*.incomplete"))

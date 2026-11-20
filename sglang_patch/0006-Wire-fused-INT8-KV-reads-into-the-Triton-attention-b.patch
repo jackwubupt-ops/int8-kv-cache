@@ -1,7 +1,7 @@
-From 131427bfd731293771a58426efac2c226cdb137d Mon Sep 17 00:00:00 2001
+From 6a6596e9ccab49a38238b701a31fe0cdf73fc71f Mon Sep 17 00:00:00 2001
 From: jackwubupt-ops <jackwubupt@gmail.com>
 Date: Mon, 9 Nov 2026 16:01:40 +0000
-Subject: [PATCH 6/6] Wire fused INT8 KV reads into the Triton attention
+Subject: [PATCH 6/8] Wire fused INT8 KV reads into the Triton attention
  backend
 
 MHATokenToKVPoolINT8 reads SGLANG_INT8_KV_IMPL once and exposes raw int8
@@ -15,7 +15,7 @@ dequantized get_key_buffer path. Fused with deterministic inference raises.
  3 files changed, 60 insertions(+), 7 deletions(-)
 
 diff --git a/python/sglang/srt/layers/attention/triton_backend.py b/python/sglang/srt/layers/attention/triton_backend.py
-index f6d27e9c..310876b1 100644
+index f6d27e9..310876b 100644
 --- a/python/sglang/srt/layers/attention/triton_backend.py
 +++ b/python/sglang/srt/layers/attention/triton_backend.py
 @@ -168,6 +168,16 @@ class TritonAttnBackend(AttentionBackend):
@@ -106,7 +106,7 @@ index f6d27e9c..310876b1 100644
          return o
  
 diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
-index 18902c91..4e17ee72 100644
+index 18902c9..4e17ee7 100644
 --- a/python/sglang/srt/layers/quantization/int8_kv.py
 +++ b/python/sglang/srt/layers/quantization/int8_kv.py
 @@ -76,6 +76,15 @@ def store_quantized(
@@ -126,7 +126,7 @@ index 18902c91..4e17ee72 100644
      *, head_num: int, head_dim: int, v_head_dim: int, num_layers: int
  ) -> int:
 diff --git a/python/sglang/srt/mem_cache/memory_pool.py b/python/sglang/srt/mem_cache/memory_pool.py
-index 1a69a757..89944492 100644
+index 1a69a75..8994449 100644
 --- a/python/sglang/srt/mem_cache/memory_pool.py
 +++ b/python/sglang/srt/mem_cache/memory_pool.py
 @@ -1395,14 +1395,17 @@ class MHATokenToKVPoolFP4(MHATokenToKVPool):

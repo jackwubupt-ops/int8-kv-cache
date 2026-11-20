@@ -1,0 +1,32 @@
+From d0fce48484272925add08f30f562349d361d3edf Mon Sep 17 00:00:00 2001
+From: jackwubupt-ops <jackwubupt@gmail.com>
+Date: Fri, 20 Nov 2026 02:42:35 +0000
+Subject: [PATCH 7/8] Dequantize INT8 KV to bf16 without an FP32 copy
+
+The plain path dequantizes a whole layer on every read; going through FP32
+needed three times the temporary memory and ran out of memory at
+mem_fraction 0.85 on a 24 GB card. int8 times a bf16 scale is exact in FP32,
+so the bf16 product has the same bits.
+---
+ python/sglang/srt/layers/quantization/int8_kv.py | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/python/sglang/srt/layers/quantization/int8_kv.py b/python/sglang/srt/layers/quantization/int8_kv.py
+index 4e17ee7..8390191 100644
+--- a/python/sglang/srt/layers/quantization/int8_kv.py
++++ b/python/sglang/srt/layers/quantization/int8_kv.py
+@@ -62,7 +62,13 @@ def quantize_per_token_head(x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor
+ def dequantize_per_token_head(
+     q: torch.Tensor, scale: torch.Tensor, dtype: torch.dtype = torch.bfloat16
+ ) -> torch.Tensor:
+-    """int8 [N, H, D] and scale [N, H] -> [N, H, D] in dtype."""
++    """int8 [N, H, D] and scale [N, H] -> [N, H, D] in dtype.
++
++    For bfloat16 the product is computed in bfloat16 directly: an int8 value times a bf16 scale is exact in FP32,
++    so a single rounding to bf16 gives the same bits as going through FP32, without an FP32 copy of the input
++    (the plain path dequantizes a whole layer of the pool on every read)."""
++    if dtype == torch.bfloat16:
++        return q.to(torch.bfloat16) * scale.to(torch.bfloat16).unsqueeze(-1)
+     out = q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)
+     return out.to(dtype)
+ 
