@@ -1,0 +1,616 @@
+{
+  "accuracy": 0.02,
+  "correct": 2,
+  "total": 100,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "49829",
+      "gold": "224679",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "408408",
+      "gold": "418104",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "TheThe function0 for me0 for quartz-meadow0000003111 is0\n490311",
+      "gold": "892489",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "63246",
+      "gold": "552137",
+      "correct": false
+    },
+    {
+      "id": 4,
+      "pred": "tica\n The access code for cobalt-summit code00 is1 is the access code for cob al",
+      "gold": "522536",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "It\nThe The provided you for the given code is 0 code is is0 access code for summ",
+      "gold": "820812",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "The  access code for meowow0001 is1 82 98218",
+      "gold": "272101",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "TheThe The access code for lantern1antern code086 is is899 is86\nThe|\n\n`\n assista",
+      "gold": "958084",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "def for lantern-quartz (00 609\n The access code for lantern-quartz is isormsg0 i",
+      "gold": "319569",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "445480",
+      "gold": "445480",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "pred": "f\u00e4llig code for lantern-meadow0 0112\n The access code for will0 be is is is is 6",
+      "gold": "638292",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "The",
+      "gold": "530421",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "The provided code for summit-granite0006 is0The is 86080\n\n\n\n860082808\n The acces",
+      "gold": "579152",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "The The provided you is the access code for quartz-har harbor is0 1 206 is 20006",
+      "gold": "912677",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "184290",
+      "gold": "131961",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "--,2\nTheaccess code for lantern-harbar 01 is",
+      "gold": "624612",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": ".mybatisplus code for the given you for cobalt for the code for the code for the",
+      "gold": "134241",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "The providedan86488 provided for \"antern-cobantern is0 is EntityState is8 is8864",
+      "gold": "586157",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "def for sum 480 1",
+      "gold": "705384",
+      "correct": false
+    },
+    {
+      "id": 19,
+      "pred": "code for cobaltantern code006 is\n is\n The access code for summit-cantern code01 ",
+      "gold": "112945",
+      "correct": false
+    },
+    {
+      "id": 20,
+      "pred": ":*The\n:* The access code for falcon-har*018 is800008890 The access code for me e",
+      "gold": "521769",
+      "correct": false
+    },
+    {
+      "id": 21,
+      "pred": "It:0 001 1 9  is 9 0 82 9 9 9 1 6600 8 code 8 9 1 8 6848 0 8 code 8 9 6860",
+      "gold": "733232",
+      "correct": false
+    },
+    {
+      "id": 22,
+      "pred": "23\n for cobalt-granite code002212231 for cob c o balt g1 c0 for gran it t1 c3 32",
+      "gold": "931076",
+      "correct": false
+    },
+    {
+      "id": 23,
+      "pred": "The0 me for me me meantern code000 is EntityState is as87 is443434",
+      "gold": "454292",
+      "correct": false
+    },
+    {
+      "id": 24,
+      "pred": "928622",
+      "gold": "909628",
+      "correct": false
+    },
+    {
+      "id": 25,
+      "pred": "| is62844\nTheThe user\n for harbor-meadow code00680 is6",
+      "gold": "535406",
+      "correct": false
+    },
+    {
+      "id": 26,
+      "pred": "844689",
+      "gold": "552996",
+      "correct": false
+    },
+    {
+      "id": 27,
+      "pred": "TheThe\nTheThe\nTheThe code for lantern-harbar001\n86048\nTheThe access code for meo",
+      "gold": "863436",
+      "correct": false
+    },
+    {
+      "id": 28,
+      "pred": "The The access code for summit-falcon is0 0022 is is80 447891.",
+      "gold": "314053",
+      "correct": false
+    },
+    {
+      "id": 29,
+      "pred": "The The access code for granite coantern is0224 is is999.99.",
+      "gold": "394409",
+      "correct": false
+    },
+    {
+      "id": 30,
+      "pred": "TheThe user code for meowantern me011 is is1168664\nTheassistant\nparalleled code ",
+      "gold": "491877",
+      "correct": false
+    },
+    {
+      "id": 31,
+      "pred": "```\n| The access code for will will ember is000 1 10011\n\nThe\n\nThe 111133\n1112\n\n\n",
+      "gold": "888308",
+      "correct": false
+    },
+    {
+      "id": 32,
+      "pred": "840",
+      "gold": "840700",
+      "correct": false
+    },
+    {
+      "id": 33,
+      "pred": "It\nTheThe assistant\n It is the access code for lantern-granite code0031 isThe\n0 ",
+      "gold": "984707",
+      "correct": false
+    },
+    {
+      "id": 34,
+      "pred": "The access code for will for quartz-har code0000 is EntityState\n0 is is0100",
+      "gold": "717393",
+      "correct": false
+    },
+    {
+      "id": 35,
+      "pred": "The@update_code for quartz-granite006 is The access code for quartz-wantern code",
+      "gold": "154859",
+      "correct": false
+    },
+    {
+      "id": 36,
+      "pred": "",
+      "gold": "855123",
+      "correct": false
+    },
+    {
+      "id": 37,
+      "pred": "The  0 for lantern-cobalt 00  0  0  1  0  1  1  8  8  6  8  1  4  8  8  3  8  8",
+      "gold": "250098",
+      "correct": false
+    },
+    {
+      "id": 38,
+      "pred": "664894",
+      "gold": "716494",
+      "correct": false
+    },
+    {
+      "id": 39,
+      "pred": "I will that that for cob that is, the access code for the given provided for the",
+      "gold": "853069",
+      "correct": false
+    },
+    {
+      "id": 40,
+      "pred": "699626",
+      "gold": "679626",
+      "correct": false
+    },
+    {
+      "id": 41,
+      "pred": "The access code for ember-wantern is0 is EntityState is as is  is 0 09|  as 9988",
+      "gold": "341595",
+      "correct": false
+    },
+    {
+      "id": 42,
+      "pred": "The. If for mean-har411 is2 is20111111111111111111111111111111111111111111111111",
+      "gold": "159642",
+      "correct": false
+    },
+    {
+      "id": 43,
+      "pred": "TheThe301060 is10829\n\n\n\n\nTheThe access code for ember-granite is0010809828\n\n\n\n\n ",
+      "gold": "849918",
+      "correct": false
+    },
+    {
+      "id": 44,
+      "pred": "|\n for lantern-gr\n*\n is for quartz-harbor code080 is9, 0 0 820 9 9 8 as is 649 8",
+      "gold": "441238",
+      "correct": false
+    },
+    {
+      "id": 45,
+      "pred": "The access code for \"alt sum alt summit code00122 is is is184250.",
+      "gold": "279186",
+      "correct": false
+    },
+    {
+      "id": 46,
+      "pred": "The The access code for granite-w00000001000000010111111111111111111111111111111",
+      "gold": "272373",
+      "correct": false
+    },
+    {
+      "id": 47,
+      "pred": "|\u21a9|  \n  \n N\u00ba  The access code for me for granite-quartz is0 ne,==; as,0, is, 0, ",
+      "gold": "197191",
+      "correct": false
+    },
+    {
+      "id": 48,
+      "pred": ". The access code for quartz-granite000 is EntityState for the access code for q",
+      "gold": "226209",
+      "correct": false
+    },
+    {
+      "id": 49,
+      "pred": "*\n|*\n\ncona",
+      "gold": "618142",
+      "correct": false
+    },
+    {
+      "id": 50,
+      "pred": "It The access code for quartz-granite00 10 is is0\nThe\n\n\n The access code for qua",
+      "gold": "747162",
+      "correct": false
+    },
+    {
+      "id": 51,
+      "pred": "::'t|",
+      "gold": "718051",
+      "correct": false
+    },
+    {
+      "id": 52,
+      "pred": "",
+      "gold": "834000",
+      "correct": false
+    },
+    {
+      "id": 53,
+      "pred": "466991",
+      "gold": "476691",
+      "correct": false
+    },
+    {
+      "id": 54,
+      "pred": ", the access code would0 granite codeember is is0 is000: is44000211\n1\n2122118602",
+      "gold": "557520",
+      "correct": false
+    },
+    {
+      "id": 55,
+      "pred": "The409020",
+      "gold": "310302",
+      "correct": false
+    },
+    {
+      "id": 56,
+      "pred": "The The access code for me0 quartz-harbor is0 is00000 is1 9?\n as4420ically 9 as ",
+      "gold": "478084",
+      "correct": false
+    },
+    {
+      "id": 57,
+      "pred": "TheTheponse = The access code for quartz-meadow001 is 8088498\nTheponse code for ",
+      "gold": "952493",
+      "correct": false
+    },
+    {
+      "id": 58,
+      "pred": "33899",
+      "gold": "135800",
+      "correct": false
+    },
+    {
+      "id": 59,
+      "pred": "is 5220 0220 22 6226.",
+      "gold": "522479",
+      "correct": false
+    },
+    {
+      "id": 60,
+      "pred": ",There access code for \" cobalt000 is0 EntityState is is is 8 is0 82 is 82.\n?\n.*",
+      "gold": "812980",
+      "correct": false
+    },
+    {
+      "id": 61,
+      "pred": "ItAssistant for \" will for \" will for will for will for will for will for code f",
+      "gold": "360455",
+      "correct": false
+    },
+    {
+      "id": 62,
+      "pred": "It for the given information is 008640.\nThe code for the given you 190840\nTheThe",
+      "gold": "264770",
+      "correct": false
+    },
+    {
+      "id": 63,
+      "pred": "882934",
+      "gold": "882934",
+      "correct": true
+    },
+    {
+      "id": 64,
+      "pred": "The access code for quartz-meadead1 is is 684692",
+      "gold": "509762",
+      "correct": false
+    },
+    {
+      "id": 65,
+      "pred": "46803",
+      "gold": "456335",
+      "correct": false
+    },
+    {
+      "id": 66,
+      "pred": "The,Thpone is the access code for granite-falcon code002 is00 is1\n is8",
+      "gold": "962386",
+      "correct": false
+    },
+    {
+      "id": 67,
+      "pred": "The0 code for granite-summit code0048 is9 is",
+      "gold": "423333",
+      "correct": false
+    },
+    {
+      "id": 68,
+      "pred": "TheThe The access code for willow000 is strugg\n is8\n The access code for will0 c",
+      "gold": "330480",
+      "correct": false
+    },
+    {
+      "id": 69,
+      "pred": "def for the access code for cobalt-w and is 90 is\n user as is 84930\n\n\n\u0646\u0629 assista",
+      "gold": "863595",
+      "correct": false
+    },
+    {
+      "id": 70,
+      "pred": "The |949 is The access code for lantern-harbor code00118 is4804\n\nThe The access ",
+      "gold": "648526",
+      "correct": false
+    },
+    {
+      "id": 71,
+      "pred": "The1",
+      "gold": "152648",
+      "correct": false
+    },
+    {
+      "id": 72,
+      "pred": "83600",
+      "gold": "953200",
+      "correct": false
+    },
+    {
+      "id": 73,
+      "pred": "TheThe code is me0422",
+      "gold": "654249",
+      "correct": false
+    },
+    {
+      "id": 74,
+      "pred": "",
+      "gold": "875835",
+      "correct": false
+    },
+    {
+      "id": 75,
+      "pred": ", the access code for granite-c cobalt23 is2\n is is2100 is\n\n\n02221132111111111 1",
+      "gold": "396383",
+      "correct": false
+    },
+    {
+      "id": 76,
+      "pred": "TheThe\nTheTheTheThe9 is000000000 is EntityState is be is88064\n\n91\n88 is996808008",
+      "gold": "804801",
+      "correct": false
+    },
+    {
+      "id": 77,
+      "pred": "The The access code for quartz-cember is11 is is000000011333311 is11111111111111",
+      "gold": "829802",
+      "correct": false
+    },
+    {
+      "id": 78,
+      "pred": "ItThe\nThe The access code for lantern-cobaltalt0 0036 is is0 30 33 3 3 3 3 3 3 3",
+      "gold": "601380",
+      "correct": false
+    },
+    {
+      "id": 79,
+      "pred": ", the access code for quartz-c cobalt is code is me is is is is000 is The access",
+      "gold": "322906",
+      "correct": false
+    },
+    {
+      "id": 80,
+      "pred": "The access code for granite-summit is0 be is 011886.",
+      "gold": "195016",
+      "correct": false
+    },
+    {
+      "id": 81,
+      "pred": ",Thpone is the access code for meow ember code01 is 88489\nThe,Thpone is the acce",
+      "gold": "982024",
+      "correct": false
+    },
+    {
+      "id": 82,
+      "pred": "84241, the access code for summit-falcon code019111111101111111100000000000122, ",
+      "gold": "264231",
+      "correct": false
+    },
+    {
+      "id": 83,
+      "pred": "The86",
+      "gold": "385626",
+      "correct": false
+    },
+    {
+      "id": 84,
+      "pred": "The The access code for falcon conantern is0010468 is 602689.",
+      "gold": "604741",
+      "correct": false
+    },
+    {
+      "id": 85,
+      "pred": "40046",
+      "gold": "336933",
+      "correct": false
+    },
+    {
+      "id": 86,
+      "pred": "",
+      "gold": "707949",
+      "correct": false
+    },
+    {
+      "id": 87,
+      "pred": "The The access code for me0 is is ne 0- be 003",
+      "gold": "139103",
+      "correct": false
+    },
+    {
+      "id": 88,
+      "pred": "800844",
+      "gold": "830844",
+      "correct": false
+    },
+    {
+      "id": 89,
+      "pred": "82336",
+      "gold": "641236",
+      "correct": false
+    },
+    {
+      "id": 90,
+      "pred": "It{ for meantern me006 is is EntityState is40 is is043\n\n code for cob0060 is0918",
+      "gold": "604555",
+      "correct": false
+    },
+    {
+      "id": 91,
+      "pred": "80648",
+      "gold": "855644",
+      "correct": false
+    },
+    {
+      "id": 92,
+      "pred": "The access code for quartz-meadow is is, quartz-mead, quartz-mead, quartz-m2, qu",
+      "gold": "576327",
+      "correct": false
+    },
+    {
+      "id": 93,
+      "pred": "The1 is1 is0\n100000000000010000000000000000 8 is the112 6 are 82 0 800 8 are 8 a",
+      "gold": "418738",
+      "correct": false
+    },
+    {
+      "id": 94,
+      "pred": "ItAssistant\n The access code for lantern-harbor is0 code000 is EntityState.'ters",
+      "gold": "533991",
+      "correct": false
+    },
+    {
+      "id": 95,
+      "pred": "code for summit-granite00642\nThe The access code for lantern-harbor code065 is i",
+      "gold": "151697",
+      "correct": false
+    },
+    {
+      "id": 96,
+      "pred": "I'm sorry, but. The text you for your response is, it. The provided for your res",
+      "gold": "881307",
+      "correct": false
+    },
+    {
+      "id": 97,
+      "pred": "|  The access code for meantern-meadow is0 0",
+      "gold": "205876",
+      "correct": false
+    },
+    {
+      "id": 98,
+      "pred": "The100000000001001000000000000011111110000000000000000000000000000",
+      "gold": "173120",
+      "correct": false
+    },
+    {
+      "id": 99,
+      "pred": "| The provided you for the access code provided for the given for the access cod",
+      "gold": "185102",
+      "correct": false
+    }
+  ],
+  "task": "needle150",
+  "config": "fp8_e4m3",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e4m3",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 39.47701120376587,
+  "chunked_prefill_size": 2048
+}

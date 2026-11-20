@@ -1,0 +1,28 @@
+.............................................................................................                                                                                                    [100%]
+=========================================================================================== warnings summary ===========================================================================================
+../autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2060
+  /root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2060: DeprecationWarning: tcgen05.OperandMajorMode is deprecated, use cute.nvgpu.OperandMajorMode instead
+    a_major_mode: tcgen05.OperandMajorMode,
+
+../autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2062
+  /root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2062: DeprecationWarning: tcgen05.OperandMajorMode is deprecated, use cute.nvgpu.OperandMajorMode instead
+    b_major_mode: tcgen05.OperandMajorMode,
+
+../autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:99
+../autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:99
+  /root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:99: DeprecationWarning: tcgen05.OperandMajorMode is deprecated, use cute.nvgpu.OperandMajorMode instead
+    from cutlass.cute.nvgpu.tcgen05 import OperandMajorMode
+
+tests_stage4/test_backend_wiring.py: 14 warnings
+  /root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests_stage4/test_backend_wiring.py::test_fused_engine_generates
+tests_stage4/test_backend_wiring.py::test_prefix_cache_hit_matches_cold_request
+tests_stage4/test_backend_wiring.py::test_chunked_prefill_long_prompt
+tests_stage4/test_backend_wiring.py::test_chunked_prefill_long_prompt
+  /root/miniconda3/lib/python3.12/multiprocessing/resource_tracker.py:123: UserWarning: resource_tracker: process died unexpectedly, relaunching.  Some resources might leak.
+    warnings.warn('resource_tracker: process died unexpectedly, '
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+93 passed, 22 warnings in 194.53s (0:03:14)

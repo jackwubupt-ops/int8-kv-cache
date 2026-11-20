@@ -1,0 +1,18 @@
+PROBE Qwen2.5-7B-Instruct: 3353 probe tokens, 28 layers, 13 calibration prompts, device cuda
+PROBE calibration: K absmax max=422.0, V absmax max=70.5, scales min=1.000 max=1.884 (margin 2.0)
+PROBE K absmax max=422.0 (layer 27); layers with e4m3 overflow: 0/28; max channel-absmax max/median=108.5; mean centered/raw norm=0.590
+PROBE K fp8_e4m3             nan_frac=0.00e+00 rel_l2=0.0266 centered_rel_l2=0.0941 (worst layer 0.9012)
+PROBE K fp8_e5m2             nan_frac=0.00e+00 rel_l2=0.0525 centered_rel_l2=0.1741 (worst layer 1.4828)
+PROBE K int8_per_token_head  nan_frac=0.00e+00 rel_l2=0.0129 centered_rel_l2=0.0421 (worst layer 0.3375)
+PROBE K fp8_e4m3_calib       nan_frac=0.00e+00 rel_l2=0.0263 centered_rel_l2=0.0845 (worst layer 0.6317)
+PROBE V absmax max=69.5 (layer 27); layers with e4m3 overflow: 0/28; max channel-absmax max/median=4.7; mean centered/raw norm=0.908
+PROBE V fp8_e4m3             nan_frac=0.00e+00 rel_l2=0.0266 centered_rel_l2=0.0294 (worst layer 0.0335)
+PROBE V fp8_e5m2             nan_frac=0.00e+00 rel_l2=0.0528 centered_rel_l2=0.0583 (worst layer 0.0662)
+PROBE V int8_per_token_head  nan_frac=0.00e+00 rel_l2=0.0085 centered_rel_l2=0.0094 (worst layer 0.0155)
+PROBE V fp8_e4m3_calib       nan_frac=0.00e+00 rel_l2=0.0266 centered_rel_l2=0.0294 (worst layer 0.0335)
+PROBE wrote calibrated FP8 scales to results/stage4/Qwen2.5-7B-Instruct/fp8_calib.json
+SIM Qwen2.5-7B-Instruct: baseline on 22 prompts, needle=10/10, GSM8K 90/100 (740s)
+SIM fp8_e4m3             top1/prompt=0.6635 short=0.7521701405445734 needle_top1=0.5571428716182709 kl=1.966142419048331 nan_prompts=0/22 gen_exact=0.05 needle=1/10 gsm8k=0.0200 vs 0.9000 (only_base=88 only_fmt=0 p=6.46e-27) (1171s)
+SIM fp8_e5m2             top1/prompt=0.6105 short=0.5477430572112402 needle_top1=0.6857142984867096 kl=2.0703256116671995 nan_prompts=0/22 gen_exact=0.00 needle=0/10 gsm8k=0.0300 vs 0.9000 (only_base=87 only_fmt=0 p=1.29e-26) (1210s)
+SIM fp8_e4m3_calib       top1/prompt=0.6786 short=0.7560763905445734 needle_top1=0.5857142984867096 kl=2.151731957173483 nan_prompts=0/22 gen_exact=0.05 needle=1/10 gsm8k=0.0400 vs 0.9000 (only_base=86 only_fmt=0 p=2.58e-26) (1135s)
+SIM int8_per_token_head  top1/prompt=0.9922 short=0.9856770833333334 needle_top1=1.0 kl=0.001370296673597156 nan_prompts=0/22 gen_exact=0.73 needle=10/10 gsm8k=0.8900 vs 0.9000 (only_base=1 only_fmt=0 p=1) (1498s)

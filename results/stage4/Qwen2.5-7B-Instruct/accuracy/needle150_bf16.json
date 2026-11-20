@@ -1,0 +1,616 @@
+{
+  "accuracy": 0.95,
+  "correct": 95,
+  "total": 100,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "224679",
+      "gold": "224679",
+      "correct": true
+    },
+    {
+      "id": 1,
+      "pred": "418104",
+      "gold": "418104",
+      "correct": true
+    },
+    {
+      "id": 2,
+      "pred": "892489",
+      "gold": "892489",
+      "correct": true
+    },
+    {
+      "id": 3,
+      "pred": "552137",
+      "gold": "552137",
+      "correct": true
+    },
+    {
+      "id": 4,
+      "pred": "522536",
+      "gold": "522536",
+      "correct": true
+    },
+    {
+      "id": 5,
+      "pred": "820812",
+      "gold": "820812",
+      "correct": true
+    },
+    {
+      "id": 6,
+      "pred": "272101",
+      "gold": "272101",
+      "correct": true
+    },
+    {
+      "id": 7,
+      "pred": "958084",
+      "gold": "958084",
+      "correct": true
+    },
+    {
+      "id": 8,
+      "pred": "319569",
+      "gold": "319569",
+      "correct": true
+    },
+    {
+      "id": 9,
+      "pred": "445480",
+      "gold": "445480",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "pred": "638292",
+      "gold": "638292",
+      "correct": true
+    },
+    {
+      "id": 11,
+      "pred": "530421",
+      "gold": "530421",
+      "correct": true
+    },
+    {
+      "id": 12,
+      "pred": "579152",
+      "gold": "579152",
+      "correct": true
+    },
+    {
+      "id": 13,
+      "pred": "912677",
+      "gold": "912677",
+      "correct": true
+    },
+    {
+      "id": 14,
+      "pred": "131961",
+      "gold": "131961",
+      "correct": true
+    },
+    {
+      "id": 15,
+      "pred": "624612",
+      "gold": "624612",
+      "correct": true
+    },
+    {
+      "id": 16,
+      "pred": "134241",
+      "gold": "134241",
+      "correct": true
+    },
+    {
+      "id": 17,
+      "pred": "586157",
+      "gold": "586157",
+      "correct": true
+    },
+    {
+      "id": 18,
+      "pred": "705384",
+      "gold": "705384",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "pred": "112945",
+      "gold": "112945",
+      "correct": true
+    },
+    {
+      "id": 20,
+      "pred": "521769",
+      "gold": "521769",
+      "correct": true
+    },
+    {
+      "id": 21,
+      "pred": "929135",
+      "gold": "733232",
+      "correct": false
+    },
+    {
+      "id": 22,
+      "pred": "931076",
+      "gold": "931076",
+      "correct": true
+    },
+    {
+      "id": 23,
+      "pred": "454292",
+      "gold": "454292",
+      "correct": true
+    },
+    {
+      "id": 24,
+      "pred": "909628",
+      "gold": "909628",
+      "correct": true
+    },
+    {
+      "id": 25,
+      "pred": "535406",
+      "gold": "535406",
+      "correct": true
+    },
+    {
+      "id": 26,
+      "pred": "552996",
+      "gold": "552996",
+      "correct": true
+    },
+    {
+      "id": 27,
+      "pred": "863436",
+      "gold": "863436",
+      "correct": true
+    },
+    {
+      "id": 28,
+      "pred": "314053",
+      "gold": "314053",
+      "correct": true
+    },
+    {
+      "id": 29,
+      "pred": "394409",
+      "gold": "394409",
+      "correct": true
+    },
+    {
+      "id": 30,
+      "pred": "491877",
+      "gold": "491877",
+      "correct": true
+    },
+    {
+      "id": 31,
+      "pred": "888308",
+      "gold": "888308",
+      "correct": true
+    },
+    {
+      "id": 32,
+      "pred": "840700",
+      "gold": "840700",
+      "correct": true
+    },
+    {
+      "id": 33,
+      "pred": "718271",
+      "gold": "984707",
+      "correct": false
+    },
+    {
+      "id": 34,
+      "pred": "717393",
+      "gold": "717393",
+      "correct": true
+    },
+    {
+      "id": 35,
+      "pred": "154859",
+      "gold": "154859",
+      "correct": true
+    },
+    {
+      "id": 36,
+      "pred": "855123",
+      "gold": "855123",
+      "correct": true
+    },
+    {
+      "id": 37,
+      "pred": "250098",
+      "gold": "250098",
+      "correct": true
+    },
+    {
+      "id": 38,
+      "pred": "716494",
+      "gold": "716494",
+      "correct": true
+    },
+    {
+      "id": 39,
+      "pred": "853069",
+      "gold": "853069",
+      "correct": true
+    },
+    {
+      "id": 40,
+      "pred": "679626",
+      "gold": "679626",
+      "correct": true
+    },
+    {
+      "id": 41,
+      "pred": "801012",
+      "gold": "341595",
+      "correct": false
+    },
+    {
+      "id": 42,
+      "pred": "159642",
+      "gold": "159642",
+      "correct": true
+    },
+    {
+      "id": 43,
+      "pred": "998851",
+      "gold": "849918",
+      "correct": false
+    },
+    {
+      "id": 44,
+      "pred": "441238",
+      "gold": "441238",
+      "correct": true
+    },
+    {
+      "id": 45,
+      "pred": "279186",
+      "gold": "279186",
+      "correct": true
+    },
+    {
+      "id": 46,
+      "pred": "272373",
+      "gold": "272373",
+      "correct": true
+    },
+    {
+      "id": 47,
+      "pred": "197191",
+      "gold": "197191",
+      "correct": true
+    },
+    {
+      "id": 48,
+      "pred": "226209",
+      "gold": "226209",
+      "correct": true
+    },
+    {
+      "id": 49,
+      "pred": "618142",
+      "gold": "618142",
+      "correct": true
+    },
+    {
+      "id": 50,
+      "pred": "747162",
+      "gold": "747162",
+      "correct": true
+    },
+    {
+      "id": 51,
+      "pred": "718051",
+      "gold": "718051",
+      "correct": true
+    },
+    {
+      "id": 52,
+      "pred": "834000",
+      "gold": "834000",
+      "correct": true
+    },
+    {
+      "id": 53,
+      "pred": "476691",
+      "gold": "476691",
+      "correct": true
+    },
+    {
+      "id": 54,
+      "pred": "557520",
+      "gold": "557520",
+      "correct": true
+    },
+    {
+      "id": 55,
+      "pred": "310302",
+      "gold": "310302",
+      "correct": true
+    },
+    {
+      "id": 56,
+      "pred": "478084",
+      "gold": "478084",
+      "correct": true
+    },
+    {
+      "id": 57,
+      "pred": "952493",
+      "gold": "952493",
+      "correct": true
+    },
+    {
+      "id": 58,
+      "pred": "135800",
+      "gold": "135800",
+      "correct": true
+    },
+    {
+      "id": 59,
+      "pred": "522479",
+      "gold": "522479",
+      "correct": true
+    },
+    {
+      "id": 60,
+      "pred": "812980",
+      "gold": "812980",
+      "correct": true
+    },
+    {
+      "id": 61,
+      "pred": "360455",
+      "gold": "360455",
+      "correct": true
+    },
+    {
+      "id": 62,
+      "pred": "264770",
+      "gold": "264770",
+      "correct": true
+    },
+    {
+      "id": 63,
+      "pred": "882934",
+      "gold": "882934",
+      "correct": true
+    },
+    {
+      "id": 64,
+      "pred": "509762",
+      "gold": "509762",
+      "correct": true
+    },
+    {
+      "id": 65,
+      "pred": "456335",
+      "gold": "456335",
+      "correct": true
+    },
+    {
+      "id": 66,
+      "pred": "962386",
+      "gold": "962386",
+      "correct": true
+    },
+    {
+      "id": 67,
+      "pred": "423333",
+      "gold": "423333",
+      "correct": true
+    },
+    {
+      "id": 68,
+      "pred": "330480",
+      "gold": "330480",
+      "correct": true
+    },
+    {
+      "id": 69,
+      "pred": "863595",
+      "gold": "863595",
+      "correct": true
+    },
+    {
+      "id": 70,
+      "pred": "648526",
+      "gold": "648526",
+      "correct": true
+    },
+    {
+      "id": 71,
+      "pred": "152648",
+      "gold": "152648",
+      "correct": true
+    },
+    {
+      "id": 72,
+      "pred": "953200",
+      "gold": "953200",
+      "correct": true
+    },
+    {
+      "id": 73,
+      "pred": "654249",
+      "gold": "654249",
+      "correct": true
+    },
+    {
+      "id": 74,
+      "pred": "875835",
+      "gold": "875835",
+      "correct": true
+    },
+    {
+      "id": 75,
+      "pred": "410525",
+      "gold": "396383",
+      "correct": false
+    },
+    {
+      "id": 76,
+      "pred": "804801",
+      "gold": "804801",
+      "correct": true
+    },
+    {
+      "id": 77,
+      "pred": "829802",
+      "gold": "829802",
+      "correct": true
+    },
+    {
+      "id": 78,
+      "pred": "601380",
+      "gold": "601380",
+      "correct": true
+    },
+    {
+      "id": 79,
+      "pred": "322906",
+      "gold": "322906",
+      "correct": true
+    },
+    {
+      "id": 80,
+      "pred": "195016",
+      "gold": "195016",
+      "correct": true
+    },
+    {
+      "id": 81,
+      "pred": "982024",
+      "gold": "982024",
+      "correct": true
+    },
+    {
+      "id": 82,
+      "pred": "264231",
+      "gold": "264231",
+      "correct": true
+    },
+    {
+      "id": 83,
+      "pred": "385626",
+      "gold": "385626",
+      "correct": true
+    },
+    {
+      "id": 84,
+      "pred": "604741",
+      "gold": "604741",
+      "correct": true
+    },
+    {
+      "id": 85,
+      "pred": "336933",
+      "gold": "336933",
+      "correct": true
+    },
+    {
+      "id": 86,
+      "pred": "707949",
+      "gold": "707949",
+      "correct": true
+    },
+    {
+      "id": 87,
+      "pred": "139103",
+      "gold": "139103",
+      "correct": true
+    },
+    {
+      "id": 88,
+      "pred": "830844",
+      "gold": "830844",
+      "correct": true
+    },
+    {
+      "id": 89,
+      "pred": "641236",
+      "gold": "641236",
+      "correct": true
+    },
+    {
+      "id": 90,
+      "pred": "604555",
+      "gold": "604555",
+      "correct": true
+    },
+    {
+      "id": 91,
+      "pred": "855644",
+      "gold": "855644",
+      "correct": true
+    },
+    {
+      "id": 92,
+      "pred": "576327",
+      "gold": "576327",
+      "correct": true
+    },
+    {
+      "id": 93,
+      "pred": "418738",
+      "gold": "418738",
+      "correct": true
+    },
+    {
+      "id": 94,
+      "pred": "533991",
+      "gold": "533991",
+      "correct": true
+    },
+    {
+      "id": 95,
+      "pred": "151697",
+      "gold": "151697",
+      "correct": true
+    },
+    {
+      "id": 96,
+      "pred": "881307",
+      "gold": "881307",
+      "correct": true
+    },
+    {
+      "id": 97,
+      "pred": "205876",
+      "gold": "205876",
+      "correct": true
+    },
+    {
+      "id": 98,
+      "pred": "173120",
+      "gold": "173120",
+      "correct": true
+    },
+    {
+      "id": 99,
+      "pred": "185102",
+      "gold": "185102",
+      "correct": true
+    }
+  ],
+  "task": "needle150",
+  "config": "bf16",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "auto",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 38.89413499832153,
+  "chunked_prefill_size": 2048
+}

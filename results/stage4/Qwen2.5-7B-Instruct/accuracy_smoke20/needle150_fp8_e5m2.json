@@ -1,0 +1,136 @@
+{
+  "accuracy": 0.05,
+  "correct": 1,
+  "total": 20,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "224779",
+      "gold": "224679",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "413258",
+      "gold": "418104",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "894449adow-qu4",
+      "gold": "892489",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "891133",
+      "gold": "552137",
+      "correct": false
+    },
+    {
+      "id": 4,
+      "pred": "823536",
+      "gold": "522536",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "820811",
+      "gold": "820812",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "372101",
+      "gold": "272101",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "998088",
+      "gold": "958084",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "3133333\n\naccess193039 3 3133033",
+      "gold": "319569",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "4454980988334449012484302444484442484422242422222222222222222222",
+      "gold": "445480",
+      "correct": false
+    },
+    {
+      "id": 10,
+      "pred": "9982999999922222222222222222222222222222222222222222222222222222",
+      "gold": "638292",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "933535592041",
+      "gold": "530421",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "The access for summit-granite-008644 is 199733.",
+      "gold": "579152",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "403159",
+      "gold": "912677",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "1116670",
+      "gold": "131961",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "624710",
+      "gold": "624612",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": "9adow-cadow-ember cobalt-0091",
+      "gold": "134241",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "1866677",
+      "gold": "586157",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "705384",
+      "gold": "705384",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "pred": "432833",
+      "gold": "112945",
+      "correct": false
+    }
+  ],
+  "task": "needle150",
+  "config": "fp8_e5m2",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e5m2",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 9.075752973556519,
+  "chunked_prefill_size": 2048
+}

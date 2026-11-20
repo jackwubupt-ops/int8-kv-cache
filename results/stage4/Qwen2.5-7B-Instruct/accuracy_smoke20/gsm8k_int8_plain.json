@@ -1,0 +1,136 @@
+{
+  "accuracy": 0.9,
+  "correct": 18,
+  "total": 20,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "18",
+      "gold": "18",
+      "correct": true
+    },
+    {
+      "id": 1,
+      "pred": "3",
+      "gold": "3",
+      "correct": true
+    },
+    {
+      "id": 2,
+      "pred": "70000",
+      "gold": "70000",
+      "correct": true
+    },
+    {
+      "id": 3,
+      "pred": "540",
+      "gold": "540",
+      "correct": true
+    },
+    {
+      "id": 4,
+      "pred": "20",
+      "gold": "20",
+      "correct": true
+    },
+    {
+      "id": 5,
+      "pred": "64",
+      "gold": "64",
+      "correct": true
+    },
+    {
+      "id": 6,
+      "pred": "260",
+      "gold": "260",
+      "correct": true
+    },
+    {
+      "id": 7,
+      "pred": "120",
+      "gold": "160",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "45",
+      "gold": "45",
+      "correct": true
+    },
+    {
+      "id": 9,
+      "pred": "460",
+      "gold": "460",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "pred": "366",
+      "gold": "366",
+      "correct": true
+    },
+    {
+      "id": 11,
+      "pred": "694",
+      "gold": "694",
+      "correct": true
+    },
+    {
+      "id": 12,
+      "pred": "12",
+      "gold": "13",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "18",
+      "gold": "18",
+      "correct": true
+    },
+    {
+      "id": 14,
+      "pred": "60",
+      "gold": "60",
+      "correct": true
+    },
+    {
+      "id": 15,
+      "pred": "125",
+      "gold": "125",
+      "correct": true
+    },
+    {
+      "id": 16,
+      "pred": "230",
+      "gold": "230",
+      "correct": true
+    },
+    {
+      "id": 17,
+      "pred": "57500",
+      "gold": "57500",
+      "correct": true
+    },
+    {
+      "id": 18,
+      "pred": "7",
+      "gold": "7",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "pred": "6",
+      "gold": "6",
+      "correct": true
+    }
+  ],
+  "task": "gsm8k",
+  "config": "int8_plain",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "int8_per_token_head",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 1024,
+  "seconds": 91.42360544204712,
+  "chunked_prefill_size": 2048
+}

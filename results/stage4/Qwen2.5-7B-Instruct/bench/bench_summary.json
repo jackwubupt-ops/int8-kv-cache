@@ -1,0 +1,217 @@
+{
+  "configs": {
+    "bf16": {
+      "max_total_num_tokens": 99750,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 2048,
+      "peak_running_reqs": 83,
+      "peak_gen_throughput": 3477.43,
+      "serving": {
+        "1024x256": {
+          "runs": 3,
+          "output_throughput": 1285.6426140149524,
+          "median_ttft_ms": 20176.366744562984,
+          "median_tpot_ms": 38.74117043965003,
+          "completed": 256
+        },
+        "4096x512": {
+          "runs": 3,
+          "output_throughput": 502.28950961766645,
+          "median_ttft_ms": 26453.29992007464,
+          "median_tpot_ms": 33.2594693195505,
+          "completed": 64
+        },
+        "8192x512": {
+          "runs": 3,
+          "output_throughput": 252.6967158396542,
+          "median_ttft_ms": 28398.921109735966,
+          "median_tpot_ms": 30.264342792419654,
+          "completed": 32
+        }
+      },
+      "long": {
+        "8192x512": {
+          "runs": 1,
+          "output_throughput": 251.83815916132139,
+          "median_ttft_ms": 119925.46022124588,
+          "median_tpot_ms": 29.63242162412685,
+          "completed": 128,
+          "peak_running_reqs": 11
+        }
+      },
+      "capacity_vs_bf16": 1.0
+    },
+    "bf16_flashinfer": {
+      "max_total_num_tokens": 99751,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 2048,
+      "peak_running_reqs": 82,
+      "peak_gen_throughput": 3303.19,
+      "serving": {
+        "1024x256": {
+          "runs": 3,
+          "output_throughput": 1265.1508864326447,
+          "median_ttft_ms": 20483.93942322582,
+          "median_tpot_ms": 39.72106273925188,
+          "completed": 256
+        },
+        "4096x512": {
+          "runs": 3,
+          "output_throughput": 508.4133968531744,
+          "median_ttft_ms": 26520.590774714947,
+          "median_tpot_ms": 32.56824594756512,
+          "completed": 64
+        },
+        "8192x512": {
+          "runs": 3,
+          "output_throughput": 260.3851173363116,
+          "median_ttft_ms": 27472.43405599147,
+          "median_tpot_ms": 29.751919122474767,
+          "completed": 32
+        }
+      },
+      "long": {
+        "8192x512": {
+          "runs": 1,
+          "output_throughput": 259.8696141597657,
+          "median_ttft_ms": 115881.66925404221,
+          "median_tpot_ms": 29.12987832074763,
+          "completed": 128,
+          "peak_running_reqs": 11
+        }
+      },
+      "capacity_vs_bf16": 1.0000100250626567
+    },
+    "fp8_e4m3": {
+      "max_total_num_tokens": 199503,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 3117,
+      "peak_running_reqs": 166,
+      "peak_gen_throughput": 5700.91,
+      "serving": {
+        "1024x256": {
+          "runs": 3,
+          "output_throughput": 1564.2439755896082,
+          "median_ttft_ms": 14180.578431114554,
+          "median_tpot_ms": 56.36781496087126,
+          "completed": 256
+        },
+        "4096x512": {
+          "runs": 3,
+          "output_throughput": 630.9372105156638,
+          "median_ttft_ms": 15039.610053412616,
+          "median_tpot_ms": 36.06871200393733,
+          "completed": 64
+        },
+        "8192x512": {
+          "runs": 3,
+          "output_throughput": 311.1818163165448,
+          "median_ttft_ms": 16448.801834136248,
+          "median_tpot_ms": 35.90532923718722,
+          "completed": 32
+        }
+      },
+      "long": {
+        "8192x512": {
+          "runs": 1,
+          "output_throughput": 336.6180749437583,
+          "median_ttft_ms": 85871.92857544869,
+          "median_tpot_ms": 42.02944419753178,
+          "completed": 128,
+          "peak_running_reqs": 23
+        }
+      },
+      "capacity_vs_bf16": 2.00003007518797
+    },
+    "int8_fused": {
+      "max_total_num_tokens": 196433,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 3069,
+      "peak_running_reqs": 163,
+      "peak_gen_throughput": 5568.21,
+      "serving": {
+        "1024x256": {
+          "runs": 3,
+          "output_throughput": 1575.2143848014805,
+          "median_ttft_ms": 14276.692112907767,
+          "median_tpot_ms": 55.74939185936077,
+          "completed": 256
+        },
+        "4096x512": {
+          "runs": 3,
+          "output_throughput": 618.4770991355953,
+          "median_ttft_ms": 15298.6413044855,
+          "median_tpot_ms": 37.63075560010576,
+          "completed": 64
+        },
+        "8192x512": {
+          "runs": 3,
+          "output_throughput": 306.9332891522401,
+          "median_ttft_ms": 17222.32361137867,
+          "median_tpot_ms": 34.85541308112807,
+          "completed": 32
+        }
+      },
+      "long": {
+        "8192x512": {
+          "runs": 1,
+          "output_throughput": 323.06075829423037,
+          "median_ttft_ms": 90172.28537611663,
+          "median_tpot_ms": 44.04086700536733,
+          "completed": 128,
+          "peak_running_reqs": 23
+        }
+      },
+      "capacity_vs_bf16": 1.9692531328320801
+    },
+    "int8_plain": {
+      "max_total_num_tokens": 111210,
+      "kv_cache_gb": 3.02,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 2048,
+      "peak_running_reqs": 167,
+      "peak_gen_throughput": 988.87,
+      "serving": {
+        "1024x256": {
+          "runs": 3,
+          "output_throughput": 608.942397458155,
+          "median_ttft_ms": 42330.525918863714,
+          "median_tpot_ms": 116.2058314381569,
+          "completed": 256
+        }
+      },
+      "long": {},
+      "capacity_vs_bf16": 1.1148872180451128
+    }
+  },
+  "decode_kernel": {
+    "bf16": {
+      "1024": 0.10547199845314026,
+      "4096": 0.3553279936313629,
+      "16384": 1.2247040271759033,
+      "32768": 2.3767839670181274
+    },
+    "fp8": {
+      "1024": 0.10035199671983719,
+      "4096": 0.20467199385166168,
+      "16384": 0.6369280219078064,
+      "32768": 1.2071360349655151
+    },
+    "int8": {
+      "1024": 0.10547199845314026,
+      "4096": 0.23347200453281403,
+      "16384": 0.7249919772148132,
+      "32768": 1.3802239894866943
+    },
+    "int8_plain": {
+      "1024": 0.71492800116539,
+      "4096": 3.1140480041503906,
+      "16384": 12.332623958587646,
+      "32768": 24.62499237060547
+    }
+  }
+}

@@ -1,0 +1,616 @@
+{
+  "accuracy": 0.0,
+  "correct": 0,
+  "total": 100,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "540463",
+      "gold": "584453",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "12228",
+      "gold": "380521",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "79321",
+      "gold": "194945",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "59046",
+      "gold": "485640",
+      "correct": false
+    },
+    {
+      "id": 4,
+      "pred": "15 code-",
+      "gold": "108341",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "38821288898",
+      "gold": "499577",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "1920",
+      "gold": "126405",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "39038",
+      "gold": "390368",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "94830",
+      "gold": "941026",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "992 30",
+      "gold": "992325",
+      "correct": false
+    },
+    {
+      "id": 10,
+      "pred": "328902",
+      "gold": "342502",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "32022",
+      "gold": "288633",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "21288",
+      "gold": "312238",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "38181",
+      "gold": "733077",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "7243",
+      "gold": "724376",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "1818",
+      "gold": "373641",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": "1111",
+      "gold": "715111",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "24620",
+      "gold": "245680",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "2272211",
+      "gold": "971444",
+      "correct": false
+    },
+    {
+      "id": 19,
+      "pred": "94200",
+      "gold": "294260",
+      "correct": false
+    },
+    {
+      "id": 20,
+      "pred": "918",
+      "gold": "897547",
+      "correct": false
+    },
+    {
+      "id": 21,
+      "pred": "78702",
+      "gold": "787022",
+      "correct": false
+    },
+    {
+      "id": 22,
+      "pred": "98802",
+      "gold": "870603",
+      "correct": false
+    },
+    {
+      "id": 23,
+      "pred": "78299",
+      "gold": "772596",
+      "correct": false
+    },
+    {
+      "id": 24,
+      "pred": "82888",
+      "gold": "825527",
+      "correct": false
+    },
+    {
+      "id": 25,
+      "pred": "181000409090909090908080808080808080",
+      "gold": "178713",
+      "correct": false
+    },
+    {
+      "id": 26,
+      "pred": "84099",
+      "gold": "514060",
+      "correct": false
+    },
+    {
+      "id": 27,
+      "pred": "18868",
+      "gold": "273620",
+      "correct": false
+    },
+    {
+      "id": 28,
+      "pred": "39192",
+      "gold": "812317",
+      "correct": false
+    },
+    {
+      "id": 29,
+      "pred": "769 6",
+      "gold": "917238",
+      "correct": false
+    },
+    {
+      "id": 30,
+      "pred": "83689",
+      "gold": "837659",
+      "correct": false
+    },
+    {
+      "id": 31,
+      "pred": "88628",
+      "gold": "710680",
+      "correct": false
+    },
+    {
+      "id": 32,
+      "pred": "811",
+      "gold": "131528",
+      "correct": false
+    },
+    {
+      "id": 33,
+      "pred": "48814",
+      "gold": "435524",
+      "correct": false
+    },
+    {
+      "id": 34,
+      "pred": "194144",
+      "gold": "794128",
+      "correct": false
+    },
+    {
+      "id": 35,
+      "pred": "65811",
+      "gold": "552816",
+      "correct": false
+    },
+    {
+      "id": 36,
+      "pred": "120",
+      "gold": "831243",
+      "correct": false
+    },
+    {
+      "id": 37,
+      "pred": "1111",
+      "gold": "171786",
+      "correct": false
+    },
+    {
+      "id": 38,
+      "pred": "22992",
+      "gold": "495662",
+      "correct": false
+    },
+    {
+      "id": 39,
+      "pred": "68722",
+      "gold": "657224",
+      "correct": false
+    },
+    {
+      "id": 40,
+      "pred": "296194",
+      "gold": "292869",
+      "correct": false
+    },
+    {
+      "id": 41,
+      "pred": "69777",
+      "gold": "693779",
+      "correct": false
+    },
+    {
+      "id": 42,
+      "pred": "The access code for meadow-qu-qu--1",
+      "gold": "137778",
+      "correct": false
+    },
+    {
+      "id": 43,
+      "pred": "49222",
+      "gold": "592734",
+      "correct": false
+    },
+    {
+      "id": 44,
+      "pred": "26272",
+      "gold": "277235",
+      "correct": false
+    },
+    {
+      "id": 45,
+      "pred": "19122",
+      "gold": "699255",
+      "correct": false
+    },
+    {
+      "id": 46,
+      "pred": "6111",
+      "gold": "467974",
+      "correct": false
+    },
+    {
+      "id": 47,
+      "pred": "20489",
+      "gold": "716711",
+      "correct": false
+    },
+    {
+      "id": 48,
+      "pred": "2339",
+      "gold": "283693",
+      "correct": false
+    },
+    {
+      "id": 49,
+      "pred": "88286",
+      "gold": "132363",
+      "correct": false
+    },
+    {
+      "id": 50,
+      "pred": "800780",
+      "gold": "837034",
+      "correct": false
+    },
+    {
+      "id": 51,
+      "pred": "99246",
+      "gold": "390402",
+      "correct": false
+    },
+    {
+      "id": 52,
+      "pred": "39969",
+      "gold": "479168",
+      "correct": false
+    },
+    {
+      "id": 53,
+      "pred": "2219",
+      "gold": "294692",
+      "correct": false
+    },
+    {
+      "id": 54,
+      "pred": "84049",
+      "gold": "894651",
+      "correct": false
+    },
+    {
+      "id": 55,
+      "pred": "32966",
+      "gold": "329963",
+      "correct": false
+    },
+    {
+      "id": 56,
+      "pred": "26116",
+      "gold": "276182",
+      "correct": false
+    },
+    {
+      "id": 57,
+      "pred": "1661",
+      "gold": "317914",
+      "correct": false
+    },
+    {
+      "id": 58,
+      "pred": "6870",
+      "gold": "687012",
+      "correct": false
+    },
+    {
+      "id": 59,
+      "pred": "18426",
+      "gold": "740826",
+      "correct": false
+    },
+    {
+      "id": 60,
+      "pred": "6288",
+      "gold": "272019",
+      "correct": false
+    },
+    {
+      "id": 61,
+      "pred": "3822 2",
+      "gold": "991706",
+      "correct": false
+    },
+    {
+      "id": 62,
+      "pred": "598882",
+      "gold": "561231",
+      "correct": false
+    },
+    {
+      "id": 63,
+      "pred": "1292",
+      "gold": "100315",
+      "correct": false
+    },
+    {
+      "id": 64,
+      "pred": "1959",
+      "gold": "681536",
+      "correct": false
+    },
+    {
+      "id": 65,
+      "pred": "60096",
+      "gold": "605797",
+      "correct": false
+    },
+    {
+      "id": 66,
+      "pred": "19422",
+      "gold": "194355",
+      "correct": false
+    },
+    {
+      "id": 67,
+      "pred": "94639",
+      "gold": "946436",
+      "correct": false
+    },
+    {
+      "id": 68,
+      "pred": "969989",
+      "gold": "932852",
+      "correct": false
+    },
+    {
+      "id": 69,
+      "pred": "77181",
+      "gold": "771781",
+      "correct": false
+    },
+    {
+      "id": 70,
+      "pred": "99629",
+      "gold": "950641",
+      "correct": false
+    },
+    {
+      "id": 71,
+      "pred": "36142",
+      "gold": "367142",
+      "correct": false
+    },
+    {
+      "id": 72,
+      "pred": "9604",
+      "gold": "877504",
+      "correct": false
+    },
+    {
+      "id": 73,
+      "pred": "69186",
+      "gold": "391286",
+      "correct": false
+    },
+    {
+      "id": 74,
+      "pred": "2999",
+      "gold": "979925",
+      "correct": false
+    },
+    {
+      "id": 75,
+      "pred": "64669",
+      "gold": "276465",
+      "correct": false
+    },
+    {
+      "id": 76,
+      "pred": "54447",
+      "gold": "747474",
+      "correct": false
+    },
+    {
+      "id": 77,
+      "pred": "9901",
+      "gold": "901318",
+      "correct": false
+    },
+    {
+      "id": 78,
+      "pred": "36919",
+      "gold": "117418",
+      "correct": false
+    },
+    {
+      "id": 79,
+      "pred": "9148",
+      "gold": "924505",
+      "correct": false
+    },
+    {
+      "id": 80,
+      "pred": "220202044",
+      "gold": "205020",
+      "correct": false
+    },
+    {
+      "id": 81,
+      "pred": "cobalt-m920 is",
+      "gold": "778853",
+      "correct": false
+    },
+    {
+      "id": 82,
+      "pred": "59990",
+      "gold": "500661",
+      "correct": false
+    },
+    {
+      "id": 83,
+      "pred": "889866",
+      "gold": "589786",
+      "correct": false
+    },
+    {
+      "id": 84,
+      "pred": "76609",
+      "gold": "766809",
+      "correct": false
+    },
+    {
+      "id": 85,
+      "pred": "56237",
+      "gold": "551798",
+      "correct": false
+    },
+    {
+      "id": 86,
+      "pred": "1892",
+      "gold": "912415",
+      "correct": false
+    },
+    {
+      "id": 87,
+      "pred": "3202",
+      "gold": "266019",
+      "correct": false
+    },
+    {
+      "id": 88,
+      "pred": "8844",
+      "gold": "828447",
+      "correct": false
+    },
+    {
+      "id": 89,
+      "pred": "8298383",
+      "gold": "647654",
+      "correct": false
+    },
+    {
+      "id": 90,
+      "pred": "2819",
+      "gold": "391305",
+      "correct": false
+    },
+    {
+      "id": 91,
+      "pred": "72112",
+      "gold": "827308",
+      "correct": false
+    },
+    {
+      "id": 92,
+      "pred": "999",
+      "gold": "995349",
+      "correct": false
+    },
+    {
+      "id": 93,
+      "pred": "62899",
+      "gold": "636095",
+      "correct": false
+    },
+    {
+      "id": 94,
+      "pred": "92202222",
+      "gold": "772034",
+      "correct": false
+    },
+    {
+      "id": 95,
+      "pred": "3272",
+      "gold": "348704",
+      "correct": false
+    },
+    {
+      "id": 96,
+      "pred": "80333",
+      "gold": "550210",
+      "correct": false
+    },
+    {
+      "id": 97,
+      "pred": "892402",
+      "gold": "291487",
+      "correct": false
+    },
+    {
+      "id": 98,
+      "pred": "98832",
+      "gold": "608177",
+      "correct": false
+    },
+    {
+      "id": 99,
+      "pred": "92426",
+      "gold": "477318",
+      "correct": false
+    }
+  ],
+  "task": "needle600",
+  "config": "fp8_e5m2",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e5m2",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 168.76961469650269,
+  "chunked_prefill_size": 2048
+}

@@ -1,0 +1,616 @@
+{
+  "accuracy": 0.07,
+  "correct": 7,
+  "total": 100,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "224772",
+      "gold": "224679",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "413258",
+      "gold": "418104",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "894449adow-qu4",
+      "gold": "892489",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "891137",
+      "gold": "552137",
+      "correct": false
+    },
+    {
+      "id": 4,
+      "pred": "89",
+      "gold": "522536",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "820811",
+      "gold": "820812",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "392101",
+      "gold": "272101",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "998088",
+      "gold": "958084",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "319033.",
+      "gold": "319569",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "445498098",
+      "gold": "445480",
+      "correct": false
+    },
+    {
+      "id": 10,
+      "pred": "998912",
+      "gold": "638292",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "933331",
+      "gold": "530421",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "The access for summit-granite-0086 is 577112.4",
+      "gold": "579152",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "407269",
+      "gold": "912677",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "111660611",
+      "gold": "131961",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "624716",
+      "gold": "624612",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": "9adow-cadow-embercobalt-0091",
+      "gold": "134241",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "186667",
+      "gold": "586157",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "705384",
+      "gold": "705384",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "pred": "439853",
+      "gold": "112945",
+      "correct": false
+    },
+    {
+      "id": 20,
+      "pred": "521769 access is 521769.",
+      "gold": "521769",
+      "correct": true
+    },
+    {
+      "id": 21,
+      "pred": "773819",
+      "gold": "733232",
+      "correct": false
+    },
+    {
+      "id": 22,
+      "pred": "99adow-granade--granite--0002- is 9 992202.",
+      "gold": "931076",
+      "correct": false
+    },
+    {
+      "id": 23,
+      "pred": "448699",
+      "gold": "454292",
+      "correct": false
+    },
+    {
+      "id": 24,
+      "pred": "9997289888 to provide this,",
+      "gold": "909628",
+      "correct": false
+    },
+    {
+      "id": 25,
+      "pred": "66fead9 seems",
+      "gold": "535406",
+      "correct": false
+    },
+    {
+      "id": 26,
+      "pred": "552990",
+      "gold": "552996",
+      "correct": false
+    },
+    {
+      "id": 27,
+      "pred": "838631",
+      "gold": "863436",
+      "correct": false
+    },
+    {
+      "id": 28,
+      "pred": "314073",
+      "gold": "314053",
+      "correct": false
+    },
+    {
+      "id": 29,
+      "pred": "324209",
+      "gold": "394409",
+      "correct": false
+    },
+    {
+      "id": 30,
+      "pred": "44187",
+      "gold": "491877",
+      "correct": false
+    },
+    {
+      "id": 31,
+      "pred": "The access for code77-ember 818301.",
+      "gold": "888308",
+      "correct": false
+    },
+    {
+      "id": 32,
+      "pred": "842300",
+      "gold": "840700",
+      "correct": false
+    },
+    {
+      "id": 33,
+      "pred": "713299",
+      "gold": "984707",
+      "correct": false
+    },
+    {
+      "id": 34,
+      "pred": "7773991",
+      "gold": "717393",
+      "correct": false
+    },
+    {
+      "id": 35,
+      "pred": "134999",
+      "gold": "154859",
+      "correct": false
+    },
+    {
+      "id": 36,
+      "pred": "882333",
+      "gold": "855123",
+      "correct": false
+    },
+    {
+      "id": 37,
+      "pred": "220929",
+      "gold": "250098",
+      "correct": false
+    },
+    {
+      "id": 38,
+      "pred": "792059",
+      "gold": "716494",
+      "correct": false
+    },
+    {
+      "id": 39,
+      "pred": "863069",
+      "gold": "853069",
+      "correct": false
+    },
+    {
+      "id": 40,
+      "pred": "669666",
+      "gold": "679626",
+      "correct": false
+    },
+    {
+      "id": 41,
+      "pred": "361241",
+      "gold": "341595",
+      "correct": false
+    },
+    {
+      "id": 42,
+      "pred": "102959",
+      "gold": "159642",
+      "correct": false
+    },
+    {
+      "id": 43,
+      "pred": "899",
+      "gold": "849918",
+      "correct": false
+    },
+    {
+      "id": 44,
+      "pred": "434231",
+      "gold": "441238",
+      "correct": false
+    },
+    {
+      "id": 45,
+      "pred": "277",
+      "gold": "279186",
+      "correct": false
+    },
+    {
+      "id": 46,
+      "pred": "2733333732377322222222222222222222222222222222222222222222222222",
+      "gold": "272373",
+      "correct": false
+    },
+    {
+      "id": 47,
+      "pred": "427619adow-cob-0143 is 697221.",
+      "gold": "197191",
+      "correct": false
+    },
+    {
+      "id": 48,
+      "pred": "226209\n\nmarkdown\naccess209122",
+      "gold": "226209",
+      "correct": true
+    },
+    {
+      "id": 49,
+      "pred": "313794",
+      "gold": "618142",
+      "correct": false
+    },
+    {
+      "id": 50,
+      "pred": "728662",
+      "gold": "747162",
+      "correct": false
+    },
+    {
+      "id": 51,
+      "pred": "7\n\n204455",
+      "gold": "718051",
+      "correct": false
+    },
+    {
+      "id": 52,
+      "pred": "834000",
+      "gold": "834000",
+      "correct": true
+    },
+    {
+      "id": 53,
+      "pred": "8669907adow-lantern-01111 is 43969an.",
+      "gold": "476691",
+      "correct": false
+    },
+    {
+      "id": 54,
+      "pred": "7\n\n75520",
+      "gold": "557520",
+      "correct": false
+    },
+    {
+      "id": 55,
+      "pred": "334332",
+      "gold": "310302",
+      "correct": false
+    },
+    {
+      "id": 56,
+      "pred": "470741",
+      "gold": "478084",
+      "correct": false
+    },
+    {
+      "id": 57,
+      "pred": "626692",
+      "gold": "952493",
+      "correct": false
+    },
+    {
+      "id": 58,
+      "pred": "168592",
+      "gold": "135800",
+      "correct": false
+    },
+    {
+      "id": 59,
+      "pred": "522449",
+      "gold": "522479",
+      "correct": false
+    },
+    {
+      "id": 60,
+      "pred": "871999",
+      "gold": "812980",
+      "correct": false
+    },
+    {
+      "id": 61,
+      "pred": "368451",
+      "gold": "360455",
+      "correct": false
+    },
+    {
+      "id": 62,
+      "pred": "262777",
+      "gold": "264770",
+      "correct": false
+    },
+    {
+      "id": 63,
+      "pred": "882974",
+      "gold": "882934",
+      "correct": false
+    },
+    {
+      "id": 64,
+      "pred": "804939",
+      "gold": "509762",
+      "correct": false
+    },
+    {
+      "id": 65,
+      "pred": "4an6335",
+      "gold": "456335",
+      "correct": false
+    },
+    {
+      "id": 66,
+      "pred": "966399",
+      "gold": "962386",
+      "correct": false
+    },
+    {
+      "id": 67,
+      "pred": "423322",
+      "gold": "423333",
+      "correct": false
+    },
+    {
+      "id": 68,
+      "pred": "369299",
+      "gold": "330480",
+      "correct": false
+    },
+    {
+      "id": 69,
+      "pred": "883999",
+      "gold": "863595",
+      "correct": false
+    },
+    {
+      "id": 70,
+      "pred": "82976 is 436166.",
+      "gold": "648526",
+      "correct": false
+    },
+    {
+      "id": 71,
+      "pred": "499448",
+      "gold": "152648",
+      "correct": false
+    },
+    {
+      "id": 72,
+      "pred": "9\n473100",
+      "gold": "953200",
+      "correct": false
+    },
+    {
+      "id": 73,
+      "pred": "1",
+      "gold": "654249",
+      "correct": false
+    },
+    {
+      "id": 74,
+      "pred": "875837",
+      "gold": "875835",
+      "correct": false
+    },
+    {
+      "id": 75,
+      "pred": "323339",
+      "gold": "396383",
+      "correct": false
+    },
+    {
+      "id": 76,
+      "pred": "804801",
+      "gold": "804801",
+      "correct": true
+    },
+    {
+      "id": 77,
+      "pred": "298789",
+      "gold": "829802",
+      "correct": false
+    },
+    {
+      "id": 78,
+      "pred": "6antern-cobbor--0036",
+      "gold": "601380",
+      "correct": false
+    },
+    {
+      "id": 79,
+      "pred": "342996",
+      "gold": "322906",
+      "correct": false
+    },
+    {
+      "id": 80,
+      "pred": "198antern-0093",
+      "gold": "195016",
+      "correct": false
+    },
+    {
+      "id": 81,
+      "pred": "9adow-f-granite-7antern-0075",
+      "gold": "982024",
+      "correct": false
+    },
+    {
+      "id": 82,
+      "pred": "266879",
+      "gold": "264231",
+      "correct": false
+    },
+    {
+      "id": 83,
+      "pred": "385666",
+      "gold": "385626",
+      "correct": false
+    },
+    {
+      "id": 84,
+      "pred": "604741",
+      "gold": "604741",
+      "correct": true
+    },
+    {
+      "id": 85,
+      "pred": "337883",
+      "gold": "336933",
+      "correct": false
+    },
+    {
+      "id": 86,
+      "pred": "193759",
+      "gold": "707949",
+      "correct": false
+    },
+    {
+      "id": 87,
+      "pred": "134199",
+      "gold": "139103",
+      "correct": false
+    },
+    {
+      "id": 88,
+      "pred": "830844",
+      "gold": "830844",
+      "correct": true
+    },
+    {
+      "id": 89,
+      "pred": "691236",
+      "gold": "641236",
+      "correct": false
+    },
+    {
+      "id": 90,
+      "pred": "614045",
+      "gold": "604555",
+      "correct": false
+    },
+    {
+      "id": 91,
+      "pred": "882622",
+      "gold": "855644",
+      "correct": false
+    },
+    {
+      "id": 92,
+      "pred": "693377",
+      "gold": "576327",
+      "correct": false
+    },
+    {
+      "id": 93,
+      "pred": "338789",
+      "gold": "418738",
+      "correct": false
+    },
+    {
+      "id": 94,
+      "pred": "56zzo945 is 669945.",
+      "gold": "533991",
+      "correct": false
+    },
+    {
+      "id": 95,
+      "pred": "123391",
+      "gold": "151697",
+      "correct": false
+    },
+    {
+      "id": 96,
+      "pred": "88139707",
+      "gold": "881307",
+      "correct": false
+    },
+    {
+      "id": 97,
+      "pred": "205877",
+      "gold": "205876",
+      "correct": false
+    },
+    {
+      "id": 98,
+      "pred": "1\n132120",
+      "gold": "173120",
+      "correct": false
+    },
+    {
+      "id": 99,
+      "pred": "181285",
+      "gold": "185102",
+      "correct": false
+    }
+  ],
+  "task": "needle150",
+  "config": "fp8_e5m2",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e5m2",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 38.56713390350342,
+  "chunked_prefill_size": 2048
+}
