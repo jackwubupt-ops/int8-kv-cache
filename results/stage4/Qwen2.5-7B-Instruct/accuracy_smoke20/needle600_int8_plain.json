@@ -1,0 +1,136 @@
+{
+  "accuracy": 1.0,
+  "correct": 20,
+  "total": 20,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "584453",
+      "gold": "584453",
+      "correct": true
+    },
+    {
+      "id": 1,
+      "pred": "380521",
+      "gold": "380521",
+      "correct": true
+    },
+    {
+      "id": 2,
+      "pred": "194945",
+      "gold": "194945",
+      "correct": true
+    },
+    {
+      "id": 3,
+      "pred": "485640",
+      "gold": "485640",
+      "correct": true
+    },
+    {
+      "id": 4,
+      "pred": "108341",
+      "gold": "108341",
+      "correct": true
+    },
+    {
+      "id": 5,
+      "pred": "499577",
+      "gold": "499577",
+      "correct": true
+    },
+    {
+      "id": 6,
+      "pred": "126405",
+      "gold": "126405",
+      "correct": true
+    },
+    {
+      "id": 7,
+      "pred": "390368",
+      "gold": "390368",
+      "correct": true
+    },
+    {
+      "id": 8,
+      "pred": "941026",
+      "gold": "941026",
+      "correct": true
+    },
+    {
+      "id": 9,
+      "pred": "992325",
+      "gold": "992325",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "pred": "342502",
+      "gold": "342502",
+      "correct": true
+    },
+    {
+      "id": 11,
+      "pred": "288633",
+      "gold": "288633",
+      "correct": true
+    },
+    {
+      "id": 12,
+      "pred": "312238",
+      "gold": "312238",
+      "correct": true
+    },
+    {
+      "id": 13,
+      "pred": "733077",
+      "gold": "733077",
+      "correct": true
+    },
+    {
+      "id": 14,
+      "pred": "724376",
+      "gold": "724376",
+      "correct": true
+    },
+    {
+      "id": 15,
+      "pred": "373641",
+      "gold": "373641",
+      "correct": true
+    },
+    {
+      "id": 16,
+      "pred": "715111",
+      "gold": "715111",
+      "correct": true
+    },
+    {
+      "id": 17,
+      "pred": "245680",
+      "gold": "245680",
+      "correct": true
+    },
+    {
+      "id": 18,
+      "pred": "971444",
+      "gold": "971444",
+      "correct": true
+    },
+    {
+      "id": 19,
+      "pred": "294260",
+      "gold": "294260",
+      "correct": true
+    }
+  ],
+  "task": "needle600",
+  "config": "int8_plain",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "int8_per_token_head",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 52.61856436729431,
+  "chunked_prefill_size": 2048
+}

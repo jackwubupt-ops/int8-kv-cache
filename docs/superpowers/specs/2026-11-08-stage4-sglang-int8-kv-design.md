@@ -53,6 +53,11 @@
 
 补丁只针对选定的那个版本，一旦定下来就不再改动。
 
+**结论（2026-11-08）**：服务器驱动为 570.124.04，最高支持 CUDA 12.8，所以选 **SGLang v0.5.12**（commit `127b9e32`）。这是最后一个依赖 `torch==2.11.0`、且 FlashInfer 不要求 CUDA 13 的版本。
+- PyTorch 复用镜像自带的 `2.11.0+cu128`。
+- sglang-kernel 在 PyPI 上发布的是 CUDA 13 版本，改装 SGLang 下载源上的 `0.4.2.post2+cu129`，依靠 CUDA 12.x 的小版本兼容在 570 驱动上运行，由 `setup.sh` 末尾的冒烟测试验证。
+- 这个版本的 Triton attention kernel 位于 `srt/layers/attention/triton_ops/`，不是 0.5.23 的 `kernels/ops/attention/`。
+
 ### 4.2 仓库结构
 
 ```

@@ -1,0 +1,59 @@
+=== stage 4 accuracy: /root/autodl-tmp/models/Qwen2.5-7B-Instruct, patch 009ac1b, Fri Nov 20 00:54:27 CST 2026 ===
+--- gsm8k auto:plain (00:54:27)
+EVAL gsm8k bf16: accuracy=0.9500 (19/20) in 11s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/gsm8k_bf16.json
+--- gsm8k fp8_e4m3:plain (00:55:37)
+EVAL gsm8k fp8_e4m3: accuracy=0.0000 (0/20) in 18s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/gsm8k_fp8_e4m3.json
+--- gsm8k fp8_e5m2:plain (00:56:50)
+EVAL gsm8k fp8_e5m2: accuracy=0.0000 (0/20) in 19s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/gsm8k_fp8_e5m2.json
+--- gsm8k int8_per_token_head:plain (00:58:06)
+EVAL gsm8k int8_plain: accuracy=0.9000 (18/20) in 91s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/gsm8k_int8_plain.json
+--- gsm8k int8_per_token_head:fused (01:00:48)
+EVAL gsm8k int8_fused: accuracy=0.9500 (19/20) in 11s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/gsm8k_int8_fused.json
+--- needle150 auto:plain (01:01:55)
+EVAL needle150 bf16: accuracy=1.0000 (20/20) in 8s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle150_bf16.json
+--- needle150 fp8_e4m3:plain (01:02:56)
+EVAL needle150 fp8_e4m3: accuracy=0.0500 (1/20) in 9s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle150_fp8_e4m3.json
+--- needle150 fp8_e5m2:plain (01:04:00)
+EVAL needle150 fp8_e5m2: accuracy=0.0500 (1/20) in 9s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle150_fp8_e5m2.json
+--- needle150 int8_per_token_head:plain (01:05:00)
+EVAL needle150 int8_plain: accuracy=1.0000 (20/20) in 12s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle150_int8_plain.json
+--- needle150 int8_per_token_head:fused (01:06:22)
+EVAL needle150 int8_fused: accuracy=1.0000 (20/20) in 8s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle150_int8_fused.json
+--- needle600 auto:plain (01:07:26)
+EVAL needle600 bf16: accuracy=1.0000 (20/20) in 38s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle600_bf16.json
+--- needle600 fp8_e4m3:plain (01:08:56)
+EVAL needle600 fp8_e4m3: accuracy=0.0500 (1/20) in 36s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle600_fp8_e4m3.json
+--- needle600 fp8_e5m2:plain (01:10:28)
+EVAL needle600 fp8_e5m2: accuracy=0.0000 (0/20) in 34s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle600_fp8_e5m2.json
+--- needle600 int8_per_token_head:plain (01:11:55)
+EVAL needle600 int8_plain: accuracy=1.0000 (20/20) in 53s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle600_int8_plain.json
+--- needle600 int8_per_token_head:fused (01:13:59)
+EVAL needle600 int8_fused: accuracy=1.0000 (20/20) in 37s -> results/stage4/Qwen2.5-7B-Instruct/accuracy_smoke20/needle600_int8_fused.json
+===== ACCURACY SUMMARY (01:15:28) =====
+ACC gsm8k     fp8_e4m3    0.0000 vs bf16 0.9500 (delta -0.9500) only_bf16=19 only_fp8_e4m3=0 McNemar p=3.81e-06
+ACC gsm8k     fp8_e5m2    0.0000 vs bf16 0.9500 (delta -0.9500) only_bf16=19 only_fp8_e5m2=0 McNemar p=3.81e-06
+ACC gsm8k     int8_fused  0.9500 vs bf16 0.9500 (delta +0.0000) only_bf16=0 only_int8_fused=0 McNemar p=1
+ACC gsm8k     int8_plain  0.9000 vs bf16 0.9500 (delta -0.0500) only_bf16=1 only_int8_plain=0 McNemar p=1
+ACC needle150 fp8_e4m3    0.0500 vs bf16 1.0000 (delta -0.9500) only_bf16=19 only_fp8_e4m3=0 McNemar p=3.81e-06
+ACC needle150 fp8_e5m2    0.0500 vs bf16 1.0000 (delta -0.9500) only_bf16=19 only_fp8_e5m2=0 McNemar p=3.81e-06
+ACC needle150 int8_fused  1.0000 vs bf16 1.0000 (delta +0.0000) only_bf16=0 only_int8_fused=0 McNemar p=1
+ACC needle150 int8_plain  1.0000 vs bf16 1.0000 (delta +0.0000) only_bf16=0 only_int8_plain=0 McNemar p=1
+ACC needle600 fp8_e4m3    0.0500 vs bf16 1.0000 (delta -0.9500) only_bf16=19 only_fp8_e4m3=0 McNemar p=3.81e-06
+ACC needle600 fp8_e5m2    0.0000 vs bf16 1.0000 (delta -1.0000) only_bf16=20 only_fp8_e5m2=0 McNemar p=1.91e-06
+ACC needle600 int8_fused  1.0000 vs bf16 1.0000 (delta +0.0000) only_bf16=0 only_int8_fused=0 McNemar p=1
+ACC needle600 int8_plain  1.0000 vs bf16 1.0000 (delta +0.0000) only_bf16=0 only_int8_plain=0 McNemar p=1
+RUN gsm8k     bf16        acc=0.9500 (19/20) 11s chunk=2048
+RUN gsm8k     fp8_e4m3    acc=0.0000 (0/20) 18s chunk=2048
+RUN gsm8k     fp8_e5m2    acc=0.0000 (0/20) 19s chunk=2048
+RUN gsm8k     int8_fused  acc=0.9500 (19/20) 11s chunk=2048
+RUN gsm8k     int8_plain  acc=0.9000 (18/20) 91s chunk=2048
+RUN needle150 bf16        acc=1.0000 (20/20) 8s chunk=2048
+RUN needle150 fp8_e4m3    acc=0.0500 (1/20) 9s chunk=2048
+RUN needle150 fp8_e5m2    acc=0.0500 (1/20) 9s chunk=2048
+RUN needle150 int8_fused  acc=1.0000 (20/20) 8s chunk=2048
+RUN needle150 int8_plain  acc=1.0000 (20/20) 12s chunk=2048
+RUN needle600 bf16        acc=1.0000 (20/20) 38s chunk=2048
+RUN needle600 fp8_e4m3    acc=0.0500 (1/20) 36s chunk=2048
+RUN needle600 fp8_e5m2    acc=0.0000 (0/20) 34s chunk=2048
+RUN needle600 int8_fused  acc=1.0000 (20/20) 37s chunk=2048
+RUN needle600 int8_plain  acc=1.0000 (20/20) 53s chunk=2048

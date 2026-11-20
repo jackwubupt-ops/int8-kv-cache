@@ -1,0 +1,27 @@
+{
+  "dtype": "int8",
+  "batch": 32,
+  "q_heads": 28,
+  "kv_heads": 4,
+  "head_dim": 128,
+  "kv_splits": 8,
+  "warmup": 10,
+  "gpu": "NVIDIA GeForce RTX 4090 D",
+  "torch": "2.11.0+cu128",
+  "results": [
+    {
+      "context": 1024,
+      "median_ms": 0.135343998670578,
+      "min_ms": 0.13312000036239624,
+      "p90_ms": 0.13926400244235992,
+      "iters": 20
+    },
+    {
+      "context": 4096,
+      "median_ms": 0.24985599517822266,
+      "min_ms": 0.24780799448490143,
+      "p90_ms": 0.2519040107727051,
+      "iters": 20
+    }
+  ]
+}

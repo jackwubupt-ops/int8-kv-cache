@@ -1,0 +1,53 @@
+=== stage 4 bench: /root/autodl-tmp/models/Qwen2.5-7B-Instruct, patch 009ac1b, mem_fraction=0.85, Fri Nov 20 01:15:32 CST 2026 ===
+--- decode kernel micro-benchmark (01:15:32)
+KERNEL bf16       batch=32 context=  1024 median=0.130 ms min=0.129 p90=0.135
+KERNEL bf16       batch=32 context=  4096 median=0.370 ms min=0.369 p90=0.372
+KERNEL fp8        batch=32 context=  1024 median=0.112 ms min=0.109 p90=0.115
+KERNEL fp8        batch=32 context=  4096 median=0.201 ms min=0.200 p90=0.203
+KERNEL int8       batch=32 context=  1024 median=0.135 ms min=0.133 p90=0.139
+KERNEL int8       batch=32 context=  4096 median=0.250 ms min=0.248 p90=0.252
+KERNEL int8_plain batch=32 context=  1024 median=0.711 ms min=0.708 p90=0.712
+KERNEL int8_plain batch=32 context=  4096 median=3.112 ms min=3.108 p90=3.115
+--- bf16: starting server (01:16:29)
+max_total_num_tokens=99751
+  serving 1024x64 n=16 run 1 (01:17:23)
+  long 4096x64 n=24 run 1 (01:17:39)
+scripts/stage4/bench.sh: line 53: 14078 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- fp8_e4m3: starting server (01:18:07)
+max_total_num_tokens=199503
+  serving 1024x64 n=16 run 1 (01:18:59)
+  long 4096x64 n=24 run 1 (01:19:15)
+scripts/stage4/bench.sh: line 53: 14513 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- int8_fused: starting server (01:19:43)
+max_total_num_tokens=196433
+  serving 1024x64 n=16 run 1 (01:20:35)
+  long 4096x64 n=24 run 1 (01:20:52)
+scripts/stage4/bench.sh: line 53: 14944 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- int8_plain: starting server (01:21:21)
+max_total_num_tokens=196433
+  serving 1024x64 n=16 run 1 (01:22:35)
+scripts/stage4/bench.sh: line 53: 15375 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- bf16_flashinfer: starting server (01:23:05)
+max_total_num_tokens=99751
+  serving 1024x64 n=16 run 1 (01:24:31)
+  long 4096x64 n=24 run 1 (01:24:48)
+scripts/stage4/bench.sh: line 53: 15770 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+===== BENCH SUMMARY (01:25:16) =====
+BENCH bf16             tokens=99751 (1.000x bf16) kv=5.32 GB
+BENCH bf16             serving 1024x64   out tok/s=367.5 ttft=945 ms tpot=28.8 ms (runs=1, completed=16)
+BENCH bf16             long    4096x64   peak running=24 out tok/s=123.0 completed=24
+BENCH bf16_flashinfer  tokens=99751 (1.000x bf16) kv=5.32 GB
+BENCH bf16_flashinfer  serving 1024x64   out tok/s=365.5 ttft=961 ms tpot=28.8 ms (runs=1, completed=16)
+BENCH bf16_flashinfer  long    4096x64   peak running=24 out tok/s=125.8 completed=24
+BENCH fp8_e4m3         tokens=199503 (2.000x bf16) kv=5.32 GB
+BENCH fp8_e4m3         serving 1024x64   out tok/s=370.8 ttft=950 ms tpot=28.4 ms (runs=1, completed=16)
+BENCH fp8_e4m3         long    4096x64   peak running=24 out tok/s=129.8 completed=24
+BENCH int8_fused       tokens=196433 (1.969x bf16) kv=5.32 GB
+BENCH int8_fused       serving 1024x64   out tok/s=369.0 ttft=953 ms tpot=28.4 ms (runs=1, completed=16)
+BENCH int8_fused       long    4096x64   peak running=24 out tok/s=127.9 completed=24
+BENCH int8_plain       tokens=196433 (1.969x bf16) kv=5.32 GB
+BENCH int8_plain       serving 1024x64   out tok/s=90.3 ttft=1607 ms tpot=152.2 ms (runs=1, completed=16)
+BENCH decode kernel bf16       1024:0.130ms 4096:0.370ms
+BENCH decode kernel fp8        1024:0.112ms 4096:0.201ms
+BENCH decode kernel int8       1024:0.135ms 4096:0.250ms
+BENCH decode kernel int8_plain 1024:0.711ms 4096:3.112ms

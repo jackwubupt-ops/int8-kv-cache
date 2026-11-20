@@ -1,0 +1,153 @@
+{
+  "configs": {
+    "bf16": {
+      "max_total_num_tokens": 99751,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 2048,
+      "peak_running_reqs": 24,
+      "peak_gen_throughput": 186.69,
+      "serving": {
+        "1024x64": {
+          "runs": 1,
+          "output_throughput": 367.49297837672793,
+          "median_ttft_ms": 945.2897123992443,
+          "median_tpot_ms": 28.814393287849803,
+          "completed": 16
+        }
+      },
+      "long": {
+        "4096x64": {
+          "runs": 1,
+          "output_throughput": 122.97892598859815,
+          "median_ttft_ms": 5992.472755722702,
+          "median_tpot_ms": 97.56538526169837,
+          "completed": 24,
+          "peak_running_reqs": 24
+        }
+      },
+      "capacity_vs_bf16": 1.0
+    },
+    "bf16_flashinfer": {
+      "max_total_num_tokens": 99751,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 2048,
+      "peak_running_reqs": 24,
+      "peak_gen_throughput": 186.23,
+      "serving": {
+        "1024x64": {
+          "runs": 1,
+          "output_throughput": 365.45763746619605,
+          "median_ttft_ms": 961.0315328463912,
+          "median_tpot_ms": 28.755691612050647,
+          "completed": 16
+        }
+      },
+      "long": {
+        "4096x64": {
+          "runs": 1,
+          "output_throughput": 125.79800635774242,
+          "median_ttft_ms": 5431.244680657983,
+          "median_tpot_ms": 102.44431667443779,
+          "completed": 24,
+          "peak_running_reqs": 24
+        }
+      },
+      "capacity_vs_bf16": 1.0
+    },
+    "fp8_e4m3": {
+      "max_total_num_tokens": 199503,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 3117,
+      "peak_running_reqs": 24,
+      "peak_gen_throughput": 187.31,
+      "serving": {
+        "1024x64": {
+          "runs": 1,
+          "output_throughput": 370.76959844676355,
+          "median_ttft_ms": 949.966904707253,
+          "median_tpot_ms": 28.36414250648684,
+          "completed": 16
+        }
+      },
+      "long": {
+        "4096x64": {
+          "runs": 1,
+          "output_throughput": 129.8153188812267,
+          "median_ttft_ms": 5457.198501564562,
+          "median_tpot_ms": 100.53428592130778,
+          "completed": 24,
+          "peak_running_reqs": 24
+        }
+      },
+      "capacity_vs_bf16": 2.000010024962156
+    },
+    "int8_fused": {
+      "max_total_num_tokens": 196433,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 3069,
+      "peak_running_reqs": 24,
+      "peak_gen_throughput": 186.96,
+      "serving": {
+        "1024x64": {
+          "runs": 1,
+          "output_throughput": 368.9935732241759,
+          "median_ttft_ms": 953.4753756597638,
+          "median_tpot_ms": 28.446231968700886,
+          "completed": 16
+        }
+      },
+      "long": {
+        "4096x64": {
+          "runs": 1,
+          "output_throughput": 127.85376329443152,
+          "median_ttft_ms": 5992.58890375495,
+          "median_tpot_ms": 94.91378233014117,
+          "completed": 24,
+          "peak_running_reqs": 24
+        }
+      },
+      "capacity_vs_bf16": 1.9692333911439484
+    },
+    "int8_plain": {
+      "max_total_num_tokens": 196433,
+      "kv_cache_gb": 5.32,
+      "chunked_prefill_size": 2048,
+      "max_running_requests": 3069,
+      "peak_running_reqs": 16,
+      "peak_gen_throughput": 70.38,
+      "serving": {
+        "1024x64": {
+          "runs": 1,
+          "output_throughput": 90.28950078112115,
+          "median_ttft_ms": 1607.2862353175879,
+          "median_tpot_ms": 152.19548192348273,
+          "completed": 16
+        }
+      },
+      "long": {},
+      "capacity_vs_bf16": 1.9692333911439484
+    }
+  },
+  "decode_kernel": {
+    "bf16": {
+      "1024": 0.13012799620628357,
+      "4096": 0.3701760023832321
+    },
+    "fp8": {
+      "1024": 0.11161600053310394,
+      "4096": 0.20070399343967438
+    },
+    "int8": {
+      "1024": 0.135343998670578,
+      "4096": 0.24985599517822266
+    },
+    "int8_plain": {
+      "1024": 0.7106559872627258,
+      "4096": 3.111936092376709
+    }
+  }
+}

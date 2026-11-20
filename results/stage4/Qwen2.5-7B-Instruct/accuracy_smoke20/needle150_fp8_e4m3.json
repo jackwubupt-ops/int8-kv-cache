@@ -1,0 +1,136 @@
+{
+  "accuracy": 0.05,
+  "correct": 1,
+  "total": 20,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "4929",
+      "gold": "224679",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "408408",
+      "gold": "418104",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "TheThe The access code for me*0 is8 is0 EntityState is be be 889 is 498932 2 831",
+      "gold": "892489",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "632413",
+      "gold": "552137",
+      "correct": false
+    },
+    {
+      "id": 4,
+      "pred": "tica\nThe The access code for cobalt-summit code00 is (0818) is 4898 is 0, the ac",
+      "gold": "522536",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "It\nThe",
+      "gold": "820812",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "The  What for the question in question is is899911\nThe The access code for me001",
+      "gold": "272101",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "TheThe The access code for lantern1antern code086 is Reply\n\nTheThe\nTheThe\nTheThe",
+      "gold": "958084",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "def for lantern-quartz (000 The access code for lantern-quartz code0 is9us, acce",
+      "gold": "319569",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "445480",
+      "gold": "445480",
+      "correct": true
+    },
+    {
+      "id": 10,
+      "pred": "f\u00e4llig code for lantern-meadow0 is",
+      "gold": "638292",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "The",
+      "gold": "530421",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "The access code for summit-granite0006 is8 is is access code for granite-granite",
+      "gold": "579152",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "The The provided you, the access code for quartz-har harbor is0 2 2268 is\n\n code",
+      "gold": "912677",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "184290",
+      "gold": "131961",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "--,...\n\n\"user for lantern-harbor code01 is is07",
+      "gold": "624612",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": ".mybatisplus code for falcon-cob000 0000 The provided for cob cobalt coantern co",
+      "gold": "134241",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "The providedan9 for \"antern me066 is appearsan is is is 468282. The providedan f",
+      "gold": "586157",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "def for the access code for granite-cantern code0 0",
+      "gold": "705384",
+      "correct": false
+    },
+    {
+      "id": 19,
+      "pred": "TheThe\n``` The access code for summit-cantern code011 is is\n The access code for",
+      "gold": "112945",
+      "correct": false
+    }
+  ],
+  "task": "needle150",
+  "config": "fp8_e4m3",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e4m3",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 9.18812084197998,
+  "chunked_prefill_size": 2048
+}

@@ -6,3 +6,5 @@ __pycache__/
 results/raw/
 *.pt
 *.safetensors
+.superpowers/
+third_party/

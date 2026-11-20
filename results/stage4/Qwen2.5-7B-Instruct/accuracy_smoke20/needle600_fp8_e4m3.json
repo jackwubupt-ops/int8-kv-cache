@@ -1,0 +1,136 @@
+{
+  "accuracy": 0.05,
+  "correct": 1,
+  "total": 20,
+  "predictions": [
+    {
+      "id": 0,
+      "pred": "884453",
+      "gold": "584453",
+      "correct": false
+    },
+    {
+      "id": 1,
+      "pred": "The access42622 for falcon-cob alt b0020 for falcon-cob bal-0220 is0972 is9 for ",
+      "gold": "380521",
+      "correct": false
+    },
+    {
+      "id": 2,
+      "pred": "It seems like you are are09 EntityState codes:\n| * is is09  2 is00000n089 is00n ",
+      "gold": "194945",
+      "correct": false
+    },
+    {
+      "id": 3,
+      "pred": "485640",
+      "gold": "485640",
+      "correct": true
+    },
+    {
+      "id": 4,
+      "pred": "The access access0486 is09000000000000010000001m00008208608586\n The access code ",
+      "gold": "108341",
+      "correct": false
+    },
+    {
+      "id": 5,
+      "pred": "It seems it is the access code for granite-falcon-00372 that for quartz-falcon-0",
+      "gold": "499577",
+      "correct": false
+    },
+    {
+      "id": 6,
+      "pred": "The provided for quartz for quartz code for meow for quartz 2 000009 68598\nThe a",
+      "gold": "126405",
+      "correct": false
+    },
+    {
+      "id": 7,
+      "pred": "access2 code for granite-m co0 is9\n*\n access\nThe access assistant",
+      "gold": "390368",
+      "correct": false
+    },
+    {
+      "id": 8,
+      "pred": "access for summit-haradow-0096 is92 access64\nThe access for summit-har65 is2 is1",
+      "gold": "941026",
+      "correct": false
+    },
+    {
+      "id": 9,
+      "pred": "Itember-ember 05ember lantern 0 0 0 5 0 5ember  0  0  2ember  0  0  0  0  2ember",
+      "gold": "992325",
+      "correct": false
+    },
+    {
+      "id": 10,
+      "pred": "access code for cobalt-00 1\nThe access code for granite-02  is is9 code\nThe acce",
+      "gold": "342502",
+      "correct": false
+    },
+    {
+      "id": 11,
+      "pred": "granite 2 2 2 2 1 2 2  code  for cobalt- 0 2  code  for cobalt- 0  code  for cob",
+      "gold": "288633",
+      "correct": false
+    },
+    {
+      "id": 12,
+      "pred": "It looks seems like you are trying to generate a large that for a specific code,",
+      "gold": "312238",
+      "correct": false
+    },
+    {
+      "id": 13,
+      "pred": "It seems like you are providing a lot of codes, but me that that access for the ",
+      "gold": "733077",
+      "correct": false
+    },
+    {
+      "id": 14,
+      "pred": "68949",
+      "gold": "724376",
+      "correct": false
+    },
+    {
+      "id": 15,
+      "pred": "The access470 access0 access code for lantern-harbor code00646 is0967 is9 821 is",
+      "gold": "373641",
+      "correct": false
+    },
+    {
+      "id": 16,
+      "pred": "access code for summit-falcon-00 0 30 0  is0<?\n for 5 5 5 0  872  82  82  888888",
+      "gold": "715111",
+      "correct": false
+    },
+    {
+      "id": 17,
+      "pred": "It seems like there is the access you provided provided is86949,40, it which tha",
+      "gold": "245680",
+      "correct": false
+    },
+    {
+      "id": 18,
+      "pred": "",
+      "gold": "971444",
+      "correct": false
+    },
+    {
+      "id": 19,
+      "pred": "access0 code for me021 01308 is9 isSCR00 8002 is9 is0n0000000001000001fefe00 882",
+      "gold": "294260",
+      "correct": false
+    }
+  ],
+  "task": "needle600",
+  "config": "fp8_e4m3",
+  "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+  "kv_dtype": "fp8_e4m3",
+  "impl": "plain",
+  "attention_backend": "triton",
+  "max_new_tokens": 64,
+  "seconds": 35.99637722969055,
+  "chunked_prefill_size": 2048
+}

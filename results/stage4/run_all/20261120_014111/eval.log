@@ -1,0 +1,59 @@
+=== stage 4 accuracy: /root/autodl-tmp/models/Qwen2.5-7B-Instruct, patch 009ac1b, Fri Nov 20 03:21:03 CST 2026 ===
+--- gsm8k auto:plain (03:21:03)
+EVAL gsm8k bf16: accuracy=0.9030 (1191/1319) in 84s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/gsm8k_bf16.json
+--- gsm8k fp8_e4m3:plain (03:23:19)
+EVAL gsm8k fp8_e4m3: accuracy=0.0197 (26/1319) in 164s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/gsm8k_fp8_e4m3.json
+--- gsm8k fp8_e5m2:plain (03:26:59)
+EVAL gsm8k fp8_e5m2: accuracy=0.0190 (25/1319) in 233s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/gsm8k_fp8_e5m2.json
+--- gsm8k int8_per_token_head:plain (03:31:47)
+EVAL gsm8k int8_plain: accuracy=0.8992 (1186/1319) in 263s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/gsm8k_int8_plain.json
+--- gsm8k int8_per_token_head:fused (03:37:20)
+EVAL gsm8k int8_fused: accuracy=0.8916 (1176/1319) in 76s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/gsm8k_int8_fused.json
+--- needle150 auto:plain (03:39:35)
+EVAL needle150 bf16: accuracy=0.9500 (95/100) in 39s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle150_bf16.json
+--- needle150 fp8_e4m3:plain (03:41:06)
+EVAL needle150 fp8_e4m3: accuracy=0.0200 (2/100) in 39s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle150_fp8_e4m3.json
+--- needle150 fp8_e5m2:plain (03:42:40)
+EVAL needle150 fp8_e5m2: accuracy=0.0700 (7/100) in 39s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle150_fp8_e5m2.json
+--- needle150 int8_per_token_head:plain (03:44:16)
+EVAL needle150 int8_plain: accuracy=0.9500 (95/100) in 57s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle150_int8_plain.json
+--- needle150 int8_per_token_head:fused (03:46:24)
+EVAL needle150 int8_fused: accuracy=0.9600 (96/100) in 39s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle150_int8_fused.json
+--- needle600 auto:plain (03:47:57)
+EVAL needle600 bf16: accuracy=0.9500 (95/100) in 188s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle600_bf16.json
+--- needle600 fp8_e4m3:plain (03:51:59)
+EVAL needle600 fp8_e4m3: accuracy=0.0300 (3/100) in 176s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle600_fp8_e4m3.json
+--- needle600 fp8_e5m2:plain (03:55:48)
+EVAL needle600 fp8_e5m2: accuracy=0.0000 (0/100) in 169s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle600_fp8_e5m2.json
+--- needle600 int8_per_token_head:plain (03:59:31)
+EVAL needle600 int8_plain: accuracy=0.9500 (95/100) in 260s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle600_int8_plain.json
+--- needle600 int8_per_token_head:fused (04:05:01)
+EVAL needle600 int8_fused: accuracy=0.9600 (96/100) in 185s -> results/stage4/Qwen2.5-7B-Instruct/accuracy/needle600_int8_fused.json
+===== ACCURACY SUMMARY (04:09:00) =====
+ACC gsm8k     fp8_e4m3    0.0197 vs bf16 0.9030 (delta -0.8832) only_bf16=1169 only_fp8_e4m3=4 McNemar p=0
+ACC gsm8k     fp8_e5m2    0.0190 vs bf16 0.9030 (delta -0.8840) only_bf16=1169 only_fp8_e5m2=3 McNemar p=0
+ACC gsm8k     int8_fused  0.8916 vs bf16 0.9030 (delta -0.0114) only_bf16=26 only_int8_fused=11 McNemar p=0.0201
+ACC gsm8k     int8_plain  0.8992 vs bf16 0.9030 (delta -0.0038) only_bf16=21 only_int8_plain=16 McNemar p=0.511
+ACC needle150 fp8_e4m3    0.0200 vs bf16 0.9500 (delta -0.9300) only_bf16=93 only_fp8_e4m3=0 McNemar p=2.02e-28
+ACC needle150 fp8_e5m2    0.0700 vs bf16 0.9500 (delta -0.8800) only_bf16=88 only_fp8_e5m2=0 McNemar p=6.46e-27
+ACC needle150 int8_fused  0.9600 vs bf16 0.9500 (delta +0.0100) only_bf16=0 only_int8_fused=1 McNemar p=1
+ACC needle150 int8_plain  0.9500 vs bf16 0.9500 (delta +0.0000) only_bf16=0 only_int8_plain=0 McNemar p=1
+ACC needle600 fp8_e4m3    0.0300 vs bf16 0.9500 (delta -0.9200) only_bf16=92 only_fp8_e4m3=0 McNemar p=4.04e-28
+ACC needle600 fp8_e5m2    0.0000 vs bf16 0.9500 (delta -0.9500) only_bf16=95 only_fp8_e5m2=0 McNemar p=5.05e-29
+ACC needle600 int8_fused  0.9600 vs bf16 0.9500 (delta +0.0100) only_bf16=0 only_int8_fused=1 McNemar p=1
+ACC needle600 int8_plain  0.9500 vs bf16 0.9500 (delta +0.0000) only_bf16=1 only_int8_plain=1 McNemar p=1
+RUN gsm8k     bf16        acc=0.9030 (1191/1319) 84s chunk=2048
+RUN gsm8k     fp8_e4m3    acc=0.0197 (26/1319) 164s chunk=2048
+RUN gsm8k     fp8_e5m2    acc=0.0190 (25/1319) 233s chunk=2048
+RUN gsm8k     int8_fused  acc=0.8916 (1176/1319) 76s chunk=2048
+RUN gsm8k     int8_plain  acc=0.8992 (1186/1319) 263s chunk=2048
+RUN needle150 bf16        acc=0.9500 (95/100) 39s chunk=2048
+RUN needle150 fp8_e4m3    acc=0.0200 (2/100) 39s chunk=2048
+RUN needle150 fp8_e5m2    acc=0.0700 (7/100) 39s chunk=2048
+RUN needle150 int8_fused  acc=0.9600 (96/100) 39s chunk=2048
+RUN needle150 int8_plain  acc=0.9500 (95/100) 57s chunk=2048
+RUN needle600 bf16        acc=0.9500 (95/100) 188s chunk=2048
+RUN needle600 fp8_e4m3    acc=0.0300 (3/100) 176s chunk=2048
+RUN needle600 fp8_e5m2    acc=0.0000 (0/100) 169s chunk=2048
+RUN needle600 int8_fused  acc=0.9600 (96/100) 185s chunk=2048
+RUN needle600 int8_plain  acc=0.9500 (95/100) 260s chunk=2048

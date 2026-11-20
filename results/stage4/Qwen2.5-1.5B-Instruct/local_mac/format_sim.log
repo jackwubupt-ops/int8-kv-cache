@@ -1,0 +1,8 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+SIM Qwen2.5-1.5B-Instruct: baseline on 22 prompts, needle=7/10 (205s)
+SIM fp8_e4m3             top1/prompt=0.8116 short=0.8570601890484492 needle_top1=0.7571428716182709 kl=0.4519766921346838 nan_prompts=0/22 gen_exact=0.00 needle=0/10 (253s)
+SIM fp8_e5m2             top1/prompt=0.8621 short=0.7471064776182175 needle_top1=1.0 kl=0.49325264748553493 nan_prompts=0/22 gen_exact=0.45 needle=7/10 (255s)
+SIM fp8_e4m3_calib       top1/prompt=0.6925 short=0.8767361094554266 needle_top1=0.47142858505249025 kl=1.03974310668524 nan_prompts=0/22 gen_exact=0.05 needle=0/10 (291s)
+  _, exponent = torch.frexp(wide)
+SIM int8_per_token_head  top1/prompt=0.9850 short=0.984375 needle_top1=0.9857142865657806 kl=0.0027024582373946578 nan_prompts=0/22 gen_exact=0.64 needle=7/10 (354s)
+exit 0

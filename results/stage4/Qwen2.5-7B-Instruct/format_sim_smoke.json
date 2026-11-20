@@ -1,0 +1,239 @@
+{
+  "environment": {
+    "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "dtype": "bf16",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.6.0",
+    "python": "3.12.3",
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+    "git_commit": "009ac1b",
+    "time_utc": "2026-11-19T16:53:45+00:00"
+  },
+  "needle_facts": 150,
+  "max_new_tokens": 16,
+  "calib": "results/stage4/Qwen2.5-7B-Instruct/fp8_calib_smoke.json",
+  "baseline": {
+    "needle_correct": 2,
+    "needle_total": 2
+  },
+  "gsm8k_baseline": {
+    "accuracy": 0.0,
+    "total": 3
+  },
+  "formats": {
+    "fp8_e4m3": {
+      "prompts": 4,
+      "top1_per_prompt_mean": 0.696428582072258,
+      "top1_short": 0.75,
+      "top1_needle": 0.642857164144516,
+      "kl_mean_finite": 1.3643936961889267,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.0,
+      "needle_correct": 0,
+      "needle_total": 2,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.8125,
+          "kl": 0.4834260940551758,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.6875,
+          "kl": 0.8412675261497498,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 2.8492515087127686,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.5714285969734192,
+          "kl": 1.2836296558380127,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        }
+      ],
+      "gsm8k": {
+        "accuracy": 0.0,
+        "baseline_accuracy": 0.0,
+        "only_baseline": 0,
+        "only_quantized": 0,
+        "mcnemar_p": 1.0,
+        "total": 3
+      }
+    },
+    "fp8_e5m2": {
+      "prompts": 4,
+      "top1_per_prompt_mean": 0.7433035746216774,
+      "top1_short": 0.84375,
+      "top1_needle": 0.6428571492433548,
+      "kl_mean_finite": 1.2133367508649826,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.0,
+      "needle_correct": 0,
+      "needle_total": 2,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.875,
+          "kl": 0.692889928817749,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.8125,
+          "kl": 0.5879635214805603,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 0.24893927574157715,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.4285714328289032,
+          "kl": 3.323554277420044,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        }
+      ],
+      "gsm8k": {
+        "accuracy": 0.0,
+        "baseline_accuracy": 0.0,
+        "only_baseline": 0,
+        "only_quantized": 0,
+        "mcnemar_p": 1.0,
+        "total": 3
+      }
+    },
+    "fp8_e4m3_calib": {
+      "prompts": 4,
+      "top1_per_prompt_mean": 0.7522321492433548,
+      "top1_short": 0.71875,
+      "top1_needle": 0.7857142984867096,
+      "kl_mean_finite": 1.4463918656110764,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 0.0,
+      "needle_correct": 0,
+      "needle_total": 2,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 0.8125,
+          "kl": 0.5317466855049133,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 0.625,
+          "kl": 1.1704221963882446,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 0.7142857313156128,
+          "kl": 2.9596004486083984,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        },
+        {
+          "kind": "needle",
+          "top1": 0.8571428656578064,
+          "kl": 1.123798131942749,
+          "nan_logits": false,
+          "exact": false,
+          "needle_correct": false
+        }
+      ],
+      "gsm8k": {
+        "accuracy": 0.0,
+        "baseline_accuracy": 0.0,
+        "only_baseline": 0,
+        "only_quantized": 0,
+        "mcnemar_p": 1.0,
+        "total": 3
+      }
+    },
+    "int8_per_token_head": {
+      "prompts": 4,
+      "top1_per_prompt_mean": 1.0,
+      "top1_short": 1.0,
+      "top1_needle": 1.0,
+      "kl_mean_finite": 0.00037385503844444834,
+      "nan_logit_prompts": 0,
+      "exact_generation_rate": 1.0,
+      "needle_correct": 2,
+      "needle_total": 2,
+      "per_prompt": [
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.00044766211067326367,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "short",
+          "top1": 1.0,
+          "kl": 0.001047712517902255,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": null
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 3.124287317746166e-08,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        },
+        {
+          "kind": "needle",
+          "top1": 1.0,
+          "kl": 1.4282329097170532e-08,
+          "nan_logits": false,
+          "exact": true,
+          "needle_correct": true
+        }
+      ],
+      "gsm8k": {
+        "accuracy": 0.0,
+        "baseline_accuracy": 0.0,
+        "only_baseline": 0,
+        "only_quantized": 0,
+        "mcnemar_p": 1.0,
+        "total": 3
+      }
+    }
+  }
+}

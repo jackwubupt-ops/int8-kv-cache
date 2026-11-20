@@ -1,0 +1,134 @@
+import pytest
+import torch
+
+from int8kv.quant import compute_scale, quantize, round_scale_up
+from tests_stage4.conftest import load_sglang_file
+
+M = load_sglang_file("srt/layers/quantization/int8_kv.py")
+
+
+def _wide_range_kv(n=37, h=4, d=128, seed=0):
+    g = torch.Generator().manual_seed(seed)
+    x = torch.randn(n, h, d, generator=g)
+    return (x * torch.tensor([1.0, 50.0, 300.0, 0.01]).view(1, h, 1)).to(torch.bfloat16)
+
+
+def _reference(x):
+    """int8kv works on [batch, heads, tokens, dim]; SGLang stores [tokens, heads, dim]."""
+    xt = x.permute(1, 0, 2).unsqueeze(0)
+    scale = round_scale_up(compute_scale(xt, "per_token_head"), torch.bfloat16)
+    q = quantize(xt, scale)
+    return q.squeeze(0).permute(1, 0, 2), scale.squeeze(0).squeeze(-1).permute(1, 0)
+
+
+def test_matches_int8kv_reference():
+    x = _wide_range_kv()
+    q, scale = M.quantize_per_token_head(x)
+    ref_q, ref_scale = _reference(x)
+    assert q.dtype == torch.int8 and scale.dtype == torch.bfloat16
+    assert q.shape == (37, 4, 128) and scale.shape == (37, 4)
+    assert torch.equal(scale, ref_scale)
+    assert torch.equal(q, ref_q)
+
+
+def test_zero_rows():
+    x = _wide_range_kv()
+    x[5, 2] = 0
+    q, scale = M.quantize_per_token_head(x)
+    assert scale[5, 2].item() == 1.0
+    assert torch.count_nonzero(q[5, 2]) == 0
+    assert torch.isfinite(M.dequantize_per_token_head(q, scale)).all()
+
+
+def test_round_trip_error_bound():
+    x = _wide_range_kv(seed=1)
+    q, scale = M.quantize_per_token_head(x)
+    back = M.dequantize_per_token_head(q, scale, dtype=torch.float32)
+    bound = scale.float().unsqueeze(-1) / 2 + 1e-6
+    assert ((back - x.float()).abs() <= bound).all()
+
+
+def test_dequantize_default_dtype_is_bf16():
+    q, scale = M.quantize_per_token_head(_wide_range_kv())
+    assert M.dequantize_per_token_head(q, scale).dtype == torch.bfloat16
+
+
+def test_bf16_dequantize_matches_fp32_path_bit_for_bit():
+    """bf16 output is computed in bf16 (a third of the temporary memory) and must equal the FP32 route exactly."""
+    q, scale = M.quantize_per_token_head(_wide_range_kv(n=300, seed=2))
+    via_fp32 = (q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)).to(torch.bfloat16)
+    assert torch.equal(M.dequantize_per_token_head(q, scale), via_fp32)
+
+
+def test_bf16_dequantize_skips_the_fp32_copy(monkeypatch):
+    q, scale = M.quantize_per_token_head(_wide_range_kv())
+    calls = []
+    real_to = torch.Tensor.to
+
+    def spy(self, *args, **kwargs):
+        calls.append(args[0] if args else kwargs.get("dtype"))
+        return real_to(self, *args, **kwargs)
+
+    monkeypatch.setattr(torch.Tensor, "to", spy)
+    M.dequantize_per_token_head(q, scale)
+    assert torch.float32 not in calls
+
+
+def test_bf16_round_up_never_rounds_down():
+    g = torch.Generator().manual_seed(2)
+    x = torch.rand(10_000, generator=g) * torch.logspace(-6, 3, 10_000)
+    up = M.bf16_round_up(x)
+    assert up.dtype == torch.bfloat16
+    assert (up.float() >= x).all()
+    assert torch.equal(up, round_scale_up(x, torch.bfloat16))
+
+
+def test_qmax_constant():
+    assert M.INT8_KV_QMAX == 127
+
+
+def test_cell_size_formula():
+    # Qwen2.5-7B: 28 layers, 4 KV heads, head_dim 128.
+    assert M.int8_kv_cell_size(head_num=4, head_dim=128, v_head_dim=128, num_layers=28) == 28 * 4 * (128 + 128 + 4)
+
+
+def test_cell_size_ratio_vs_bf16():
+    int8 = M.int8_kv_cell_size(head_num=2, head_dim=128, v_head_dim=128, num_layers=28)
+    bf16 = 2 * (128 + 128) * 28 * 2
+    assert abs(int8 / bf16 - 260 / 512) < 1e-12
+
+
+def test_store_quantized_writes_only_loc():
+    x = _wide_range_kv(n=3)
+    q_buf = torch.zeros(10, 4, 128, dtype=torch.int8)
+    scale_buf = torch.zeros(10, 4, dtype=torch.bfloat16)
+    loc = torch.tensor([7, 2, 9])
+    M.store_quantized(q_buf=q_buf, scale_buf=scale_buf, loc=loc, x=x)
+    ref_q, ref_scale = M.quantize_per_token_head(x)
+    assert torch.equal(q_buf[loc], ref_q) and torch.equal(scale_buf[loc], ref_scale)
+    untouched = torch.tensor([0, 1, 3, 4, 5, 6, 8])
+    assert torch.count_nonzero(q_buf[untouched]) == 0 and torch.count_nonzero(scale_buf[untouched]) == 0
+
+
+SUPPORTED = dict(attention_backend="triton", page_size=1, tp_size=1, use_mla=False,
+                 speculative_algorithm=None, enable_hierarchical_cache=False, is_hybrid_swa=False)
+
+
+def test_supported_config_passes():
+    M.check_int8_kv_supported(**SUPPORTED)
+
+
+@pytest.mark.parametrize("override,feature", [
+    ({"attention_backend": "flashinfer"}, "attention backend"),
+    ({"attention_backend": None}, "attention backend"),
+    ({"page_size": 16}, "page_size"),
+    ({"tp_size": 2}, "tensor parallel"),
+    ({"use_mla": True}, "MLA"),
+    ({"speculative_algorithm": "EAGLE"}, "speculative"),
+    ({"enable_hierarchical_cache": True}, "hierarchical"),
+    ({"is_hybrid_swa": True}, "sliding window"),
+])
+def test_unsupported_config_rejected(override, feature):
+    with pytest.raises(NotImplementedError, match=feature) as err:
+        M.check_int8_kv_supported(**{**SUPPORTED, **override})
+    assert "int8_per_token_head" in str(err.value)

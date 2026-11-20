@@ -1,0 +1,123 @@
+=== stage 4 bench: /root/autodl-tmp/models/Qwen2.5-7B-Instruct, patch 009ac1b, mem_fraction=0.85, Fri Nov 20 04:09:04 CST 2026 ===
+--- decode kernel micro-benchmark (04:09:04)
+KERNEL bf16       batch=32 context=  1024 median=0.105 ms min=0.097 p90=0.112
+KERNEL bf16       batch=32 context=  4096 median=0.355 ms min=0.353 p90=0.365
+KERNEL bf16       batch=32 context= 16384 median=1.225 ms min=1.218 p90=1.231
+KERNEL bf16       batch=32 context= 32768 median=2.377 ms min=2.369 p90=2.384
+KERNEL fp8        batch=32 context=  1024 median=0.100 ms min=0.098 p90=0.102
+KERNEL fp8        batch=32 context=  4096 median=0.205 ms min=0.203 p90=0.206
+KERNEL fp8        batch=32 context= 16384 median=0.637 ms min=0.633 p90=0.640
+KERNEL fp8        batch=32 context= 32768 median=1.207 ms min=1.201 p90=1.211
+KERNEL int8       batch=32 context=  1024 median=0.105 ms min=0.103 p90=0.108
+KERNEL int8       batch=32 context=  4096 median=0.233 ms min=0.230 p90=0.237
+KERNEL int8       batch=32 context= 16384 median=0.725 ms min=0.718 p90=0.731
+KERNEL int8       batch=32 context= 32768 median=1.380 ms min=1.360 p90=1.391
+KERNEL int8_plain batch=32 context=  1024 median=0.715 ms min=0.712 p90=0.718
+KERNEL int8_plain batch=32 context=  4096 median=3.114 ms min=3.109 p90=3.118
+KERNEL int8_plain batch=32 context= 16384 median=12.333 ms min=12.318 p90=12.354
+KERNEL int8_plain batch=32 context= 32768 median=24.625 ms min=24.592 p90=24.657
+--- bf16: starting server (04:10:00)
+max_total_num_tokens=99750
+  serving 1024x256 n=256 run 1 (04:10:54)
+  serving 1024x256 n=256 run 2 (04:11:58)
+  serving 1024x256 n=256 run 3 (04:13:03)
+  serving 4096x512 n=64 run 1 (04:14:09)
+  serving 4096x512 n=64 run 2 (04:15:28)
+  serving 4096x512 n=64 run 3 (04:16:48)
+  serving 8192x512 n=32 run 1 (04:18:08)
+  serving 8192x512 n=32 run 2 (04:19:28)
+  serving 8192x512 n=32 run 3 (04:20:49)
+  long 8192x512 n=128 run 1 (04:22:10)
+scripts/stage4/bench.sh: line 53: 25553 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- fp8_e4m3: starting server (04:26:48)
+max_total_num_tokens=199503
+  serving 1024x256 n=256 run 1 (04:27:44)
+  serving 1024x256 n=256 run 2 (04:28:39)
+  serving 1024x256 n=256 run 3 (04:29:35)
+  serving 4096x512 n=64 run 1 (04:30:32)
+  serving 4096x512 n=64 run 2 (04:31:39)
+  serving 4096x512 n=64 run 3 (04:32:45)
+  serving 8192x512 n=32 run 1 (04:33:53)
+  serving 8192x512 n=32 run 2 (04:35:01)
+  serving 8192x512 n=32 run 3 (04:36:10)
+  long 8192x512 n=128 run 1 (04:37:17)
+scripts/stage4/bench.sh: line 53: 26929 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- int8_fused: starting server (04:40:49)
+max_total_num_tokens=196433
+  serving 1024x256 n=256 run 1 (04:41:43)
+  serving 1024x256 n=256 run 2 (04:42:38)
+  serving 1024x256 n=256 run 3 (04:43:34)
+  serving 4096x512 n=64 run 1 (04:44:31)
+  serving 4096x512 n=64 run 2 (04:45:38)
+  serving 4096x512 n=64 run 3 (04:46:44)
+  serving 8192x512 n=32 run 1 (04:47:52)
+  serving 8192x512 n=32 run 2 (04:49:00)
+  serving 8192x512 n=32 run 3 (04:50:09)
+  long 8192x512 n=128 run 1 (04:51:16)
+scripts/stage4/bench.sh: line 53: 28229 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+--- int8_plain: starting server (04:54:58)
+max_total_num_tokens=196433
+  serving 1024x256 n=256 run 1 (04:56:08)
+scripts/stage4/bench.sh: line 84: 29526 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+  bench_serving failed, see results/stage4/Qwen2.5-7B-Instruct/bench/int8_plain/serving_1024x256_run1.log:
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=30000): Max retries exceeded with url: /server_info (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=30000): Failed to establish a new connection: [Errno 111] Connection refused"))
+output.error='Traceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost\n    uncompleted = self._parser.feed_eof()\n                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof\naiohttp.http_exceptions.TransferEncodingError: 400, message:\n  Not enough data to satisfy transfer length header.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/bench_serving.py", line 658, in async_request_sglang_generate\n    async for chunk_bytes in response.content:\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__\n    rv = await self.read_func()\n         ^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 370, in readline\n    return await self.readuntil(max_size=max_line_length)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 418, in readuntil\n    await self._wait("readuntil")\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait\n    await waiter\naiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message=\'Not enough data to satisfy transfer length header.\'>\n'
+output.error='Traceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost\n    uncompleted = self._parser.feed_eof()\n                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof\naiohttp.http_exceptions.TransferEncodingError: 400, message:\n  Not enough data to satisfy transfer length header.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/bench_serving.py", line 658, in async_request_sglang_generate\n    async for chunk_bytes in response.content:\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__\n    rv = await self.read_func()\n         ^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 370, in readline\n    return await self.readuntil(max_size=max_line_length)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 418, in readuntil\n    await self._wait("readuntil")\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait\n    await waiter\naiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message=\'Not enough data to satisfy transfer length header.\'>\n'
+output.error='Traceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost\n    uncompleted = self._parser.feed_eof()\n                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof\naiohttp.http_exceptions.TransferEncodingError: 400, message:\n  Not enough data to satisfy transfer length header.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/bench_serving.py", line 658, in async_request_sglang_generate\n    async for chunk_bytes in response.content:\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__\n    rv = await self.read_func()\n         ^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 370, in readline\n    return await self.readuntil(max_size=max_line_length)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 418, in readuntil\n    await self._wait("readuntil")\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait\n    await waiter\naiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message=\'Not enough data to satisfy transfer length header.\'>\n'
+output.error='Traceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost\n    uncompleted = self._parser.feed_eof()\n                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof\naiohttp.http_exceptions.TransferEncodingError: 400, message:\n  Not enough data to satisfy transfer length header.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/bench_serving.py", line 658, in async_request_sglang_generate\n    async for chunk_bytes in response.content:\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__\n    rv = await self.read_func()\n         ^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 370, in readline\n    return await self.readuntil(max_size=max_line_length)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 418, in readuntil\n    await self._wait("readuntil")\n  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait\n    await waiter\naiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message=\'Not enough data to satisfy transfer length header.\'>\n'
+FAILED int8_plain serving 1024x256
+FAILED int8_plain (server died)
+  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/srt/layers/attention/triton_backend.py", line 1038, in _kv_buffers_for_read
+    pool.get_value_buffer(layer.layer_id),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/srt/mem_cache/memory_pool.py", line 1048, in get_value_buffer
+    return self._get_value_buffer(layer_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/srt/mem_cache/memory_pool.py", line 1472, in _get_value_buffer
+    return dequantize_per_token_head(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/venv-sglang/lib/python3.12/site-packages/sglang/srt/layers/quantization/int8_kv.py", line 66, in dequantize_per_token_head
+    out = q.to(torch.float32) * scale.to(torch.float32).unsqueeze(-1)
+          ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 384.00 MiB. GPU 0 has a total capacity of 23.52 GiB of which 169.19 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.12 GiB is allocated by PyTorch, with 1.41 GiB allocated in private pools (e.g., CUDA Graphs), and 535.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+
+[2026-11-20 04:56:50] SIGQUIT received. signum=None, frame=None. It usually means one child failed.
+--- bf16_flashinfer: starting server (04:56:52)
+max_total_num_tokens=99751
+  serving 1024x256 n=256 run 1 (04:57:53)
+  serving 1024x256 n=256 run 2 (04:58:59)
+  serving 1024x256 n=256 run 3 (05:00:05)
+  serving 4096x512 n=64 run 1 (05:01:11)
+  serving 4096x512 n=64 run 2 (05:02:30)
+  serving 4096x512 n=64 run 3 (05:03:48)
+  serving 8192x512 n=32 run 1 (05:05:07)
+  serving 8192x512 n=32 run 2 (05:06:24)
+  serving 8192x512 n=32 run 3 (05:07:42)
+  long 8192x512 n=128 run 1 (05:09:01)
+scripts/stage4/bench.sh: line 53: 29902 Killed                  SGLANG_INT8_KV_IMPL="$impl" setsid "$PY" -m sglang.launch_server --model-path "$MODEL" --attention-backend "$backend" --kv-cache-dtype "$kv" --mem-fraction-static "$MEM_FRACTION" --host 127.0.0.1 --port "$PORT" > "$dir/server.log" 2>&1
+===== BENCH SUMMARY (05:13:29) =====
+BENCH bf16             tokens=99750 (1.000x bf16) kv=5.32 GB
+BENCH bf16             serving 1024x256  out tok/s=1285.6 ttft=20176 ms tpot=38.7 ms (runs=3, completed=256)
+BENCH bf16             serving 4096x512  out tok/s=502.3 ttft=26453 ms tpot=33.3 ms (runs=3, completed=64)
+BENCH bf16             serving 8192x512  out tok/s=252.7 ttft=28399 ms tpot=30.3 ms (runs=3, completed=32)
+BENCH bf16             long    8192x512  peak running=11 out tok/s=251.8 completed=128
+BENCH bf16_flashinfer  tokens=99751 (1.000x bf16) kv=5.32 GB
+BENCH bf16_flashinfer  serving 1024x256  out tok/s=1265.2 ttft=20484 ms tpot=39.7 ms (runs=3, completed=256)
+BENCH bf16_flashinfer  serving 4096x512  out tok/s=508.4 ttft=26521 ms tpot=32.6 ms (runs=3, completed=64)
+BENCH bf16_flashinfer  serving 8192x512  out tok/s=260.4 ttft=27472 ms tpot=29.8 ms (runs=3, completed=32)
+BENCH bf16_flashinfer  long    8192x512  peak running=11 out tok/s=259.9 completed=128
+BENCH fp8_e4m3         tokens=199503 (2.000x bf16) kv=5.32 GB
+BENCH fp8_e4m3         serving 1024x256  out tok/s=1564.2 ttft=14181 ms tpot=56.4 ms (runs=3, completed=256)
+BENCH fp8_e4m3         serving 4096x512  out tok/s=630.9 ttft=15040 ms tpot=36.1 ms (runs=3, completed=64)
+BENCH fp8_e4m3         serving 8192x512  out tok/s=311.2 ttft=16449 ms tpot=35.9 ms (runs=3, completed=32)
+BENCH fp8_e4m3         long    8192x512  peak running=23 out tok/s=336.6 completed=128
+BENCH int8_fused       tokens=196433 (1.969x bf16) kv=5.32 GB
+BENCH int8_fused       serving 1024x256  out tok/s=1575.2 ttft=14277 ms tpot=55.7 ms (runs=3, completed=256)
+BENCH int8_fused       serving 4096x512  out tok/s=618.5 ttft=15299 ms tpot=37.6 ms (runs=3, completed=64)
+BENCH int8_fused       serving 8192x512  out tok/s=306.9 ttft=17222 ms tpot=34.9 ms (runs=3, completed=32)
+BENCH int8_fused       long    8192x512  peak running=23 out tok/s=323.1 completed=128
+BENCH int8_plain       tokens=196433 (1.969x bf16) kv=5.32 GB
+BENCH decode kernel bf16       1024:0.105ms 4096:0.355ms 16384:1.225ms 32768:2.377ms
+BENCH decode kernel fp8        1024:0.100ms 4096:0.205ms 16384:0.637ms 32768:1.207ms
+BENCH decode kernel int8       1024:0.105ms 4096:0.233ms 16384:0.725ms 32768:1.380ms
+BENCH decode kernel int8_plain 1024:0.715ms 4096:3.114ms 16384:12.333ms 32768:24.625ms
