@@ -96,9 +96,9 @@ def _make_forward(original, recorder: Optional[OperatorRecorder]):
         v_int, s_v = _repeat_heads(v_int, groups), _repeat_heads(s_v, groups)
         mask = _causal_mask_if_needed(attention_mask, q, k_int.shape[-2])
 
-        if recorder is not None:
-            _record(recorder, cache, self.layer_idx, phase, q, k_int, s_k, v_int, s_v, mask, groups)
         output = attention_int8(q, k_int, s_k, v_int, s_v, mask, mode=cache.mode)
+        if recorder is not None:
+            _record(recorder, cache, self.layer_idx, phase, q, k_int, s_k, v_int, s_v, mask, groups, output)
         output = output.transpose(1, 2).reshape(*input_shape, -1).contiguous()
         return self.o_proj(output), None
 
@@ -119,19 +119,19 @@ def _float_chunk_attention(cache, layer_idx, past_len, q, k, v, attention_mask, 
     return output.transpose(1, 2).reshape(*input_shape, -1).contiguous()
 
 
-def _record(recorder, cache, layer_idx, phase, q, k_int, s_k, v_int, s_v, mask, groups) -> None:
-    if not cache.keep_float:
+def _record(recorder, cache, layer_idx, phase, q, k_int, s_k, v_int, s_v, mask, groups, output) -> None:
+    if not cache.keep_float and cache.scale_source != "dynamic":
         raise ValueError("operator recording needs QuantizedKVCache(keep_float=True)")
     f_k, f_v = cache.get_float_kv(layer_idx)
+    f_k, f_v = _repeat_heads(f_k, groups), _repeat_heads(f_v, groups)
     q_hat = None
-    if cache.mode == "integer":
+    # Approximate Q rounding for the logit/KL metrics; only exact when the K scale is not folded into Q.
+    if cache.mode == "integer" and s_k.shape[-1] == 1:
         s_q = compute_scale(q)
         q_hat = dequantize(quantize(q, s_q), s_q)
-    recorder.record(
-        layer_idx,
-        phase,
-        operator_metrics(
-            q, _repeat_heads(f_k, groups), _repeat_heads(f_v, groups),
-            dequantize(k_int, s_k), dequantize(v_int, s_v), mask, q_hat,
-        ),
-    )
+    metrics = operator_metrics(q, f_k, f_v, dequantize(k_int, s_k), dequantize(v_int, s_v), mask, q_hat)
+    # The real output of the configured mode (A: dequant, B: int8) against float attention.
+    reference = attention_float(q, f_k, f_v, mask).to(torch.float32)
+    actual = output.to(torch.float32)
+    metrics["actual_output_rel_l2"] = ((actual - reference).norm() / reference.norm().clamp_min(1e-12)).item()
+    recorder.record(layer_idx, phase, metrics)

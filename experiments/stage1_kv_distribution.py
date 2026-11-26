@@ -50,8 +50,9 @@ def plot_absmax(hists, path):
 def plot_granularity(tables, path):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), sharey=True, constrained_layout=True)
     for ax, kind in zip(axes, "KV"):
-        values = [tables[kind][g]["rel_l2"] * 100 for g in GRANULARITIES]
-        bars = ax.bar(GRANULARITIES, values, width=0.5, color=COLOR)
+        grans = [g for g in GRANULARITIES if g in tables[kind]]
+        values = [tables[kind][g]["rel_l2"] * 100 for g in grans]
+        bars = ax.bar(grans, values, width=0.5, color=COLOR)
         ax.bar_label(bars, fmt="%.2f%%", color=INK, fontsize=9)
         _style(ax, f"{kind} reconstruction error", "", "relative L2 (%)" if kind == "K" else "")
     fig.suptitle("INT8 error by granularity", x=0.01, ha="left", fontsize=13, color=INK)
@@ -93,6 +94,7 @@ def main(argv=None):
                 for chunk in write_chunks(x, prompt_len):
                     if chunk.shape[-2]:
                         stats[kind].add_chunk(chunk)
+                stats[kind].add_sequence(x)
                 hists[kind]["prefill"] += absmax_histogram(x[..., :prompt_len, :])
                 if x.shape[-2] > prompt_len:
                     hists[kind]["decode"] += absmax_histogram(x[..., prompt_len:, :])

@@ -1,16 +1,22 @@
 """INT8 quantization for tensors laid out as [batch, heads, tokens, head_dim]."""
 from __future__ import annotations
 
+from typing import Optional
+
 import torch
 
 QMAX = 127
-GRANULARITIES = ("per_tensor", "per_head", "per_token", "per_token_head")
+GRANULARITIES = ("per_tensor", "per_head", "per_token", "per_token_head", "per_channel")
 _REDUCE_DIMS = {
     "per_tensor": (-3, -2, -1),
     "per_head": (-2, -1),
     "per_token": (-3, -1),
     "per_token_head": (-1,),
+    # One scale per (head, head_dim): reduce over tokens only.
+    "per_channel": (-2,),
 }
+# Granularities whose scale does not depend on the token, so it can be calibrated once and fixed.
+STATIC_GRANULARITIES = ("per_head", "per_channel")
 
 
 def compute_scale(x: torch.Tensor, granularity: str = "per_token_head") -> torch.Tensor:
@@ -26,14 +32,35 @@ def compute_scale(x: torch.Tensor, granularity: str = "per_token_head") -> torch
     return torch.where(absmax > 0, scale, torch.ones_like(scale))
 
 
+def calibrate_scale(
+    absmax: torch.Tensor, granularity: str, quantile_values: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    """Static scale from calibration statistics.
+
+    absmax: [heads, head_dim], the max |x| seen per channel over all calibration tokens.
+    quantile_values: optional [heads, head_dim] percentile of |x| to clip outliers instead of absmax.
+    Returns [1, heads, 1, head_dim] for per_channel or [1, heads, 1, 1] for per_head.
+    """
+    if granularity not in STATIC_GRANULARITIES:
+        raise ValueError(f"static scales need one of {STATIC_GRANULARITIES}, got {granularity!r}")
+    bound = (absmax if quantile_values is None else quantile_values).to(torch.float32)
+    if granularity == "per_head":
+        bound = bound.amax(dim=-1, keepdim=True)
+    scale = bound / QMAX
+    scale = torch.where(bound > 0, scale, torch.ones_like(scale))
+    return scale.unsqueeze(0).unsqueeze(-2)
+
+
 def round_scale_up(scale: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
     """Cast scale to a narrower dtype without ever rounding it down."""
     cast = scale.to(dtype)
     too_small = cast.to(scale.dtype) < scale
     if too_small.any():
         wide = cast.to(scale.dtype)
-        _, exponent = torch.frexp(wide)
-        ulp = torch.ldexp(torch.full_like(wide, torch.finfo(dtype).eps), exponent - 1)
+        # frexp has no MPS kernel; the scale tensors are tiny, so do this step on the CPU there.
+        host = wide.cpu() if wide.device.type == "mps" else wide
+        _, exponent = torch.frexp(host)
+        ulp = torch.ldexp(torch.full_like(host, torch.finfo(dtype).eps), exponent - 1).to(wide.device)
         cast = torch.where(too_small, (wide + ulp).to(dtype), cast)
     return cast
 

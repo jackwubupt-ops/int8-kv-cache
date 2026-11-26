@@ -10,6 +10,10 @@ from .quant import GRANULARITIES, compute_scale, dequantize, quantize
 
 ABSMAX_BINS = np.logspace(-4, 3, 71)
 SCALE_BYTES = 2
+# per_channel reduces over tokens, so a one-token decode chunk would get an exact scale.
+# It is scored on whole sequences instead (what a dynamic or calibrated scale sees).
+CHUNK_GRANULARITIES = tuple(g for g in GRANULARITIES if g != "per_channel")
+SEQUENCE_GRANULARITIES = ("per_channel",)
 
 
 class GranularityStats:
@@ -25,10 +29,19 @@ class GranularityStats:
         x = x.to(torch.float32)
         self.squared_norm += x.pow(2).sum().item()
         self.token_heads += x.shape[0] * x.shape[1] * x.shape[2]
-        for gran in GRANULARITIES:
-            scale = compute_scale(x, gran)
-            self.squared_error[gran] += (dequantize(quantize(x, scale), scale) - x).pow(2).sum().item()
-            self.scale_elements[gran] += scale.numel()
+        for gran in CHUNK_GRANULARITIES:
+            self._add(x, gran)
+
+    def add_sequence(self, x: torch.Tensor) -> None:
+        """A whole cached sequence; call once per (prompt, layer, K/V) alongside its chunks."""
+        x = x.to(torch.float32)
+        for gran in SEQUENCE_GRANULARITIES:
+            self._add(x, gran)
+
+    def _add(self, x: torch.Tensor, gran: str) -> None:
+        scale = compute_scale(x, gran)
+        self.squared_error[gran] += (dequantize(quantize(x, scale), scale) - x).pow(2).sum().item()
+        self.scale_elements[gran] += scale.numel()
 
     def table(self) -> Dict[str, dict]:
         return {
@@ -37,6 +50,7 @@ class GranularityStats:
                 "scale_bytes_per_token_head": self.scale_elements[gran] * SCALE_BYTES / max(self.token_heads, 1),
             }
             for gran in GRANULARITIES
+            if gran in CHUNK_GRANULARITIES or self.scale_elements[gran]
         }
 
 
@@ -50,7 +64,7 @@ def write_chunks(x: torch.Tensor, prompt_len: int) -> Iterable[torch.Tensor]:
 def recommend_granularity(table: Dict[str, dict], tolerance: float = 1.1) -> str:
     """Pick the cheapest granularity whose error is within tolerance of the best."""
     best = min(row["rel_l2"] for row in table.values())
-    eligible: List[str] = [g for g in GRANULARITIES if table[g]["rel_l2"] <= best * tolerance]
+    eligible: List[str] = [g for g in GRANULARITIES if g in table and table[g]["rel_l2"] <= best * tolerance]
     return min(eligible, key=lambda g: table[g]["scale_bytes_per_token_head"])
 
 

@@ -98,6 +98,19 @@ def parse_configs(text: str) -> List[Tuple[str, str]]:
     return configs
 
 
+def parse_cache_configs(text: str) -> List[Dict[str, str]]:
+    """Parse "per_channel:int8:static,per_head:dequant:dynamic"; the scale source defaults to "write"."""
+    configs = []
+    for item in text.split(","):
+        parts = item.strip().split(":")
+        if len(parts) not in (2, 3):
+            raise ValueError(f"bad config {item!r}, expected granularity:mode[:scale_source]")
+        source = parts[2] if len(parts) == 3 else "write"
+        configs.append({"granularity": parts[0], "mode": parts[1], "scale_source": source,
+                        "label": f"{parts[0]}:{parts[1]}:{source}"})
+    return configs
+
+
 def environment_info(device: str, model_name: str, dtype: str) -> Dict[str, Optional[str]]:
     try:
         commit = subprocess.run(
