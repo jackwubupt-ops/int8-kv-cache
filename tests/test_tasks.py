@@ -48,3 +48,12 @@ def test_aime_scoring_and_answer_normalization(tmp_path):
 def test_gsm8k_from_file(tmp_path):
     task = make_task("gsm8k", write(tmp_path, [{"question": "q", "answer": "x #### 12"}]))
     assert task.score(task.samples[0], "\\boxed{12}")
+
+
+def test_read_jsonl_keeps_unicode_line_separators_inside_strings(tmp_path):
+    from int8kv.tasks import read_jsonl
+
+    rows = [{"question": "a b\x85c"}, {"question": "d"}]
+    path = tmp_path / "rows.jsonl"
+    path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+    assert read_jsonl(path) == rows

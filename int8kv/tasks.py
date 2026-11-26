@@ -39,9 +39,15 @@ class Task:
     extract: Callable[[dict, str], Optional[str]]
 
 
+def read_jsonl(path) -> List[dict]:
+    """One JSON object per line. Splits on "\\n" only: str.splitlines() also breaks on U+2028 and
+    similar characters, which ensure_ascii=False leaves unescaped inside the JSON strings."""
+    return [json.loads(l) for l in Path(path).read_text(encoding="utf-8").split("\n") if l.strip()]
+
+
 def load_rows(name: str, data_file: Optional[str]) -> List[dict]:
     if data_file:
-        return [json.loads(l) for l in Path(data_file).read_text(encoding="utf-8").splitlines() if l.strip()]
+        return read_jsonl(data_file)
     from datasets import load_dataset
 
     repo, config, split = HF_SOURCES[name]

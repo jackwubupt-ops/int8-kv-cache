@@ -17,7 +17,7 @@ from int8kv.runtime import encode_chat, environment_info, greedy_generate, load_
 
 def load_samples(data_file, count):
     if data_file:
-        lines = Path(data_file).read_text(encoding="utf-8").splitlines()
+        lines = Path(data_file).read_text(encoding="utf-8").split("\n")
         rows = [json.loads(line) for line in lines if line.strip()]
     else:
         from datasets import load_dataset

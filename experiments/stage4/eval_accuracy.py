@@ -47,7 +47,7 @@ def build_prompt(task: str, item: dict) -> str:
 def load_items(task: str, n: int, data_file: Optional[Path] = None) -> List[dict]:
     """Up to n items, each with "prompt" and "gold"."""
     if task == "gsm8k":
-        lines = Path(data_file or GSM8K_FILE).read_text(encoding="utf-8").splitlines()
+        lines = Path(data_file or GSM8K_FILE).read_text(encoding="utf-8").split("\n")
         rows = [json.loads(line) for line in lines if line.strip()][:n]
         return [{"prompt": build_prompt(task, r), "gold": extract_number(r["answer"])} for r in rows]
     if task in NEEDLE_FACTS:

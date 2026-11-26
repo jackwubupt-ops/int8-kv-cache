@@ -14,12 +14,13 @@ from transformers import DynamicCache
 
 from int8kv.calibration import ChannelStats
 from int8kv.prompts import GSM8K_INSTRUCTION
+from int8kv.tasks import read_jsonl
 from int8kv.runtime import encode_chat, environment_info, greedy_generate, load_model, pick_device, save_json
 
 
 def calibration_prompts(data_file, count):
     if data_file:
-        rows = [json.loads(line) for line in Path(data_file).read_text(encoding="utf-8").splitlines() if line.strip()]
+        rows = read_jsonl(data_file)
     else:
         from datasets import load_dataset
 
