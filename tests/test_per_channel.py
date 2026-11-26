@@ -126,3 +126,18 @@ def test_mixed_k_channel_v_token_head():
     vi, sv = quant(v, "per_token_head")
     base = attention_float(q, k, v)
     assert rel(attention_int8(q, ki, sk, vi, sv, mode="int8"), base) < 0.10
+
+
+def test_int8_default_q_scale_survives_one_head_with_outlier_channel():
+    """A per_tensor Q scale after the fold lets one head's outlier channel (q and k both large)
+    swamp every other head; the default per-(token, head) Q scale keeps the other heads accurate."""
+    q, k, v = make(5, tq=4)
+    q[:, 0, :, 0] *= 100
+    k[:, 0, :, 0] *= 100
+    ki, sk = quant(k, "per_channel")
+    vi, sv = quant(v, "per_channel")
+    base = attention_float(q, k, v)[:, 1:]
+    default = attention_int8(q, ki, sk, vi, sv, mode="int8")[:, 1:]
+    per_tensor = attention_int8(q, ki, sk, vi, sv, mode="int8", q_granularity="per_tensor")[:, 1:]
+    assert rel(default, base) < 0.1
+    assert rel(per_tensor, base) > 0.5

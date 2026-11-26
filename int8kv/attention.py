@@ -84,7 +84,11 @@ def attention_int8(
     if mode == "dequant":
         return attention_float(q, dequantize(k_int, s_k), dequantize(v_int, s_v), mask).to(q.dtype)
     if q_granularity is None:
-        q_granularity = "per_tensor" if mode == "int8" else "per_token_head"
+        # One Q scale per (query token, head): a row of QK^T, so it still factors out of the int8 GEMM.
+        # A single per_tensor scale is not enough once a per_channel s_k is folded into Q: one head's
+        # outlier channel sets the scale for every head and rounds the other heads' Q to ~0, which made
+        # Qwen2.5 generate garbage.
+        q_granularity = "per_token_head"
 
     s_k32, s_v32 = s_k.to(torch.float32), s_v.to(torch.float32)
     k_channel = s_k.shape[-1] > 1
